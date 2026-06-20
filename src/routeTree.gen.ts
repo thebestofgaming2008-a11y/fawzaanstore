@@ -9,12 +9,36 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as V4RouteImport } from './routes/v4'
+import { Route as V3RouteImport } from './routes/v3'
+import { Route as V2RouteImport } from './routes/v2'
+import { Route as V1RouteImport } from './routes/v1'
 import { Route as ShemaghsRouteImport } from './routes/shemaghs'
 import { Route as NiqabsRouteImport } from './routes/niqabs'
 import { Route as HoneyRouteImport } from './routes/honey'
 import { Route as GlovesRouteImport } from './routes/gloves'
 import { Route as IndexRouteImport } from './routes/index'
 
+const V4Route = V4RouteImport.update({
+  id: '/v4',
+  path: '/v4',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const V3Route = V3RouteImport.update({
+  id: '/v3',
+  path: '/v3',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const V2Route = V2RouteImport.update({
+  id: '/v2',
+  path: '/v2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const V1Route = V1RouteImport.update({
+  id: '/v1',
+  path: '/v1',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShemaghsRoute = ShemaghsRouteImport.update({
   id: '/shemaghs',
   path: '/shemaghs',
@@ -47,6 +71,10 @@ export interface FileRoutesByFullPath {
   '/honey': typeof HoneyRoute
   '/niqabs': typeof NiqabsRoute
   '/shemaghs': typeof ShemaghsRoute
+  '/v1': typeof V1Route
+  '/v2': typeof V2Route
+  '/v3': typeof V3Route
+  '/v4': typeof V4Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +82,10 @@ export interface FileRoutesByTo {
   '/honey': typeof HoneyRoute
   '/niqabs': typeof NiqabsRoute
   '/shemaghs': typeof ShemaghsRoute
+  '/v1': typeof V1Route
+  '/v2': typeof V2Route
+  '/v3': typeof V3Route
+  '/v4': typeof V4Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +94,45 @@ export interface FileRoutesById {
   '/honey': typeof HoneyRoute
   '/niqabs': typeof NiqabsRoute
   '/shemaghs': typeof ShemaghsRoute
+  '/v1': typeof V1Route
+  '/v2': typeof V2Route
+  '/v3': typeof V3Route
+  '/v4': typeof V4Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs'
+  fullPaths:
+    | '/'
+    | '/gloves'
+    | '/honey'
+    | '/niqabs'
+    | '/shemaghs'
+    | '/v1'
+    | '/v2'
+    | '/v3'
+    | '/v4'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs'
-  id: '__root__' | '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs'
+  to:
+    | '/'
+    | '/gloves'
+    | '/honey'
+    | '/niqabs'
+    | '/shemaghs'
+    | '/v1'
+    | '/v2'
+    | '/v3'
+    | '/v4'
+  id:
+    | '__root__'
+    | '/'
+    | '/gloves'
+    | '/honey'
+    | '/niqabs'
+    | '/shemaghs'
+    | '/v1'
+    | '/v2'
+    | '/v3'
+    | '/v4'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,10 +141,42 @@ export interface RootRouteChildren {
   HoneyRoute: typeof HoneyRoute
   NiqabsRoute: typeof NiqabsRoute
   ShemaghsRoute: typeof ShemaghsRoute
+  V1Route: typeof V1Route
+  V2Route: typeof V2Route
+  V3Route: typeof V3Route
+  V4Route: typeof V4Route
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/v4': {
+      id: '/v4'
+      path: '/v4'
+      fullPath: '/v4'
+      preLoaderRoute: typeof V4RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/v3': {
+      id: '/v3'
+      path: '/v3'
+      fullPath: '/v3'
+      preLoaderRoute: typeof V3RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/v2': {
+      id: '/v2'
+      path: '/v2'
+      fullPath: '/v2'
+      preLoaderRoute: typeof V2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/v1': {
+      id: '/v1'
+      path: '/v1'
+      fullPath: '/v1'
+      preLoaderRoute: typeof V1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shemaghs': {
       id: '/shemaghs'
       path: '/shemaghs'
@@ -125,6 +221,10 @@ const rootRouteChildren: RootRouteChildren = {
   HoneyRoute: HoneyRoute,
   NiqabsRoute: NiqabsRoute,
   ShemaghsRoute: ShemaghsRoute,
+  V1Route: V1Route,
+  V2Route: V2Route,
+  V3Route: V3Route,
+  V4Route: V4Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
