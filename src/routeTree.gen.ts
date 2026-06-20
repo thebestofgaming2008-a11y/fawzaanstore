@@ -9,8 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ShemaghsRouteImport } from './routes/shemaghs'
+import { Route as NiqabsRouteImport } from './routes/niqabs'
+import { Route as HoneyRouteImport } from './routes/honey'
+import { Route as GlovesRouteImport } from './routes/gloves'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ShemaghsRoute = ShemaghsRouteImport.update({
+  id: '/shemaghs',
+  path: '/shemaghs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NiqabsRoute = NiqabsRouteImport.update({
+  id: '/niqabs',
+  path: '/niqabs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HoneyRoute = HoneyRouteImport.update({
+  id: '/honey',
+  path: '/honey',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GlovesRoute = GlovesRouteImport.update({
+  id: '/gloves',
+  path: '/gloves',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +43,72 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/gloves': typeof GlovesRoute
+  '/honey': typeof HoneyRoute
+  '/niqabs': typeof NiqabsRoute
+  '/shemaghs': typeof ShemaghsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/gloves': typeof GlovesRoute
+  '/honey': typeof HoneyRoute
+  '/niqabs': typeof NiqabsRoute
+  '/shemaghs': typeof ShemaghsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/gloves': typeof GlovesRoute
+  '/honey': typeof HoneyRoute
+  '/niqabs': typeof NiqabsRoute
+  '/shemaghs': typeof ShemaghsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs'
+  id: '__root__' | '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GlovesRoute: typeof GlovesRoute
+  HoneyRoute: typeof HoneyRoute
+  NiqabsRoute: typeof NiqabsRoute
+  ShemaghsRoute: typeof ShemaghsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/shemaghs': {
+      id: '/shemaghs'
+      path: '/shemaghs'
+      fullPath: '/shemaghs'
+      preLoaderRoute: typeof ShemaghsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/niqabs': {
+      id: '/niqabs'
+      path: '/niqabs'
+      fullPath: '/niqabs'
+      preLoaderRoute: typeof NiqabsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/honey': {
+      id: '/honey'
+      path: '/honey'
+      fullPath: '/honey'
+      preLoaderRoute: typeof HoneyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gloves': {
+      id: '/gloves'
+      path: '/gloves'
+      fullPath: '/gloves'
+      preLoaderRoute: typeof GlovesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +121,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GlovesRoute: GlovesRoute,
+  HoneyRoute: HoneyRoute,
+  NiqabsRoute: NiqabsRoute,
+  ShemaghsRoute: ShemaghsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
