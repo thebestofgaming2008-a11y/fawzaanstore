@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as V2RouteImport } from './routes/v2'
-import { Route as V1RouteImport } from './routes/v1'
 import { Route as ShemaghsRouteImport } from './routes/shemaghs'
 import { Route as NiqabsRouteImport } from './routes/niqabs'
 import { Route as HoneyRouteImport } from './routes/honey'
@@ -20,11 +19,6 @@ import { Route as IndexRouteImport } from './routes/index'
 const V2Route = V2RouteImport.update({
   id: '/v2',
   path: '/v2',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const V1Route = V1RouteImport.update({
-  id: '/v1',
-  path: '/v1',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShemaghsRoute = ShemaghsRouteImport.update({
@@ -59,7 +53,6 @@ export interface FileRoutesByFullPath {
   '/honey': typeof HoneyRoute
   '/niqabs': typeof NiqabsRoute
   '/shemaghs': typeof ShemaghsRoute
-  '/v1': typeof V1Route
   '/v2': typeof V2Route
 }
 export interface FileRoutesByTo {
@@ -68,7 +61,6 @@ export interface FileRoutesByTo {
   '/honey': typeof HoneyRoute
   '/niqabs': typeof NiqabsRoute
   '/shemaghs': typeof ShemaghsRoute
-  '/v1': typeof V1Route
   '/v2': typeof V2Route
 }
 export interface FileRoutesById {
@@ -78,30 +70,14 @@ export interface FileRoutesById {
   '/honey': typeof HoneyRoute
   '/niqabs': typeof NiqabsRoute
   '/shemaghs': typeof ShemaghsRoute
-  '/v1': typeof V1Route
   '/v2': typeof V2Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/gloves'
-    | '/honey'
-    | '/niqabs'
-    | '/shemaghs'
-    | '/v1'
-    | '/v2'
+  fullPaths: '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs' | '/v2'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs' | '/v1' | '/v2'
-  id:
-    | '__root__'
-    | '/'
-    | '/gloves'
-    | '/honey'
-    | '/niqabs'
-    | '/shemaghs'
-    | '/v1'
-    | '/v2'
+  to: '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs' | '/v2'
+  id: '__root__' | '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs' | '/v2'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -110,7 +86,6 @@ export interface RootRouteChildren {
   HoneyRoute: typeof HoneyRoute
   NiqabsRoute: typeof NiqabsRoute
   ShemaghsRoute: typeof ShemaghsRoute
-  V1Route: typeof V1Route
   V2Route: typeof V2Route
 }
 
@@ -121,13 +96,6 @@ declare module '@tanstack/react-router' {
       path: '/v2'
       fullPath: '/v2'
       preLoaderRoute: typeof V2RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/v1': {
-      id: '/v1'
-      path: '/v1'
-      fullPath: '/v1'
-      preLoaderRoute: typeof V1RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shemaghs': {
@@ -174,7 +142,6 @@ const rootRouteChildren: RootRouteChildren = {
   HoneyRoute: HoneyRoute,
   NiqabsRoute: NiqabsRoute,
   ShemaghsRoute: ShemaghsRoute,
-  V1Route: V1Route,
   V2Route: V2Route,
 }
 export const routeTree = rootRouteImport
