@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { Check, Star, ShoppingBag, Truck } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { TrustBar } from "@/components/brand/TrustBar";
 import { StickyBuy } from "@/components/brand/StickyBuy";
+import { useCart } from "@/lib/cart";
 import hero from "@/assets/hero-shemagh.jpg";
 
 export const Route = createFileRoute("/shemaghs")({
