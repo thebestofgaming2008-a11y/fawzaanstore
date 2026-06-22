@@ -44,7 +44,8 @@
   --color-gold-soft: var(--gold-soft);
 
   --font-display: "Cormorant Garamond", "Cormorant", Georgia, serif;
-  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-body: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-arabic: "Amiri", "Cormorant Garamond", serif;
 
   --shadow-soft: 0 4px 20px -8px rgb(0 0 0 / 0.18);
