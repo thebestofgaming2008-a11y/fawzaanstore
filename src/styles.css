@@ -44,7 +44,8 @@
   --color-gold-soft: var(--gold-soft);
 
   --font-display: "Cormorant Garamond", "Cormorant", Georgia, serif;
-  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-body: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-arabic: "Amiri", "Cormorant Garamond", serif;
 
   --shadow-soft: 0 4px 20px -8px rgb(0 0 0 / 0.18);
@@ -112,11 +113,16 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
-    font-feature-settings: "ss01", "cv01";
+    font-feature-settings: "ss01", "cv01", "liga";
   }
-  h1, h2, h3, h4, .font-display { font-family: var(--font-display); letter-spacing: -0.01em; }
+  h1, h2, h3, h4, .font-display { font-family: var(--font-display); letter-spacing: -0.015em; font-weight: 500; }
   .font-arabic { font-family: var(--font-arabic); }
+  .font-sans-ui { font-family: var(--font-sans); }
+  /* Shopify-like small UI text uses Inter for legibility */
+  button, input, select, textarea, .eyebrow, nav a, .ui-text { font-family: var(--font-sans); }
 }
 
 @layer utilities {

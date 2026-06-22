@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Truck, ShieldCheck, RotateCcw, Lock } from "lucide-react";
+import { ArrowRight, Truck, ShieldCheck, RotateCcw, Lock, Star } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductRail } from "@/components/brand/ProductRail";
@@ -11,18 +11,18 @@ import honey from "@/assets/hero-honey.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Fawzaan.store — Shemaghs, Niqabs, Gloves & Pure Sidr Honey" },
-      { name: "description", content: "Heritage essentials, quietly bold. Hand-loomed shemaghs, whisper-soft niqabs, leather gloves and raw Sidr honey." },
+      { title: "Fawzaan Store — Shemaghs, Niqabs, Gloves & Pure Sidr Honey" },
+      { name: "description", content: "Heritage essentials, quietly bold. Hand-loomed shemaghs, niqabs, leather gloves and raw Sidr honey." },
     ],
   }),
   component: Home,
 });
 
-const tiles = [
-  { to: "/shemaghs" as const, name: "Shemaghs", from: "$39", img: shemagh },
-  { to: "/niqabs"   as const, name: "Niqabs",   from: "$29", img: niqab },
-  { to: "/gloves"   as const, name: "Gloves",   from: "$48", img: gloves },
-  { to: "/honey"    as const, name: "Honey",    from: "$28", img: honey },
+const collections = [
+  { to: "/shemaghs" as const, name: "Shemaghs", count: "12 styles", img: shemagh },
+  { to: "/niqabs" as const, name: "Niqabs", count: "9 styles", img: niqab },
+  { to: "/gloves" as const, name: "Gloves", count: "6 styles", img: gloves },
+  { to: "/honey" as const, name: "Sidr Honey", count: "3 grades", img: honey },
 ];
 
 function Home() {
@@ -30,76 +30,160 @@ function Home() {
     <div className="min-h-screen bg-ivory text-ink">
       <SiteHeader />
 
-      {/* Cinematic hero — light themed in brand gold */}
-      <section className="relative h-[88vh] min-h-[560px] w-full overflow-hidden">
-        <img
-          src={shemagh}
-          alt="Hand-loomed shemagh on mannequin"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-ivory/40 via-ivory/10 to-ivory" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ivory/80 via-ivory/30 to-transparent" />
+      {/* HERO — full bleed, single product focus, Shopify-style */}
+      <section className="relative w-full overflow-hidden bg-cream">
+        <div className="relative h-[78vh] min-h-[540px] md:h-[86vh]">
+          <img
+            src={shemagh}
+            alt="Hand-loomed shemagh draped on a studio mannequin"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-transparent md:bg-gradient-to-r md:from-ink/55 md:via-ink/15 md:to-transparent" />
 
-        <div className="relative z-10 mx-auto max-w-7xl h-full px-5 md:px-8 flex flex-col justify-end pb-14 md:pb-20">
-          <p className="eyebrow text-gold-deep">Heritage Essentials</p>
-          <h1 className="mt-3 font-display text-6xl sm:text-7xl md:text-[8rem] leading-[0.9] italic text-ink text-balance max-w-4xl">
-            Quietly bold.
-          </h1>
-          <p className="mt-4 max-w-md text-ink/70 text-base md:text-lg">
-            Loomed by hand. Worn for life.
-          </p>
-          <div className="mt-7 flex items-center gap-3">
+          <div className="relative z-10 mx-auto max-w-7xl h-full px-5 md:px-8 flex flex-col justify-end pb-12 md:pb-20">
+            <p className="eyebrow text-gold-soft">New Arrivals · Winter Weave</p>
+            <h1 className="mt-3 font-display text-5xl sm:text-6xl md:text-8xl leading-[0.95] text-ivory max-w-3xl">
+              Heritage,<br/>quietly woven.
+            </h1>
+            <div className="mt-7 flex items-center gap-3">
+              <Link
+                to="/shemaghs"
+                className="inline-flex items-center justify-center rounded-none bg-ivory text-ink px-7 py-3.5 text-[13px] font-semibold uppercase tracking-[0.18em] hover:bg-gold transition"
+              >
+                Shop the collection
+              </Link>
+              <Link
+                to="/honey"
+                className="hidden sm:inline-flex items-center gap-1.5 text-ivory text-[13px] font-semibold uppercase tracking-[0.18em] border-b border-ivory/60 pb-0.5 hover:text-gold hover:border-gold"
+              >
+                New honey <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Value bar — Shopify classic */}
+      <section className="border-b border-border bg-ivory">
+        <div className="mx-auto max-w-7xl px-5 md:px-8 py-5 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-3">
+          {[
+            { Icon: Truck, t: "Free shipping", s: "On orders $75+" },
+            { Icon: RotateCcw, t: "Easy returns", s: "30 days, no questions" },
+            { Icon: ShieldCheck, t: "Authentic", s: "Sourced direct" },
+            { Icon: Lock, t: "Secure checkout", s: "256-bit SSL" },
+          ].map(({ Icon, t, s }) => (
+            <div key={t} className="flex items-center gap-3">
+              <Icon className="h-5 w-5 text-gold-deep shrink-0" />
+              <div className="leading-tight">
+                <p className="text-[12px] font-semibold uppercase tracking-wider text-ink">{t}</p>
+                <p className="text-[11px] text-muted-foreground">{s}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Collections — Shop by category */}
+      <section className="mx-auto max-w-7xl px-5 md:px-8 pt-14 md:pt-24 pb-4">
+        <div className="text-center mb-8 md:mb-12">
+          <p className="eyebrow text-gold-deep">Our Edit</p>
+          <h2 className="font-display text-4xl md:text-5xl mt-2">Shop by collection</h2>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+          {collections.map((c) => (
+            <Link key={c.to} to={c.to} className="group block">
+              <div className="relative aspect-[3/4] overflow-hidden bg-cream">
+                <img
+                  src={c.img}
+                  alt={c.name}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/65 to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 text-ivory">
+                  <p className="font-display text-2xl md:text-3xl leading-tight">{c.name}</p>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-ivory/80 mt-1">{c.count}</p>
+                </div>
+              </div>
+              <p className="mt-3 text-[12px] uppercase tracking-[0.2em] text-ink/70 inline-flex items-center gap-1 group-hover:text-gold-deep">
+                Shop now <ArrowRight className="h-3 w-3" />
+              </p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Featured products */}
+      <ProductRail heading="Featured pieces" />
+
+      {/* Editorial split — story */}
+      <section className="bg-cream">
+        <div className="mx-auto max-w-7xl px-5 md:px-8 py-16 md:py-24 grid md:grid-cols-2 gap-8 md:gap-14 items-center">
+          <div className="relative aspect-[4/5] overflow-hidden order-2 md:order-1">
+            <img src={niqab} alt="Niqab styling, studio shot" className="absolute inset-0 h-full w-full object-cover" />
+          </div>
+          <div className="order-1 md:order-2">
+            <p className="eyebrow text-gold-deep">Our craft</p>
+            <h2 className="font-display text-4xl md:text-5xl mt-3 leading-tight">
+              Made slowly,<br/>worn for years.
+            </h2>
+            <p className="mt-5 text-lg text-ink/75 max-w-md">
+              Every piece is loomed, stitched and inspected in small batches. No mass production — just patient hands and honest materials.
+            </p>
             <Link
               to="/shemaghs"
-              className="inline-flex items-center gap-2 rounded-full bg-ink text-ivory px-7 py-3.5 text-sm font-semibold hover:bg-ink/85 transition shadow-soft"
+              className="mt-7 inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.18em] text-ink border-b border-ink pb-1 hover:text-gold-deep hover:border-gold-deep"
             >
-              Shop the edit <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link to="/honey" className="text-sm font-semibold text-ink underline underline-offset-4 decoration-gold">
-              New honey
+              Discover the craft <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* 4 category tiles — Shopify-style with price-from */}
-      <section className="mx-auto max-w-7xl px-5 md:px-8 pt-12 md:pt-20 pb-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
-          {tiles.map((t) => (
-            <Link key={t.to} to={t.to} className="group relative aspect-[3/4] overflow-hidden rounded-sm bg-cream">
-              <img
-                src={t.img}
-                alt={t.name}
-                loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-all duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ivory/90 via-ivory/10 to-transparent" />
-              <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
-                <span className="font-display text-xl md:text-2xl text-ink leading-none">{t.name}</span>
-                <span className="text-xs font-semibold text-gold-deep">from {t.from}</span>
+      {/* Reviews — Shopify-style social proof */}
+      <section className="mx-auto max-w-7xl px-5 md:px-8 py-16 md:py-24">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-1 text-gold">
+            {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-gold" />)}
+          </div>
+          <p className="mt-2 text-[12px] uppercase tracking-[0.2em] text-ink/70">Rated 4.9 · 1,200+ reviews</p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-5">
+          {[
+            { q: "The shemagh quality is unreal. Heavy, soft, drapes perfectly.", a: "Yusuf A.", p: "Classic Shemagh" },
+            { q: "Best niqab I've owned. Breathable and the stitching is flawless.", a: "Maryam K.", p: "Premium Niqab" },
+            { q: "This honey tastes like the ones my grandmother brought from Yemen.", a: "Ahmed S.", p: "Raw Sidr Honey" },
+          ].map((r) => (
+            <figure key={r.a} className="border border-border p-6 bg-ivory">
+              <div className="flex gap-0.5 text-gold mb-3">
+                {[...Array(5)].map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-gold" />)}
               </div>
-            </Link>
+              <blockquote className="font-display text-xl leading-snug text-ink">"{r.q}"</blockquote>
+              <figcaption className="mt-4 text-[12px] uppercase tracking-wider text-ink/60">
+                {r.a} · <span className="text-gold-deep">{r.p}</span>
+              </figcaption>
+            </figure>
           ))}
         </div>
       </section>
 
-      {/* Product rail with quick-add */}
-      <ProductRail heading="Featured" />
-
-      {/* Trust strip */}
-      <section className="bg-cream border-y border-border">
-        <div className="mx-auto max-w-7xl px-5 md:px-8 py-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { Icon: Truck, t: "Free shipping $75+" },
-            { Icon: RotateCcw, t: "30-day returns" },
-            { Icon: ShieldCheck, t: "Authentic guarantee" },
-            { Icon: Lock, t: "Secure checkout" },
-          ].map(({ Icon, t }) => (
-            <div key={t} className="flex items-center gap-2 justify-center md:justify-start">
-              <Icon className="h-4 w-4 text-gold-deep" />
-              <p className="eyebrow text-ink/70">{t}</p>
-            </div>
-          ))}
+      {/* Newsletter */}
+      <section className="bg-ink text-ivory">
+        <div className="mx-auto max-w-3xl px-5 md:px-8 py-16 md:py-20 text-center">
+          <p className="eyebrow text-gold">Join the list</p>
+          <h2 className="font-display text-4xl md:text-5xl mt-3">Early access, no noise.</h2>
+          <p className="mt-3 text-ivory/70">New drops, restocks and the occasional 10% off — straight to your inbox.</p>
+          <form className="mt-7 flex flex-col sm:flex-row gap-2 max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
+            <input
+              type="email"
+              required
+              placeholder="your@email.com"
+              className="flex-1 bg-transparent border border-ivory/30 px-4 py-3 text-sm text-ivory placeholder:text-ivory/40 focus:outline-none focus:border-gold"
+            />
+            <button className="bg-gold text-ink px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.18em] hover:bg-ivory transition">
+              Subscribe
+            </button>
+          </form>
         </div>
       </section>
 
