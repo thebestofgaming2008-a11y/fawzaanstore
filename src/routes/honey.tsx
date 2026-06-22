@@ -4,14 +4,15 @@ import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { TrustBar } from "@/components/brand/TrustBar";
 import { StickyBuy } from "@/components/brand/StickyBuy";
+import { useCart } from "@/lib/cart";
 import hero from "@/assets/hero-honey.jpg";
 
 export const Route = createFileRoute("/honey")({
   head: () => ({
     meta: [
-      { title: "Raw Sidr Honey — Unfiltered & Pure | Fawzaan Store" },
+      { title: "Raw Sidr Honey — Unfiltered & Pure | Fawzaan.store" },
       { name: "description", content: "Single-origin raw honey from highland beekeepers. Unheated, unfiltered, lab-tested pure. Free shipping over $75." },
-      { property: "og:title", content: "Raw Honey — Fawzaan Store" },
+      { property: "og:title", content: "Raw Honey — Fawzaan.store" },
       { property: "og:description", content: "Single-origin raw honey, unheated & unfiltered." },
       { property: "og:image", content: hero },
       { name: "twitter:image", content: hero },
@@ -20,15 +21,24 @@ export const Route = createFileRoute("/honey")({
   component: HoneyPage,
 });
 
+const jars = [
+  { id: "wildflower", name: "Wildflower Honey", origin: "Anatolian plateau", size: "350g", price: 18 },
+  { id: "sidr",       name: "Sidr Honey",       origin: "Yemeni highlands", size: "250g", price: 54, badge: "Rare" },
+  { id: "blackseed",  name: "Black Seed Honey", origin: "Atlas mountains",  size: "300g", price: 32 },
+];
+
 function HoneyPage() {
+  const { add } = useCart();
+  const addJar = (j: typeof jars[number]) =>
+    add({ id: `honey-${j.id}`, name: j.name, variant: j.size, price: j.price, img: hero });
+  const featured = jars[0];
+
   return (
     <div className="min-h-screen bg-ivory text-ink pb-20 md:pb-0">
       <SiteHeader />
 
-      {/* BENTO HERO */}
       <section className="mx-auto max-w-7xl px-5 md:px-8 pt-8 md:pt-12 pb-12 md:pb-16">
         <div className="grid grid-cols-6 grid-rows-[auto_auto] md:grid-rows-2 gap-3 md:gap-4 md:h-[640px]">
-          {/* main image */}
           <div className="col-span-6 md:col-span-4 row-span-2 relative rounded-sm overflow-hidden bg-cream aspect-[4/3] md:aspect-auto">
             <img src={hero} alt="Raw honey with honeycomb" width={1536} height={1024} className="absolute inset-0 h-full w-full object-cover" />
             <div className="absolute bottom-0 inset-x-0 p-6 md:p-10 bg-gradient-to-t from-ink/85 to-transparent text-ivory">
@@ -39,7 +49,6 @@ function HoneyPage() {
             </div>
           </div>
 
-          {/* Highlight 1 */}
           <div className="col-span-3 md:col-span-2 rounded-sm bg-gradient-to-br from-gold-soft/60 to-gold/30 p-5 md:p-7 flex flex-col justify-between min-h-[180px]">
             <Leaf className="h-6 w-6 text-gold-deep" />
             <div>
@@ -48,7 +57,6 @@ function HoneyPage() {
             </div>
           </div>
 
-          {/* Highlight 2 */}
           <div className="col-span-3 md:col-span-2 rounded-sm bg-ink text-ivory p-5 md:p-7 flex flex-col justify-between min-h-[180px]">
             <Award className="h-6 w-6 text-gold" />
             <div>
@@ -58,7 +66,6 @@ function HoneyPage() {
           </div>
         </div>
 
-        {/* CTA bar */}
         <div className="mt-8 md:mt-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <p className="text-sm text-ink/60">From highland apiaries, in your kitchen in 3 days.</p>
@@ -67,7 +74,7 @@ function HoneyPage() {
               <span className="text-sm text-ink/70">4.9 · 640 reviews</span>
             </div>
           </div>
-          <button className="hidden md:inline-flex items-center justify-center gap-2 rounded-full bg-ink text-ivory px-7 py-4 font-semibold hover:bg-ink/85 shadow-elegant transition">
+          <button onClick={() => addJar(featured)} className="hidden md:inline-flex items-center justify-center gap-2 rounded-full bg-ink text-ivory px-7 py-4 font-semibold hover:bg-ink/85 shadow-elegant transition">
             <ShoppingBag className="h-4 w-4" /> Shop honey — from $18
           </button>
         </div>
@@ -75,19 +82,14 @@ function HoneyPage() {
 
       <TrustBar />
 
-      {/* JARS */}
       <section className="mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
         <div className="text-center">
           <p className="eyebrow text-gold-deep">The collection</p>
           <h2 className="mt-2 font-display text-3xl md:text-5xl">Three jars. Three altitudes.</h2>
         </div>
         <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {[
-            { name: "Wildflower Honey", origin: "Anatolian plateau", size: "350g", price: "$18" },
-            { name: "Sidr Honey", origin: "Yemeni highlands", size: "250g", price: "$54", badge: "Rare" },
-            { name: "Black Seed Honey", origin: "Atlas mountains", size: "300g", price: "$32" },
-          ].map((j) => (
-            <article key={j.name} className="group relative rounded-sm border border-border bg-card p-7 hover:border-gold hover:shadow-soft transition">
+          {jars.map((j) => (
+            <article key={j.id} className="group relative rounded-sm border border-border bg-card p-7 hover:border-gold hover:shadow-soft transition">
               {j.badge && <span className="absolute top-5 right-5 bg-ink text-gold text-[10px] uppercase tracking-wider px-2 py-1 rounded">{j.badge}</span>}
               <div className="aspect-square rounded-sm bg-gradient-to-br from-gold-soft/40 to-gold/20 flex items-center justify-center text-7xl">
                 🍯
@@ -95,9 +97,9 @@ function HoneyPage() {
               <h3 className="mt-5 font-display text-2xl">{j.name}</h3>
               <p className="mt-1 flex items-center gap-1 text-xs text-ink/60"><MapPin className="h-3 w-3" /> {j.origin} · {j.size}</p>
               <div className="mt-5 flex items-center justify-between">
-                <span className="font-display text-2xl text-gold-deep">{j.price}</span>
-                <button className="rounded-full bg-ink text-ivory px-4 py-2 text-xs font-semibold hover:bg-ink/85 transition">
-                  Add to cart
+                <span className="font-display text-2xl text-gold-deep">${j.price}</span>
+                <button onClick={() => addJar(j)} className="inline-flex items-center gap-1.5 rounded-full bg-ink text-ivory px-4 py-2 text-xs font-semibold hover:bg-ink/85 transition">
+                  <ShoppingBag className="h-3.5 w-3.5" /> Add
                 </button>
               </div>
             </article>
@@ -105,7 +107,6 @@ function HoneyPage() {
         </div>
       </section>
 
-      {/* PROVENANCE */}
       <section className="bg-gradient-to-b from-cream to-ivory py-20 md:py-28">
         <div className="mx-auto max-w-4xl px-5 md:px-8 text-center">
           <p className="font-arabic text-3xl text-gold-deep">عسل</p>
@@ -121,7 +122,7 @@ function HoneyPage() {
       </section>
 
       <SiteFooter />
-      <StickyBuy price="$18" />
+      <StickyBuy price="$18" onAdd={() => addJar(featured)} />
     </div>
   );
 }
