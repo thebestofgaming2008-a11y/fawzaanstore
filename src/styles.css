@@ -4,9 +4,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Fawzaan Store — luxury Arabian brand system
- * Palette: ink black, ivory cream, antique gold
- * Type: Cormorant Garamond (display), Inter (body), Amiri (arabic accents)
+/* Fawzaan Store — official brand palette
+ * Gold #F4B400 · Gold Soft #FFDE80 · Ink #000 · Ivory #FFF
+ * Display: Cormorant Garamond · Body: Inter · Arabic: Amiri
  */
 
 @theme inline {
@@ -47,62 +47,62 @@
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
   --font-arabic: "Amiri", "Cormorant Garamond", serif;
 
-  --shadow-soft: 0 4px 20px -8px color-mix(in oklab, var(--ink) 20%, transparent);
-  --shadow-elegant: 0 20px 60px -20px color-mix(in oklab, var(--ink) 35%, transparent);
-  --shadow-gold: 0 12px 40px -12px color-mix(in oklab, var(--gold) 40%, transparent);
+  --shadow-soft: 0 4px 20px -8px rgb(0 0 0 / 0.18);
+  --shadow-elegant: 0 20px 60px -20px rgb(0 0 0 / 0.30);
+  --shadow-gold: 0 12px 40px -12px rgb(244 180 0 / 0.45);
 
-  --gradient-gold: linear-gradient(135deg, oklch(0.78 0.16 85), oklch(0.62 0.15 78));
-  --gradient-ink: linear-gradient(180deg, oklch(0.22 0.02 70), oklch(0.10 0.01 70));
-  --gradient-cream: linear-gradient(180deg, oklch(0.985 0.018 88), oklch(0.95 0.03 85));
+  --gradient-gold: linear-gradient(135deg, #FFDE80, #F4B400);
+  --gradient-ink: linear-gradient(180deg, #1a1a1a, #000000);
+  --gradient-cream: linear-gradient(180deg, #FFFFFF, #FAF8F2);
 }
 
 :root {
   --radius: 0.25rem;
 
-  /* Brand palette — sampled from logo: mustard amber gold #d2a51e on ivory */
-  --ivory: oklch(0.985 0.018 88);
-  --cream: oklch(0.95 0.03 85);
-  --ink: oklch(0.18 0.015 70);
-  --gold: oklch(0.74 0.16 85);
-  --gold-deep: oklch(0.62 0.15 78);
-  --gold-soft: oklch(0.88 0.09 88);
+  /* Official client palette */
+  --ivory: #FFFFFF;
+  --cream: #FAF8F2;
+  --ink: #000000;
+  --gold: #F4B400;
+  --gold-deep: #C99700;
+  --gold-soft: #FFDE80;
 
   --background: var(--ivory);
   --foreground: var(--ink);
-  --card: oklch(1 0 0);
+  --card: #FFFFFF;
   --card-foreground: var(--ink);
-  --popover: oklch(1 0 0);
+  --popover: #FFFFFF;
   --popover-foreground: var(--ink);
   --primary: var(--ink);
   --primary-foreground: var(--ivory);
   --secondary: var(--cream);
   --secondary-foreground: var(--ink);
   --muted: var(--cream);
-  --muted-foreground: oklch(0.45 0.01 60);
+  --muted-foreground: #6b6b6b;
   --accent: var(--gold);
   --accent-foreground: var(--ink);
-  --destructive: oklch(0.55 0.22 27);
+  --destructive: #c2330c;
   --destructive-foreground: var(--ivory);
-  --border: oklch(0.9 0.015 80);
-  --input: oklch(0.9 0.015 80);
+  --border: #ebe7da;
+  --input: #ebe7da;
   --ring: var(--gold);
 }
 
 .dark {
   --background: var(--ink);
   --foreground: var(--ivory);
-  --card: oklch(0.22 0.01 60);
+  --card: #111111;
   --card-foreground: var(--ivory);
   --primary: var(--gold);
   --primary-foreground: var(--ink);
-  --secondary: oklch(0.25 0.01 60);
+  --secondary: #1a1a1a;
   --secondary-foreground: var(--ivory);
-  --muted: oklch(0.22 0.01 60);
-  --muted-foreground: oklch(0.7 0.02 70);
+  --muted: #1a1a1a;
+  --muted-foreground: #a8a8a8;
   --accent: var(--gold);
   --accent-foreground: var(--ink);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
+  --border: rgb(255 255 255 / 0.12);
+  --input: rgb(255 255 255 / 0.15);
 }
 
 @layer base {
@@ -129,6 +129,8 @@
   .shadow-gold { box-shadow: var(--shadow-gold); }
   .text-gold { color: var(--gold-deep); }
   .border-gold { border-color: var(--gold); }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { scrollbar-width: none; }
 
   .eyebrow {
     font-size: 0.7rem;
@@ -153,15 +155,27 @@
 }
 .animate-fade-up { animation: fadeUp 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.animate-slide-in-right { animation: slideInRight 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 .shimmer-gold {
-  background: linear-gradient(90deg, var(--gold-deep) 0%, var(--gold) 25%, var(--gold-soft) 50%, var(--gold) 75%, var(--gold-deep) 100%);
+  background: linear-gradient(90deg, #C99700 0%, #F4B400 25%, #FFDE80 50%, #F4B400 75%, #C99700 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   animation: shimmer 6s linear infinite;
 }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 30s linear infinite; }
