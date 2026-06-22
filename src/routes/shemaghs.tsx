@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, Star, ShoppingBag, Truck } from "lucide-react";
+import { Check, Star, ShoppingBag, Truck, Minus, Plus } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { TrustBar } from "@/components/brand/TrustBar";
@@ -11,9 +11,9 @@ import hero from "@/assets/hero-shemagh.jpg";
 export const Route = createFileRoute("/shemaghs")({
   head: () => ({
     meta: [
-      { title: "Premium Shemaghs — Authentic Keffiyeh | Fawzaan Store" },
+      { title: "Premium Shemaghs — Authentic Keffiyeh | Fawzaan.store" },
       { name: "description", content: "Hand-woven shemaghs in heritage patterns. 100% cotton, fringed by hand. Ships worldwide in 48 hours." },
-      { property: "og:title", content: "Premium Shemaghs — Fawzaan Store" },
+      { property: "og:title", content: "Premium Shemaghs — Fawzaan.store" },
       { property: "og:description", content: "Hand-woven keffiyeh in heritage patterns. 100% cotton." },
       { property: "og:image", content: hero },
       { name: "twitter:image", content: hero },
@@ -30,11 +30,17 @@ const reviews = [
 ];
 
 function ShemaghPage() {
+  const { add } = useCart();
+  const [color, setColor] = useState(colors[0]);
+  const [qty, setQty] = useState(1);
+  const price = 39;
+  const handleAdd = () =>
+    add({ id: `shemagh-${color}`, name: "Classic Shemagh", variant: color, price, img: hero, qty });
+
   return (
     <div className="min-h-screen bg-ivory text-ink pb-20 md:pb-0">
       <SiteHeader />
 
-      {/* EDITORIAL HERO — split */}
       <section className="grid md:grid-cols-2 gap-0">
         <div className="relative aspect-square md:aspect-auto md:min-h-[640px] order-1">
           <img src={hero} alt="Hand-woven shemagh" width={1536} height={1024} className="absolute inset-0 h-full w-full object-cover" />
@@ -58,23 +64,36 @@ function ShemaghPage() {
           </div>
 
           <div className="mt-7">
-            <p className="text-xs uppercase tracking-wider text-ink/50 mb-2">Color</p>
+            <p className="text-xs uppercase tracking-wider text-ink/50 mb-2">Color · {color}</p>
             <div className="flex flex-wrap gap-2">
-              {colors.map((c, i) => (
-                <button key={c} className={`px-3 py-1.5 text-xs rounded-full border ${i === 0 ? "bg-ink text-ivory border-ink" : "border-border hover:border-gold"}`}>
+              {colors.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setColor(c)}
+                  className={`px-3 py-1.5 text-xs rounded-full border transition ${c === color ? "bg-ink text-ivory border-ink" : "border-border hover:border-gold"}`}
+                >
                   {c}
                 </button>
               ))}
             </div>
           </div>
 
+          <div className="mt-5">
+            <p className="text-xs uppercase tracking-wider text-ink/50 mb-2">Quantity</p>
+            <div className="inline-flex items-center border border-border rounded-full">
+              <button aria-label="Decrease" onClick={() => setQty((q) => Math.max(1, q - 1))} className="p-2.5 hover:text-gold-deep"><Minus className="h-3.5 w-3.5" /></button>
+              <span className="w-10 text-center text-sm">{qty}</span>
+              <button aria-label="Increase" onClick={() => setQty((q) => q + 1)} className="p-2.5 hover:text-gold-deep"><Plus className="h-3.5 w-3.5" /></button>
+            </div>
+          </div>
+
           <div className="mt-8 flex items-baseline gap-3">
-            <span className="font-display text-4xl">$39</span>
-            <span className="text-ink/40 line-through">$56</span>
+            <span className="font-display text-4xl">${price * qty}</span>
+            <span className="text-ink/40 line-through">${56 * qty}</span>
             <span className="text-xs bg-gold-soft/60 text-gold-deep px-2 py-1 rounded">Save 30%</span>
           </div>
 
-          <button className="mt-6 hidden md:inline-flex items-center justify-center gap-2 rounded-full bg-ink text-ivory px-8 py-4 font-semibold hover:bg-ink/85 shadow-elegant transition">
+          <button onClick={handleAdd} className="mt-6 hidden md:inline-flex items-center justify-center gap-2 rounded-full bg-ink text-ivory px-8 py-4 font-semibold hover:bg-ink/85 shadow-elegant transition">
             <ShoppingBag className="h-4 w-4" /> Add to cart
           </button>
 
@@ -86,7 +105,6 @@ function ShemaghPage() {
 
       <TrustBar tone="ink" />
 
-      {/* FEATURE GRID */}
       <section className="mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
         <p className="eyebrow text-gold-deep text-center">Why it's different</p>
         <h2 className="mt-2 font-display text-3xl md:text-5xl text-center text-balance">A scarf, made the old way.</h2>
@@ -105,7 +123,6 @@ function ShemaghPage() {
         </div>
       </section>
 
-      {/* REVIEWS */}
       <section className="bg-cream py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-5 md:px-8">
           <div className="text-center">
@@ -124,17 +141,16 @@ function ShemaghPage() {
         </div>
       </section>
 
-      {/* FINAL CTA */}
       <section className="bg-gradient-ink text-ivory py-20 md:py-28 text-center px-5">
         <p className="eyebrow text-gold">Limited winter run</p>
         <h2 className="mt-3 font-display text-4xl md:text-6xl text-balance">Wear it once, you'll understand.</h2>
-        <button className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold text-ink px-8 py-4 font-semibold hover:bg-gold-soft shadow-gold transition">
-          Shop the shemagh — $39 <ShoppingBag className="h-4 w-4" />
+        <button onClick={handleAdd} className="mt-8 inline-flex items-center gap-2 rounded-full bg-gold text-ink px-8 py-4 font-semibold hover:bg-gold-soft shadow-gold transition">
+          Shop the shemagh — ${price} <ShoppingBag className="h-4 w-4" />
         </button>
       </section>
 
       <SiteFooter />
-      <StickyBuy price="$39" />
+      <StickyBuy price={`$${price * qty}`} onAdd={handleAdd} />
     </div>
   );
 }
