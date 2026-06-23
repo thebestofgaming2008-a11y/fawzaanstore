@@ -9,12 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WomenRouteImport } from './routes/women'
 import { Route as ShemaghsRouteImport } from './routes/shemaghs'
 import { Route as NiqabsRouteImport } from './routes/niqabs'
+import { Route as MenRouteImport } from './routes/men'
 import { Route as HoneyRouteImport } from './routes/honey'
 import { Route as GlovesRouteImport } from './routes/gloves'
 import { Route as IndexRouteImport } from './routes/index'
 
+const WomenRoute = WomenRouteImport.update({
+  id: '/women',
+  path: '/women',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShemaghsRoute = ShemaghsRouteImport.update({
   id: '/shemaghs',
   path: '/shemaghs',
@@ -23,6 +30,11 @@ const ShemaghsRoute = ShemaghsRouteImport.update({
 const NiqabsRoute = NiqabsRouteImport.update({
   id: '/niqabs',
   path: '/niqabs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenRoute = MenRouteImport.update({
+  id: '/men',
+  path: '/men',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HoneyRoute = HoneyRouteImport.update({
@@ -45,42 +57,72 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
+  '/men': typeof MenRoute
   '/niqabs': typeof NiqabsRoute
   '/shemaghs': typeof ShemaghsRoute
+  '/women': typeof WomenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
+  '/men': typeof MenRoute
   '/niqabs': typeof NiqabsRoute
   '/shemaghs': typeof ShemaghsRoute
+  '/women': typeof WomenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
+  '/men': typeof MenRoute
   '/niqabs': typeof NiqabsRoute
   '/shemaghs': typeof ShemaghsRoute
+  '/women': typeof WomenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs'
+  fullPaths:
+    | '/'
+    | '/gloves'
+    | '/honey'
+    | '/men'
+    | '/niqabs'
+    | '/shemaghs'
+    | '/women'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs'
-  id: '__root__' | '/' | '/gloves' | '/honey' | '/niqabs' | '/shemaghs'
+  to: '/' | '/gloves' | '/honey' | '/men' | '/niqabs' | '/shemaghs' | '/women'
+  id:
+    | '__root__'
+    | '/'
+    | '/gloves'
+    | '/honey'
+    | '/men'
+    | '/niqabs'
+    | '/shemaghs'
+    | '/women'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GlovesRoute: typeof GlovesRoute
   HoneyRoute: typeof HoneyRoute
+  MenRoute: typeof MenRoute
   NiqabsRoute: typeof NiqabsRoute
   ShemaghsRoute: typeof ShemaghsRoute
+  WomenRoute: typeof WomenRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/women': {
+      id: '/women'
+      path: '/women'
+      fullPath: '/women'
+      preLoaderRoute: typeof WomenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shemaghs': {
       id: '/shemaghs'
       path: '/shemaghs'
@@ -93,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/niqabs'
       fullPath: '/niqabs'
       preLoaderRoute: typeof NiqabsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/men': {
+      id: '/men'
+      path: '/men'
+      fullPath: '/men'
+      preLoaderRoute: typeof MenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/honey': {
@@ -123,8 +172,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GlovesRoute: GlovesRoute,
   HoneyRoute: HoneyRoute,
+  MenRoute: MenRoute,
   NiqabsRoute: NiqabsRoute,
   ShemaghsRoute: ShemaghsRoute,
+  WomenRoute: WomenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
