@@ -21,15 +21,15 @@ export const Route = createFileRoute("/")({
 });
 
 const tabs = [
-  { key: "shemaghs", label: "Shemaghs", to: "/shemaghs" as const },
-  { key: "niqabs", label: "Niqabs", to: "/niqabs" as const },
-];
+  { key: "women", label: "Women", to: "/women" as const, filter: ["/niqabs"] },
+  { key: "men", label: "Men", to: "/men" as const, filter: ["/shemaghs", "/gloves"] },
+] as const;
 
 function Home() {
   const { add } = useCart();
-  const [tab, setTab] = useState<"shemaghs" | "niqabs">("shemaghs");
-  const filtered = products.filter((p) => p.to === `/${tab}`).slice(0, 4);
-  // ensure 4 cards always
+  const [tab, setTab] = useState<"women" | "men">("women");
+  const active = tabs.find((t) => t.key === tab)!;
+  const filtered = products.filter((p) => (active.filter as readonly string[]).includes(p.to));
   const display = [...filtered, ...products.filter((p) => !filtered.includes(p))].slice(0, 4);
 
   return (
@@ -41,7 +41,7 @@ function Home() {
         <div className="relative h-[88vh] min-h-[600px]">
           <img
             src={shemagh}
-            alt="Hand-loomed shemagh on mannequin"
+            alt="Heritage collection on mannequin"
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-ink/20" />
@@ -54,22 +54,21 @@ function Home() {
               </h1>
               <div className="mt-6 flex items-center justify-center gap-0">
                 <Link
-                  to="/shemaghs"
+                  to="/women"
                   className="bg-ivory text-ink px-8 py-3 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold transition"
                 >
-                  Shemaghs
+                  Women
                 </Link>
                 <Link
-                  to="/niqabs"
+                  to="/men"
                   className="bg-ink text-ivory px-8 py-3 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition"
                 >
-                  Niqabs
+                  Men
                 </Link>
               </div>
             </div>
           </div>
 
-          {/* scroll dot */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
             <div className="h-9 w-9 rounded-full border border-ivory/70 flex items-center justify-center">
               <span className="h-1.5 w-1.5 rounded-full bg-ivory" />
@@ -86,7 +85,7 @@ function Home() {
             {tabs.map((t) => (
               <button
                 key={t.key}
-                onClick={() => setTab(t.key as "shemaghs" | "niqabs")}
+                onClick={() => setTab(t.key)}
                 className={`font-display text-3xl md:text-4xl pb-1 transition ${
                   tab === t.key ? "text-ink border-b-2 border-gold-deep" : "text-ink/40 hover:text-ink"
                 }`}
@@ -140,10 +139,10 @@ function Home() {
 
         <div className="mt-12 text-center">
           <Link
-            to={tab === "shemaghs" ? "/shemaghs" : "/niqabs"}
+            to={active.to}
             className="inline-flex items-center bg-ink text-ivory px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition"
           >
-            All {tab === "shemaghs" ? "Shemaghs" : "Niqabs"}
+            All {active.label}
           </Link>
         </div>
       </section>

@@ -5,9 +5,8 @@ import logo from "@/assets/fawzaan-logo.png.asset.json";
 import { useCart } from "@/lib/cart";
 
 const nav = [
-  { to: "/shemaghs", label: "Shemaghs" },
-  { to: "/niqabs", label: "Niqabs" },
-  { to: "/gloves", label: "Gloves" },
+  { to: "/women", label: "Women" },
+  { to: "/men", label: "Men" },
   { to: "/honey", label: "Honey" },
 ] as const;
 
