@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight, Plus, Truck, ShieldCheck, Leaf, Scissors } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
-import { products } from "@/components/brand/ProductRail";
+import { ProductRail, products } from "@/components/brand/ProductRail";
 import { useCart } from "@/lib/cart";
 import shemagh from "@/assets/hero-shemagh.jpg";
 import niqab from "@/assets/hero-niqab.jpg";
