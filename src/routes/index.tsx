@@ -154,7 +154,7 @@ function Home() {
           <img src={honey} alt="Raw Sidr honey from origin" className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-ink/55 to-transparent" />
           <div className="relative z-10 h-full mx-auto max-w-7xl px-5 md:px-8 flex items-center">
-            <div className="text-ivory max-w-md">
+            <div className="text-ivory max-w-md animate-fade-in">
               <p className="text-[11px] uppercase tracking-[0.3em] text-ivory/80">The Harvest</p>
               <h2 className="font-display text-4xl md:text-5xl mt-4 leading-tight">
                 Raw Sidr honey,<br/>straight from the hive.
@@ -164,12 +164,51 @@ function Home() {
               </p>
               <Link
                 to="/honey"
-                className="mt-7 inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.22em] border-b border-ivory pb-1 hover:text-gold hover:border-gold"
+                className="mt-7 inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.22em] border-b border-ivory pb-1 transition-colors duration-300 hover:text-gold hover:border-gold"
               >
-                Shop honey <ArrowRight className="h-3.5 w-3.5" />
+                Shop honey <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Honey rail — horizontal browse */}
+      <section className="bg-ivory">
+        <div className="mx-auto max-w-7xl px-5 md:px-8 pt-12 md:pt-16 flex items-end justify-between">
+          <h3 className="font-display text-2xl md:text-3xl text-ink">Shop honey</h3>
+          <Link to="/honey" className="text-[11px] uppercase tracking-[0.22em] text-ink/60 hover:text-ink transition-colors">View all →</Link>
+        </div>
+        <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory">
+          <ul className="flex gap-3 md:gap-4 px-5 md:px-8 py-8 max-w-7xl mx-auto">
+            {[
+              { id: "honey-sidr-250", name: "Sidr 250g", price: 28 },
+              { id: "honey-sidr-500", name: "Sidr 500g", price: 48 },
+              { id: "honey-acacia",   name: "Acacia 250g", price: 22 },
+              { id: "honey-wildflower", name: "Wildflower 250g", price: 20 },
+              { id: "honey-comb",     name: "Honeycomb", price: 34 },
+              { id: "honey-trio",     name: "Tasting Trio", price: 62 },
+            ].map((p) => (
+              <li key={p.id} className="snap-start shrink-0 w-[44vw] sm:w-52 md:w-56 group">
+                <Link to="/honey" className="block">
+                  <div className="relative aspect-square overflow-hidden bg-cream">
+                    <img src={honey} alt={p.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                    <button
+                      aria-label={`Quick add ${p.name}`}
+                      onClick={(e) => { e.preventDefault(); add({ id: p.id, name: p.name, price: p.price, img: honey }); }}
+                      className="absolute bottom-2 right-2 h-8 w-8 rounded-full bg-ivory text-ink shadow-elegant flex items-center justify-center opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-gold"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  <div className="mt-2.5 flex items-center justify-between">
+                    <p className="text-[12px] uppercase tracking-[0.12em] text-ink truncate">{p.name}</p>
+                    <p className="text-[12px] text-ink/70 shrink-0 ml-2">${p.price}</p>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -186,35 +225,35 @@ function Home() {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3 md:gap-4">
           {/* Shemaghs — large feature */}
           <Link to="/shemaghs" className="group relative col-span-2 md:col-span-3 aspect-[4/5] md:aspect-auto md:h-[420px] overflow-hidden bg-cream">
-            <img src={shemagh} alt="Shemaghs" loading="lazy" className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" />
-            <div className="absolute bottom-5 left-5 right-5 text-ivory">
+            <img src={shemagh} alt="Shemaghs" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent transition-opacity duration-500 group-hover:from-ink/80" />
+            <div className="absolute bottom-5 left-5 right-5 text-ivory transition-transform duration-500 group-hover:-translate-y-1">
               <p className="text-[10px] uppercase tracking-[0.3em] text-ivory/80">Signature</p>
               <h3 className="font-display text-3xl md:text-4xl mt-1">Shemaghs</h3>
               <span className="mt-3 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] border-b border-ivory pb-0.5">
-                Shop <ArrowRight className="h-3 w-3" />
+                Shop <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
               </span>
             </div>
           </Link>
 
           {/* Niqabs */}
           <Link to="/niqabs" className="group relative col-span-2 md:col-span-3 aspect-[4/5] md:aspect-auto md:h-[420px] overflow-hidden bg-cream">
-            <img src={niqab} alt="Niqabs" loading="lazy" className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-ink/10 to-transparent" />
-            <div className="absolute bottom-5 left-5 right-5 text-ivory">
+            <img src={niqab} alt="Niqabs" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-ink/10 to-transparent transition-opacity duration-500 group-hover:from-ink/80" />
+            <div className="absolute bottom-5 left-5 right-5 text-ivory transition-transform duration-500 group-hover:-translate-y-1">
               <p className="text-[10px] uppercase tracking-[0.3em] text-ivory/80">For Her</p>
               <h3 className="font-display text-3xl md:text-4xl mt-1">Niqabs</h3>
               <span className="mt-3 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] border-b border-ivory pb-0.5">
-                Shop <ArrowRight className="h-3 w-3" />
+                Shop <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
               </span>
             </div>
           </Link>
 
           {/* Honey */}
           <Link to="/honey" className="group relative col-span-2 md:col-span-2 aspect-square md:aspect-auto md:h-[340px] overflow-hidden bg-cream">
-            <img src={honey} alt="Sidr Honey" loading="lazy" className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <img src={honey} alt="Sidr Honey" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110" />
             <div className="absolute inset-0 bg-gradient-to-t from-ink/65 to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4 text-ivory">
+            <div className="absolute bottom-4 left-4 right-4 text-ivory transition-transform duration-500 group-hover:-translate-y-1">
               <h3 className="font-display text-2xl md:text-3xl">Honey</h3>
               <span className="mt-2 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] border-b border-ivory pb-0.5">Shop</span>
             </div>
@@ -222,9 +261,9 @@ function Home() {
 
           {/* Gloves */}
           <Link to="/gloves" className="group relative col-span-1 md:col-span-2 aspect-square md:aspect-auto md:h-[340px] overflow-hidden bg-cream">
-            <img src={gloves} alt="Gloves" loading="lazy" className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <img src={gloves} alt="Gloves" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110" />
             <div className="absolute inset-0 bg-gradient-to-t from-ink/65 to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4 text-ivory">
+            <div className="absolute bottom-4 left-4 right-4 text-ivory transition-transform duration-500 group-hover:-translate-y-1">
               <h3 className="font-display text-2xl md:text-3xl">Gloves</h3>
               <span className="mt-2 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] border-b border-ivory pb-0.5">Shop</span>
             </div>
@@ -232,9 +271,9 @@ function Home() {
 
           {/* Kufis */}
           <Link to="/men" className="group relative col-span-1 md:col-span-2 aspect-square md:aspect-auto md:h-[340px] overflow-hidden bg-cream">
-            <img src={kufi} alt="Kufis" loading="lazy" className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <img src={kufi} alt="Kufis" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110" />
             <div className="absolute inset-0 bg-gradient-to-t from-ink/65 to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4 text-ivory">
+            <div className="absolute bottom-4 left-4 right-4 text-ivory transition-transform duration-500 group-hover:-translate-y-1">
               <h3 className="font-display text-2xl md:text-3xl">Kufis</h3>
               <span className="mt-2 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] border-b border-ivory pb-0.5">Shop</span>
             </div>
@@ -242,26 +281,22 @@ function Home() {
         </div>
       </section>
 
-      {/* Guarantee section — end of page */}
-      <section className="border-t border-ink/10 bg-cream">
-        <div className="mx-auto max-w-7xl px-5 md:px-8 py-16 md:py-20">
-          <div className="text-center mb-12">
-            <p className="text-[11px] uppercase tracking-[0.3em] text-gold-deep">Our Promise</p>
-            <h2 className="font-display text-3xl md:text-4xl mt-3">The Fawzaan Guarantee</h2>
-          </div>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
+      {/* Guarantee — clean Shopify-style bar */}
+      <section className="border-y border-ink/10 bg-cream">
+        <div className="mx-auto max-w-7xl px-5 md:px-8 py-10 md:py-12">
+          <ul className="grid grid-cols-2 md:grid-cols-4 divide-x divide-ink/10">
             {[
-              { icon: Truck, label: "Free worldwide shipping", sub: "On every order over $80, tracked door to door." },
-              { icon: RotateCcw, label: "30-day returns", sub: "Not in love with it? Send it back, no questions." },
-              { icon: ShieldCheck, label: "Authenticity assured", sub: "Sourced at origin, signed by the maker." },
-              { icon: Lock, label: "Secure checkout", sub: "Encrypted payments — your details stay yours." },
+              { icon: Truck, label: "Free shipping", sub: "On orders over $80" },
+              { icon: RotateCcw, label: "30-day returns", sub: "Easy & no questions" },
+              { icon: ShieldCheck, label: "Authentic", sub: "Sourced at origin" },
+              { icon: Lock, label: "Secure checkout", sub: "Encrypted payments" },
             ].map((v) => (
-              <li key={v.label} className="text-center flex flex-col items-center">
-                <span className="h-12 w-12 rounded-full bg-ivory border border-ink/10 flex items-center justify-center">
-                  <v.icon className="h-5 w-5 text-gold-deep" />
-                </span>
-                <p className="mt-4 text-[12px] uppercase tracking-[0.2em] text-ink">{v.label}</p>
-                <p className="mt-2 text-[13px] text-ink/60 max-w-[230px] leading-relaxed">{v.sub}</p>
+              <li key={v.label} className="flex items-center justify-center gap-3 px-3 py-4 md:py-2 text-center md:text-left">
+                <v.icon className="h-5 w-5 text-gold-deep shrink-0" />
+                <div>
+                  <p className="text-[12px] uppercase tracking-[0.18em] text-ink leading-tight">{v.label}</p>
+                  <p className="text-[11px] text-ink/55 mt-0.5">{v.sub}</p>
+                </div>
               </li>
             ))}
           </ul>
