@@ -1,14 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowRight, Plus, Truck, ShieldCheck, Leaf, Scissors } from "lucide-react";
+import { ArrowRight, Plus, Truck, ShieldCheck, RotateCcw, Lock } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
-import { ProductRail, products } from "@/components/brand/ProductRail";
+import { products } from "@/components/brand/ProductRail";
 import { useCart } from "@/lib/cart";
 import shemagh from "@/assets/hero-shemagh.jpg";
 import niqab from "@/assets/hero-niqab.jpg";
 import gloves from "@/assets/hero-gloves.jpg";
 import honey from "@/assets/hero-honey.jpg";
+import kufi from "@/assets/hero-kufi.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
