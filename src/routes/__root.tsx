@@ -90,8 +90,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Fawzaan Store — Shemaghs, Niqabs, Gloves & Pure Honey" },
       { name: "twitter:description", content: "Heritage essentials for the modern Muslim. Premium shemaghs, niqabs, modest gloves and raw honey — crafted with intention." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b605c032-ae29-49bb-893e-3661f189f3d7/id-preview-7c8bf337--25785b87-41db-4450-996b-a33f28b60d37.lovable.app-1782043258216.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b605c032-ae29-49bb-893e-3661f189f3d7/id-preview-7c8bf337--25785b87-41db-4450-996b-a33f28b60d37.lovable.app-1782043258216.png" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/exeSw4qYuJaqSyFyyVnVqcmkJnF2/social-images/social-1782569144325-image.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/exeSw4qYuJaqSyFyyVnVqcmkJnF2/social-images/social-1782569144325-image.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
