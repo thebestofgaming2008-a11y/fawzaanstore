@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WomenRouteImport } from './routes/women'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as ShemaghsRouteImport } from './routes/shemaghs'
+import { Route as ReturnsRouteImport } from './routes/returns'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NiqabsRouteImport } from './routes/niqabs'
 import { Route as MenRouteImport } from './routes/men'
 import { Route as HoneyRouteImport } from './routes/honey'
 import { Route as GlovesRouteImport } from './routes/gloves'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
 const WomenRoute = WomenRouteImport.update({
@@ -22,9 +28,29 @@ const WomenRoute = WomenRouteImport.update({
   path: '/women',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShippingRoute = ShippingRouteImport.update({
+  id: '/shipping',
+  path: '/shipping',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShemaghsRoute = ShemaghsRouteImport.update({
   id: '/shemaghs',
   path: '/shemaghs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReturnsRoute = ReturnsRouteImport.update({
+  id: '/returns',
+  path: '/returns',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NiqabsRoute = NiqabsRouteImport.update({
@@ -47,6 +73,16 @@ const GlovesRoute = GlovesRouteImport.update({
   path: '/gloves',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -55,62 +91,111 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
   '/men': typeof MenRoute
   '/niqabs': typeof NiqabsRoute
+  '/privacy': typeof PrivacyRoute
+  '/returns': typeof ReturnsRoute
   '/shemaghs': typeof ShemaghsRoute
+  '/shipping': typeof ShippingRoute
+  '/terms': typeof TermsRoute
   '/women': typeof WomenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
   '/men': typeof MenRoute
   '/niqabs': typeof NiqabsRoute
+  '/privacy': typeof PrivacyRoute
+  '/returns': typeof ReturnsRoute
   '/shemaghs': typeof ShemaghsRoute
+  '/shipping': typeof ShippingRoute
+  '/terms': typeof TermsRoute
   '/women': typeof WomenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
   '/men': typeof MenRoute
   '/niqabs': typeof NiqabsRoute
+  '/privacy': typeof PrivacyRoute
+  '/returns': typeof ReturnsRoute
   '/shemaghs': typeof ShemaghsRoute
+  '/shipping': typeof ShippingRoute
+  '/terms': typeof TermsRoute
   '/women': typeof WomenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
+    | '/contact'
     | '/gloves'
     | '/honey'
     | '/men'
     | '/niqabs'
+    | '/privacy'
+    | '/returns'
     | '/shemaghs'
+    | '/shipping'
+    | '/terms'
     | '/women'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gloves' | '/honey' | '/men' | '/niqabs' | '/shemaghs' | '/women'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/gloves'
+    | '/honey'
+    | '/men'
+    | '/niqabs'
+    | '/privacy'
+    | '/returns'
+    | '/shemaghs'
+    | '/shipping'
+    | '/terms'
+    | '/women'
   id:
     | '__root__'
     | '/'
+    | '/about'
+    | '/contact'
     | '/gloves'
     | '/honey'
     | '/men'
     | '/niqabs'
+    | '/privacy'
+    | '/returns'
     | '/shemaghs'
+    | '/shipping'
+    | '/terms'
     | '/women'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
   GlovesRoute: typeof GlovesRoute
   HoneyRoute: typeof HoneyRoute
   MenRoute: typeof MenRoute
   NiqabsRoute: typeof NiqabsRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ReturnsRoute: typeof ReturnsRoute
   ShemaghsRoute: typeof ShemaghsRoute
+  ShippingRoute: typeof ShippingRoute
+  TermsRoute: typeof TermsRoute
   WomenRoute: typeof WomenRoute
 }
 
@@ -123,11 +208,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WomenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shipping': {
+      id: '/shipping'
+      path: '/shipping'
+      fullPath: '/shipping'
+      preLoaderRoute: typeof ShippingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shemaghs': {
       id: '/shemaghs'
       path: '/shemaghs'
       fullPath: '/shemaghs'
       preLoaderRoute: typeof ShemaghsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/returns': {
+      id: '/returns'
+      path: '/returns'
+      fullPath: '/returns'
+      preLoaderRoute: typeof ReturnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/niqabs': {
@@ -158,6 +271,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GlovesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -170,11 +297,17 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
   GlovesRoute: GlovesRoute,
   HoneyRoute: HoneyRoute,
   MenRoute: MenRoute,
   NiqabsRoute: NiqabsRoute,
+  PrivacyRoute: PrivacyRoute,
+  ReturnsRoute: ReturnsRoute,
   ShemaghsRoute: ShemaghsRoute,
+  ShippingRoute: ShippingRoute,
+  TermsRoute: TermsRoute,
   WomenRoute: WomenRoute,
 }
 export const routeTree = rootRouteImport
