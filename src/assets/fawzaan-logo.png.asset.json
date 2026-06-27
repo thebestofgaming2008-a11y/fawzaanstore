@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "1f2cb70c-e972-4668-8a34-782564c6d70c",
-  "project_id": "25785b87-41db-4450-996b-a33f28b60d37",
-  "url": "/__l5e/assets-v1/1f2cb70c-e972-4668-8a34-782564c6d70c/fawzaan-logo.png",
-  "r2_key": "a/v1/25785b87-41db-4450-996b-a33f28b60d37/1f2cb70c-e972-4668-8a34-782564c6d70c/fawzaan-logo.png",
-  "original_filename": "fawzaan-logo.png",
-  "size": 285556,
   "content_type": "image/png",
-  "created_at": "2026-06-20T22:50:41Z"
+  "created_at": "2026-06-20T22:50:41Z",
+  "original_filename": "fawzaan-logo.png",
+  "project_id": "6cf9370d-f207-42a9-ad7e-174ba1b0086d",
+  "r2_key": "a/v1/6cf9370d-f207-42a9-ad7e-174ba1b0086d/1f2cb70c-e972-4668-8a34-782564c6d70c/fawzaan-logo.png",
+  "size": 285556,
+  "url": "/__l5e/assets-v1/1f2cb70c-e972-4668-8a34-782564c6d70c/fawzaan-logo.png",
+  "version": 1
 }
