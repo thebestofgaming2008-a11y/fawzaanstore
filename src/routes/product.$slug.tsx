@@ -44,7 +44,7 @@ export const Route = createFileRoute("/product/$slug")({
 });
 
 function ProductPage() {
-  const { product } = Route.useLoaderData();
+  const { product } = Route.useLoaderData() as { product: Product };
   const { add, open: openCart } = useCart();
   const { has, toggle } = useWishlist();
   const wished = has(product.slug);
