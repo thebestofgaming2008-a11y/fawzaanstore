@@ -10,22 +10,36 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WomenRouteImport } from './routes/women'
+import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as ShemaghsRouteImport } from './routes/shemaghs'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as ReturnsRouteImport } from './routes/returns'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NiqabsRouteImport } from './routes/niqabs'
 import { Route as MenRouteImport } from './routes/men'
+import { Route as KufisRouteImport } from './routes/kufis'
 import { Route as HoneyRouteImport } from './routes/honey'
 import { Route as GlovesRouteImport } from './routes/gloves'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProductSlugRouteImport } from './routes/product.$slug'
+import { Route as OrderIdRouteImport } from './routes/order.$id'
 
 const WomenRoute = WomenRouteImport.update({
   id: '/women',
   path: '/women',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WishlistRoute = WishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -41,6 +55,11 @@ const ShippingRoute = ShippingRouteImport.update({
 const ShemaghsRoute = ShemaghsRouteImport.update({
   id: '/shemaghs',
   path: '/shemaghs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReturnsRoute = ReturnsRouteImport.update({
@@ -63,6 +82,11 @@ const MenRoute = MenRouteImport.update({
   path: '/men',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KufisRoute = KufisRouteImport.update({
+  id: '/kufis',
+  path: '/kufis',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HoneyRoute = HoneyRouteImport.update({
   id: '/honey',
   path: '/honey',
@@ -73,9 +97,29 @@ const GlovesRoute = GlovesRouteImport.update({
   path: '/gloves',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -88,115 +132,188 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductSlugRoute = ProductSlugRouteImport.update({
+  id: '/product/$slug',
+  path: '/product/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderIdRoute = OrderIdRouteImport.update({
+  id: '/order/$id',
+  path: '/order/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
+  '/kufis': typeof KufisRoute
   '/men': typeof MenRoute
   '/niqabs': typeof NiqabsRoute
   '/privacy': typeof PrivacyRoute
   '/returns': typeof ReturnsRoute
+  '/search': typeof SearchRoute
   '/shemaghs': typeof ShemaghsRoute
   '/shipping': typeof ShippingRoute
   '/terms': typeof TermsRoute
+  '/wishlist': typeof WishlistRoute
   '/women': typeof WomenRoute
+  '/order/$id': typeof OrderIdRoute
+  '/product/$slug': typeof ProductSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
+  '/kufis': typeof KufisRoute
   '/men': typeof MenRoute
   '/niqabs': typeof NiqabsRoute
   '/privacy': typeof PrivacyRoute
   '/returns': typeof ReturnsRoute
+  '/search': typeof SearchRoute
   '/shemaghs': typeof ShemaghsRoute
   '/shipping': typeof ShippingRoute
   '/terms': typeof TermsRoute
+  '/wishlist': typeof WishlistRoute
   '/women': typeof WomenRoute
+  '/order/$id': typeof OrderIdRoute
+  '/product/$slug': typeof ProductSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
+  '/kufis': typeof KufisRoute
   '/men': typeof MenRoute
   '/niqabs': typeof NiqabsRoute
   '/privacy': typeof PrivacyRoute
   '/returns': typeof ReturnsRoute
+  '/search': typeof SearchRoute
   '/shemaghs': typeof ShemaghsRoute
   '/shipping': typeof ShippingRoute
   '/terms': typeof TermsRoute
+  '/wishlist': typeof WishlistRoute
   '/women': typeof WomenRoute
+  '/order/$id': typeof OrderIdRoute
+  '/product/$slug': typeof ProductSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/account'
+    | '/cart'
+    | '/checkout'
     | '/contact'
+    | '/faq'
     | '/gloves'
     | '/honey'
+    | '/kufis'
     | '/men'
     | '/niqabs'
     | '/privacy'
     | '/returns'
+    | '/search'
     | '/shemaghs'
     | '/shipping'
     | '/terms'
+    | '/wishlist'
     | '/women'
+    | '/order/$id'
+    | '/product/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/account'
+    | '/cart'
+    | '/checkout'
     | '/contact'
+    | '/faq'
     | '/gloves'
     | '/honey'
+    | '/kufis'
     | '/men'
     | '/niqabs'
     | '/privacy'
     | '/returns'
+    | '/search'
     | '/shemaghs'
     | '/shipping'
     | '/terms'
+    | '/wishlist'
     | '/women'
+    | '/order/$id'
+    | '/product/$slug'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/account'
+    | '/cart'
+    | '/checkout'
     | '/contact'
+    | '/faq'
     | '/gloves'
     | '/honey'
+    | '/kufis'
     | '/men'
     | '/niqabs'
     | '/privacy'
     | '/returns'
+    | '/search'
     | '/shemaghs'
     | '/shipping'
     | '/terms'
+    | '/wishlist'
     | '/women'
+    | '/order/$id'
+    | '/product/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
+  CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
+  FaqRoute: typeof FaqRoute
   GlovesRoute: typeof GlovesRoute
   HoneyRoute: typeof HoneyRoute
+  KufisRoute: typeof KufisRoute
   MenRoute: typeof MenRoute
   NiqabsRoute: typeof NiqabsRoute
   PrivacyRoute: typeof PrivacyRoute
   ReturnsRoute: typeof ReturnsRoute
+  SearchRoute: typeof SearchRoute
   ShemaghsRoute: typeof ShemaghsRoute
   ShippingRoute: typeof ShippingRoute
   TermsRoute: typeof TermsRoute
+  WishlistRoute: typeof WishlistRoute
   WomenRoute: typeof WomenRoute
+  OrderIdRoute: typeof OrderIdRoute
+  ProductSlugRoute: typeof ProductSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -206,6 +323,13 @@ declare module '@tanstack/react-router' {
       path: '/women'
       fullPath: '/women'
       preLoaderRoute: typeof WomenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wishlist': {
+      id: '/wishlist'
+      path: '/wishlist'
+      fullPath: '/wishlist'
+      preLoaderRoute: typeof WishlistRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -227,6 +351,13 @@ declare module '@tanstack/react-router' {
       path: '/shemaghs'
       fullPath: '/shemaghs'
       preLoaderRoute: typeof ShemaghsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/returns': {
@@ -257,6 +388,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kufis': {
+      id: '/kufis'
+      path: '/kufis'
+      fullPath: '/kufis'
+      preLoaderRoute: typeof KufisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/honey': {
       id: '/honey'
       path: '/honey'
@@ -271,11 +409,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GlovesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -292,34 +458,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/product/$slug': {
+      id: '/product/$slug'
+      path: '/product/$slug'
+      fullPath: '/product/$slug'
+      preLoaderRoute: typeof ProductSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order/$id': {
+      id: '/order/$id'
+      path: '/order/$id'
+      fullPath: '/order/$id'
+      preLoaderRoute: typeof OrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AccountRoute: AccountRoute,
+  CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
+  FaqRoute: FaqRoute,
   GlovesRoute: GlovesRoute,
   HoneyRoute: HoneyRoute,
+  KufisRoute: KufisRoute,
   MenRoute: MenRoute,
   NiqabsRoute: NiqabsRoute,
   PrivacyRoute: PrivacyRoute,
   ReturnsRoute: ReturnsRoute,
+  SearchRoute: SearchRoute,
   ShemaghsRoute: ShemaghsRoute,
   ShippingRoute: ShippingRoute,
   TermsRoute: TermsRoute,
+  WishlistRoute: WishlistRoute,
   WomenRoute: WomenRoute,
+  OrderIdRoute: OrderIdRoute,
+  ProductSlugRoute: ProductSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
