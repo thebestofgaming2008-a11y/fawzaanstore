@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
+import type { Product } from "@/lib/products";
 import { ShoppingBag, Truck, ShieldCheck, RotateCcw, Star, Minus, Plus, Heart, ChevronDown, Check } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
