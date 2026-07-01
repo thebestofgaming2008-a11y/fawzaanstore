@@ -1,4 +1,5 @@
 import { X, Plus, Minus, ShoppingBag, Lock } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useCart, FREE_SHIP_THRESHOLD } from "@/lib/cart";
 
 export function CartDrawer() {
