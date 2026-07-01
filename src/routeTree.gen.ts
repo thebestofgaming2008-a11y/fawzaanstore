@@ -14,6 +14,7 @@ import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as ShemaghsRouteImport } from './routes/shemaghs'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as ReturnsRouteImport } from './routes/returns'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NiqabsRouteImport } from './routes/niqabs'
@@ -53,6 +54,11 @@ const ShippingRoute = ShippingRouteImport.update({
 const ShemaghsRoute = ShemaghsRouteImport.update({
   id: '/shemaghs',
   path: '/shemaghs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReturnsRoute = ReturnsRouteImport.update({
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/niqabs': typeof NiqabsRoute
   '/privacy': typeof PrivacyRoute
   '/returns': typeof ReturnsRoute
+  '/search': typeof SearchRoute
   '/shemaghs': typeof ShemaghsRoute
   '/shipping': typeof ShippingRoute
   '/terms': typeof TermsRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/niqabs': typeof NiqabsRoute
   '/privacy': typeof PrivacyRoute
   '/returns': typeof ReturnsRoute
+  '/search': typeof SearchRoute
   '/shemaghs': typeof ShemaghsRoute
   '/shipping': typeof ShippingRoute
   '/terms': typeof TermsRoute
@@ -190,6 +198,7 @@ export interface FileRoutesById {
   '/niqabs': typeof NiqabsRoute
   '/privacy': typeof PrivacyRoute
   '/returns': typeof ReturnsRoute
+  '/search': typeof SearchRoute
   '/shemaghs': typeof ShemaghsRoute
   '/shipping': typeof ShippingRoute
   '/terms': typeof TermsRoute
@@ -214,6 +223,7 @@ export interface FileRouteTypes {
     | '/niqabs'
     | '/privacy'
     | '/returns'
+    | '/search'
     | '/shemaghs'
     | '/shipping'
     | '/terms'
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
     | '/niqabs'
     | '/privacy'
     | '/returns'
+    | '/search'
     | '/shemaghs'
     | '/shipping'
     | '/terms'
@@ -258,6 +269,7 @@ export interface FileRouteTypes {
     | '/niqabs'
     | '/privacy'
     | '/returns'
+    | '/search'
     | '/shemaghs'
     | '/shipping'
     | '/terms'
@@ -281,6 +293,7 @@ export interface RootRouteChildren {
   NiqabsRoute: typeof NiqabsRoute
   PrivacyRoute: typeof PrivacyRoute
   ReturnsRoute: typeof ReturnsRoute
+  SearchRoute: typeof SearchRoute
   ShemaghsRoute: typeof ShemaghsRoute
   ShippingRoute: typeof ShippingRoute
   TermsRoute: typeof TermsRoute
@@ -325,6 +338,13 @@ declare module '@tanstack/react-router' {
       path: '/shemaghs'
       fullPath: '/shemaghs'
       preLoaderRoute: typeof ShemaghsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/returns': {
@@ -449,6 +469,7 @@ const rootRouteChildren: RootRouteChildren = {
   NiqabsRoute: NiqabsRoute,
   PrivacyRoute: PrivacyRoute,
   ReturnsRoute: ReturnsRoute,
+  SearchRoute: SearchRoute,
   ShemaghsRoute: ShemaghsRoute,
   ShippingRoute: ShippingRoute,
   TermsRoute: TermsRoute,
