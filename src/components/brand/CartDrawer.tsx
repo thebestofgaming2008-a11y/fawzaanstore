@@ -92,9 +92,16 @@ export function CartDrawer() {
               <span className="font-display text-2xl">${subtotal.toFixed(2)}</span>
             </div>
             <p className="text-[11px] text-ink/55 mb-3">Shipping & taxes calculated at checkout.</p>
-            <button className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-ink text-ivory px-6 py-4 text-sm font-semibold hover:bg-ink/85 shadow-elegant transition">
+            <Link
+              to="/checkout"
+              onClick={close}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-ink text-ivory px-6 py-4 text-sm font-semibold hover:bg-ink/85 shadow-elegant transition"
+            >
               <Lock className="h-4 w-4" /> Checkout · ${subtotal.toFixed(2)}
-            </button>
+            </Link>
+            <Link to="/cart" onClick={close} className="mt-2 w-full inline-flex items-center justify-center text-xs uppercase tracking-[0.22em] text-ink/60 hover:text-ink py-2">
+              View full cart
+            </Link>
             <div className="mt-3 flex items-center justify-center gap-3 text-[10px] tracking-widest uppercase text-ink/45">
               <span>Visa</span><span>·</span><span>Mastercard</span><span>·</span><span>Amex</span><span>·</span><span>PayPal</span>
             </div>
