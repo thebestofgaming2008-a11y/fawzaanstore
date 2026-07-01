@@ -17,6 +17,7 @@ import { Route as ReturnsRouteImport } from './routes/returns'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NiqabsRouteImport } from './routes/niqabs'
 import { Route as MenRouteImport } from './routes/men'
+import { Route as KufisRouteImport } from './routes/kufis'
 import { Route as HoneyRouteImport } from './routes/honey'
 import { Route as GlovesRouteImport } from './routes/gloves'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -64,6 +65,11 @@ const MenRoute = MenRouteImport.update({
   path: '/men',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KufisRoute = KufisRouteImport.update({
+  id: '/kufis',
+  path: '/kufis',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HoneyRoute = HoneyRouteImport.update({
   id: '/honey',
   path: '/honey',
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
+  '/kufis': typeof KufisRoute
   '/men': typeof MenRoute
   '/niqabs': typeof NiqabsRoute
   '/privacy': typeof PrivacyRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
+  '/kufis': typeof KufisRoute
   '/men': typeof MenRoute
   '/niqabs': typeof NiqabsRoute
   '/privacy': typeof PrivacyRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
+  '/kufis': typeof KufisRoute
   '/men': typeof MenRoute
   '/niqabs': typeof NiqabsRoute
   '/privacy': typeof PrivacyRoute
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gloves'
     | '/honey'
+    | '/kufis'
     | '/men'
     | '/niqabs'
     | '/privacy'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gloves'
     | '/honey'
+    | '/kufis'
     | '/men'
     | '/niqabs'
     | '/privacy'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gloves'
     | '/honey'
+    | '/kufis'
     | '/men'
     | '/niqabs'
     | '/privacy'
@@ -201,6 +213,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   GlovesRoute: typeof GlovesRoute
   HoneyRoute: typeof HoneyRoute
+  KufisRoute: typeof KufisRoute
   MenRoute: typeof MenRoute
   NiqabsRoute: typeof NiqabsRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -270,6 +283,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kufis': {
+      id: '/kufis'
+      path: '/kufis'
+      fullPath: '/kufis'
+      preLoaderRoute: typeof KufisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/honey': {
       id: '/honey'
       path: '/honey'
@@ -321,6 +341,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   GlovesRoute: GlovesRoute,
   HoneyRoute: HoneyRoute,
+  KufisRoute: KufisRoute,
   MenRoute: MenRoute,
   NiqabsRoute: NiqabsRoute,
   PrivacyRoute: PrivacyRoute,
