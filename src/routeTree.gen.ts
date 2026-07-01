@@ -22,6 +22,7 @@ import { Route as MenRouteImport } from './routes/men'
 import { Route as KufisRouteImport } from './routes/kufis'
 import { Route as HoneyRouteImport } from './routes/honey'
 import { Route as GlovesRouteImport } from './routes/gloves'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CartRouteImport } from './routes/cart'
@@ -96,6 +97,11 @@ const GlovesRoute = GlovesRouteImport.update({
   path: '/gloves',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -144,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
   '/kufis': typeof KufisRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
   '/kufis': typeof KufisRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/gloves': typeof GlovesRoute
   '/honey': typeof HoneyRoute
   '/kufis': typeof KufisRoute
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/contact'
+    | '/faq'
     | '/gloves'
     | '/honey'
     | '/kufis'
@@ -239,6 +249,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/contact'
+    | '/faq'
     | '/gloves'
     | '/honey'
     | '/kufis'
@@ -262,6 +273,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/contact'
+    | '/faq'
     | '/gloves'
     | '/honey'
     | '/kufis'
@@ -286,6 +298,7 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
+  FaqRoute: typeof FaqRoute
   GlovesRoute: typeof GlovesRoute
   HoneyRoute: typeof HoneyRoute
   KufisRoute: typeof KufisRoute
@@ -396,6 +409,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GlovesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -462,6 +482,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
+  FaqRoute: FaqRoute,
   GlovesRoute: GlovesRoute,
   HoneyRoute: HoneyRoute,
   KufisRoute: KufisRoute,
