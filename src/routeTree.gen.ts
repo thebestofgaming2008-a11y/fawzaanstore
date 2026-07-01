@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WomenRouteImport } from './routes/women'
+import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as ShemaghsRouteImport } from './routes/shemaghs'
@@ -32,6 +33,11 @@ import { Route as OrderIdRouteImport } from './routes/order.$id'
 const WomenRoute = WomenRouteImport.update({
   id: '/women',
   path: '/women',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WishlistRoute = WishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/shemaghs': typeof ShemaghsRoute
   '/shipping': typeof ShippingRoute
   '/terms': typeof TermsRoute
+  '/wishlist': typeof WishlistRoute
   '/women': typeof WomenRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/shemaghs': typeof ShemaghsRoute
   '/shipping': typeof ShippingRoute
   '/terms': typeof TermsRoute
+  '/wishlist': typeof WishlistRoute
   '/women': typeof WomenRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -185,6 +193,7 @@ export interface FileRoutesById {
   '/shemaghs': typeof ShemaghsRoute
   '/shipping': typeof ShippingRoute
   '/terms': typeof TermsRoute
+  '/wishlist': typeof WishlistRoute
   '/women': typeof WomenRoute
   '/order/$id': typeof OrderIdRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -208,6 +217,7 @@ export interface FileRouteTypes {
     | '/shemaghs'
     | '/shipping'
     | '/terms'
+    | '/wishlist'
     | '/women'
     | '/order/$id'
     | '/product/$slug'
@@ -229,6 +239,7 @@ export interface FileRouteTypes {
     | '/shemaghs'
     | '/shipping'
     | '/terms'
+    | '/wishlist'
     | '/women'
     | '/order/$id'
     | '/product/$slug'
@@ -250,6 +261,7 @@ export interface FileRouteTypes {
     | '/shemaghs'
     | '/shipping'
     | '/terms'
+    | '/wishlist'
     | '/women'
     | '/order/$id'
     | '/product/$slug'
@@ -272,6 +284,7 @@ export interface RootRouteChildren {
   ShemaghsRoute: typeof ShemaghsRoute
   ShippingRoute: typeof ShippingRoute
   TermsRoute: typeof TermsRoute
+  WishlistRoute: typeof WishlistRoute
   WomenRoute: typeof WomenRoute
   OrderIdRoute: typeof OrderIdRoute
   ProductSlugRoute: typeof ProductSlugRoute
@@ -284,6 +297,13 @@ declare module '@tanstack/react-router' {
       path: '/women'
       fullPath: '/women'
       preLoaderRoute: typeof WomenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wishlist': {
+      id: '/wishlist'
+      path: '/wishlist'
+      fullPath: '/wishlist'
+      preLoaderRoute: typeof WishlistRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -432,6 +452,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShemaghsRoute: ShemaghsRoute,
   ShippingRoute: ShippingRoute,
   TermsRoute: TermsRoute,
+  WishlistRoute: WishlistRoute,
   WomenRoute: WomenRoute,
   OrderIdRoute: OrderIdRoute,
   ProductSlugRoute: ProductSlugRoute,
