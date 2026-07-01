@@ -21,6 +21,7 @@ export function SiteFooter() {
             <ul className="space-y-2 text-sm text-ivory/80">
               <li><Link to="/shemaghs" className="hover:text-gold">Shemaghs</Link></li>
               <li><Link to="/niqabs" className="hover:text-gold">Niqabs</Link></li>
+              <li><Link to="/kufis" className="hover:text-gold">Kufis</Link></li>
               <li><Link to="/gloves" className="hover:text-gold">Gloves</Link></li>
               <li><Link to="/honey" className="hover:text-gold">Honey</Link></li>
             </ul>
@@ -28,6 +29,7 @@ export function SiteFooter() {
           <div>
             <h4 className="eyebrow text-gold mb-4">Support</h4>
             <ul className="space-y-2 text-sm text-ivory/80">
+              <li><Link to="/faq" className="hover:text-gold">FAQ</Link></li>
               <li><Link to="/shipping" className="hover:text-gold">Shipping Policy</Link></li>
               <li><Link to="/returns" className="hover:text-gold">Returns & Refunds</Link></li>
               <li><Link to="/contact" className="hover:text-gold">Contact Us</Link></li>
