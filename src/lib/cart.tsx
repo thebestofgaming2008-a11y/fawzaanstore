@@ -23,7 +23,7 @@ type CartCtx = {
 };
 
 const Ctx = createContext<CartCtx | null>(null);
-const FREE_SHIP = 75;
+const FREE_SHIP = 2000; // INR
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
