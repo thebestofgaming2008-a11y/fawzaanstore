@@ -8,6 +8,7 @@ import { ProductCard } from "@/components/brand/ProductCard";
 import { getProduct, related } from "@/lib/products";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
+import { useCurrency } from "@/lib/currency";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/product/$slug")({
@@ -47,6 +48,7 @@ function ProductPage() {
   const { product } = Route.useLoaderData() as { product: Product };
   const { add, open: openCart } = useCart();
   const { has, toggle } = useWishlist();
+  const { format } = useCurrency();
   const wished = has(product.slug);
   const relatedItems = useMemo(() => related(product.slug, 4), [product.slug]);
 
@@ -141,10 +143,10 @@ function ProductPage() {
           </div>
 
           <div className="mt-5 flex items-baseline gap-3">
-            <span className="font-display text-3xl">${(price * qty).toFixed(2)}</span>
+            <span className="font-display text-3xl">{format(price * qty)}</span>
             {product.compareAt && (
               <>
-                <span className="text-ink/40 line-through">${(product.compareAt * qty).toFixed(2)}</span>
+                <span className="text-ink/40 line-through">{format(product.compareAt * qty)}</span>
                 <span className="text-[11px] uppercase tracking-[0.22em] bg-gold-soft/60 text-gold-deep px-2 py-1">
                   Save {Math.round((1 - product.price / product.compareAt) * 100)}%
                 </span>
