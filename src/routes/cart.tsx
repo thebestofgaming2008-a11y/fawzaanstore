@@ -3,6 +3,7 @@ import { Minus, Plus, X, ShoppingBag, Lock } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { useCart, FREE_SHIP_THRESHOLD } from "@/lib/cart";
+import { useCurrency } from "@/lib/currency";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({ meta: [{ title: "Cart — Fawzaan.store" }, { name: "description", content: "Review your cart." }] }),
@@ -11,9 +12,10 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const { items, subtotal, setQty, remove } = useCart();
+  const { format } = useCurrency();
   const remaining = Math.max(0, FREE_SHIP_THRESHOLD - subtotal);
   const progress = Math.min(100, (subtotal / FREE_SHIP_THRESHOLD) * 100);
-  const shipping = subtotal >= FREE_SHIP_THRESHOLD || subtotal === 0 ? 0 : 6.9;
+  const shipping = subtotal >= FREE_SHIP_THRESHOLD || subtotal === 0 ? 0 : 150; // INR
   const total = subtotal + shipping;
 
   return (
@@ -40,7 +42,7 @@ function CartPage() {
               {/* Free ship progress */}
               <div className="mb-8">
                 {remaining > 0 ? (
-                  <p className="text-sm text-ink/70">Add <span className="font-semibold text-ink">${remaining.toFixed(2)}</span> more for free shipping.</p>
+                  <p className="text-sm text-ink/70">Add <span className="font-semibold text-ink">{format(remaining)}</span> more for free shipping.</p>
                 ) : (
                   <p className="text-sm font-semibold text-gold-deep">✦ You've unlocked free shipping.</p>
                 )}
@@ -58,7 +60,7 @@ function CartPage() {
                         <div className="min-w-0">
                           <p className="font-display text-xl">{i.name}</p>
                           {i.variant && <p className="text-xs text-ink/55 uppercase tracking-[0.18em] mt-1">{i.variant}</p>}
-                          <p className="mt-2 text-sm text-ink/70">${i.price.toFixed(2)}</p>
+                          <p className="mt-2 text-sm text-ink/70">{format(i.price)}</p>
                         </div>
                         <button aria-label="Remove" onClick={() => remove(i.id)} className="p-1 text-ink/45 hover:text-ink">
                           <X className="h-4 w-4" />
@@ -70,7 +72,7 @@ function CartPage() {
                           <span className="w-8 text-center text-sm">{i.qty}</span>
                           <button onClick={() => setQty(i.id, i.qty + 1)} aria-label="Increase" className="p-2 hover:text-gold-deep"><Plus className="h-3.5 w-3.5" /></button>
                         </div>
-                        <p className="font-medium">${(i.price * i.qty).toFixed(2)}</p>
+                        <p className="font-medium">{format(i.price * i.qty)}</p>
                       </div>
                     </div>
                   </li>
@@ -84,19 +86,19 @@ function CartPage() {
             <aside className="lg:sticky lg:top-24 h-fit bg-cream p-6 md:p-8">
               <h2 className="font-display text-2xl">Order summary</h2>
               <dl className="mt-4 space-y-2 text-sm">
-                <div className="flex justify-between"><dt className="text-ink/70">Subtotal</dt><dd>${subtotal.toFixed(2)}</dd></div>
-                <div className="flex justify-between"><dt className="text-ink/70">Shipping</dt><dd>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</dd></div>
+                <div className="flex justify-between"><dt className="text-ink/70">Subtotal</dt><dd>{format(subtotal)}</dd></div>
+                <div className="flex justify-between"><dt className="text-ink/70">Shipping</dt><dd>{shipping === 0 ? "Free" : format(shipping)}</dd></div>
                 <div className="flex justify-between text-xs text-ink/55"><dt>Taxes</dt><dd>Calculated at checkout</dd></div>
               </dl>
               <div className="mt-4 border-t border-ink/15 pt-4 flex items-baseline justify-between">
                 <span className="text-sm uppercase tracking-[0.18em] text-ink/70">Total</span>
-                <span className="font-display text-3xl">${total.toFixed(2)}</span>
+                <span className="font-display text-3xl">{format(total)}</span>
               </div>
               <Link
                 to="/checkout"
                 className="mt-6 w-full inline-flex items-center justify-center gap-2 bg-ink text-ivory px-6 py-4 text-xs font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition"
               >
-                <Lock className="h-4 w-4" /> Checkout · ${total.toFixed(2)}
+                <Lock className="h-4 w-4" /> Checkout · {format(total)}
               </Link>
               <p className="mt-3 text-[11px] text-ink/50 text-center">Secure encrypted payment · 30-day returns</p>
             </aside>

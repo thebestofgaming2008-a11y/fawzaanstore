@@ -1,9 +1,11 @@
 import { X, Plus, Minus, ShoppingBag, Lock } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useCart, FREE_SHIP_THRESHOLD } from "@/lib/cart";
+import { useCurrency } from "@/lib/currency";
 
 export function CartDrawer() {
   const { items, isOpen, close, remove, setQty, subtotal, count } = useCart();
+  const { format } = useCurrency();
 
   const remaining = Math.max(0, FREE_SHIP_THRESHOLD - subtotal);
   const progress = Math.min(100, (subtotal / FREE_SHIP_THRESHOLD) * 100);
@@ -33,7 +35,7 @@ export function CartDrawer() {
         <div className="px-5 py-3 bg-cream border-b border-border">
           {remaining > 0 ? (
             <p className="text-xs text-ink/70">
-              Add <span className="font-semibold text-ink">${remaining.toFixed(2)}</span> more for free shipping
+              Add <span className="font-semibold text-ink">{format(remaining)}</span> more for free shipping
             </p>
           ) : (
             <p className="text-xs font-semibold text-gold-deep">✦ You've unlocked free shipping</p>
@@ -67,7 +69,7 @@ export function CartDrawer() {
                         <p className="font-medium text-sm truncate">{i.name}</p>
                         {i.variant && <p className="text-xs text-ink/55 mt-0.5">{i.variant}</p>}
                       </div>
-                      <p className="text-sm font-semibold shrink-0">${(i.price * i.qty).toFixed(2)}</p>
+                      <p className="text-sm font-semibold shrink-0">{format(i.price * i.qty)}</p>
                     </div>
                     <div className="mt-3 flex items-center justify-between">
                       <div className="inline-flex items-center border border-border rounded-full">
@@ -89,7 +91,7 @@ export function CartDrawer() {
           <div className="border-t border-border px-5 py-4 bg-ivory">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm text-ink/70">Subtotal</span>
-              <span className="font-display text-2xl">${subtotal.toFixed(2)}</span>
+              <span className="font-display text-2xl">{format(subtotal)}</span>
             </div>
             <p className="text-[11px] text-ink/55 mb-3">Shipping & taxes calculated at checkout.</p>
             <Link
@@ -97,7 +99,7 @@ export function CartDrawer() {
               onClick={close}
               className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-ink text-ivory px-6 py-4 text-sm font-semibold hover:bg-ink/85 shadow-elegant transition"
             >
-              <Lock className="h-4 w-4" /> Checkout · ${subtotal.toFixed(2)}
+              <Lock className="h-4 w-4" /> Checkout · {format(subtotal)}
             </Link>
             <Link to="/cart" onClick={close} className="mt-2 w-full inline-flex items-center justify-center text-xs uppercase tracking-[0.22em] text-ink/60 hover:text-ink py-2">
               View full cart
