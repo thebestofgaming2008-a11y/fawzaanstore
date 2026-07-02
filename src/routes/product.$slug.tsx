@@ -78,11 +78,11 @@ function ProductPage() {
   };
 
   return (
-    <div className="min-h-screen bg-ivory text-ink pb-24 md:pb-0">
+    <div className="min-h-screen bg-ivory text-ink md:pb-0">
       <SiteHeader />
 
-      {/* Breadcrumb */}
-      <div className="mx-auto max-w-7xl px-4 md:px-8 pt-4 md:pt-6">
+      {/* Breadcrumb — extra top padding on mobile for sticky buy bar */}
+      <div className="mx-auto max-w-7xl px-4 md:px-8 pt-16 md:pt-6">
         <nav aria-label="Breadcrumb" className="text-[11px] uppercase tracking-[0.2em] text-ink/50">
           <Link to="/" className="hover:text-ink">Home</Link>
           <span className="mx-2">/</span>
@@ -281,18 +281,21 @@ function ProductPage() {
 
       <SiteFooter />
 
-      {/* Mobile sticky bar */}
-      <div className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border bg-ivory/95 backdrop-blur px-4 py-3 shadow-elegant">
+      {/* Mobile sticky add-to-cart — top of page, under header */}
+      <div className="md:hidden fixed top-[57px] inset-x-0 z-30 border-b border-border bg-ivory/95 backdrop-blur px-4 py-2.5 shadow-soft animate-fade-in">
         <div className="flex items-center gap-3">
-          <div className="min-w-0">
-            <p className="text-xs text-ink/55 truncate">{variant || product.name}</p>
-            <p className="font-display text-lg leading-none mt-0.5">${(price * qty).toFixed(2)}</p>
+          <img src={product.images[0]} alt="" className="h-10 w-9 object-cover bg-cream shrink-0" />
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] font-medium truncate leading-tight">{product.name}</p>
+            <p className="text-[11px] text-ink/55 truncate leading-tight">{variant || "Choose options below"}</p>
           </div>
+          <p className="font-display text-base leading-none shrink-0">{format(price * qty)}</p>
           <button
             onClick={handleAdd}
-            className="flex-1 inline-flex items-center justify-center gap-2 bg-ink text-ivory px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.22em] active:scale-[0.99] transition"
+            aria-label="Add to cart"
+            className="shrink-0 inline-flex items-center justify-center gap-1 bg-ink text-ivory px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] rounded-full active:scale-95 hover:bg-gold-deep transition"
           >
-            <ShoppingBag className="h-4 w-4" /> Add to cart
+            <ShoppingBag className="h-4 w-4" /> Add
           </button>
         </div>
       </div>
