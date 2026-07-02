@@ -230,18 +230,18 @@ function CheckoutPage() {
                     <p className="truncate">{i.name}</p>
                     {i.variant && <p className="text-[11px] text-ink/55 uppercase tracking-widest">{i.variant}</p>}
                   </div>
-                  <p className="shrink-0">${(i.price * i.qty).toFixed(2)}</p>
+                  <p className="shrink-0">{format(i.price * i.qty)}</p>
                 </li>
               ))}
             </ul>
             <dl className="mt-5 space-y-2 text-sm border-t border-ink/15 pt-4">
-              <div className="flex justify-between"><dt className="text-ink/70">Subtotal</dt><dd>${subtotal.toFixed(2)}</dd></div>
-              <div className="flex justify-between"><dt className="text-ink/70">Shipping</dt><dd>{shipCost === 0 ? "Free" : `$${shipCost.toFixed(2)}`}</dd></div>
-              <div className="flex justify-between"><dt className="text-ink/70">Tax (5%)</dt><dd>${tax.toFixed(2)}</dd></div>
+              <div className="flex justify-between"><dt className="text-ink/70">Subtotal</dt><dd>{format(subtotal)}</dd></div>
+              <div className="flex justify-between"><dt className="text-ink/70">Shipping</dt><dd>{shipCost === 0 ? "Free" : format(shipCost)}</dd></div>
+              <div className="flex justify-between"><dt className="text-ink/70">Tax (5%)</dt><dd>{format(tax)}</dd></div>
             </dl>
             <div className="mt-4 border-t border-ink/15 pt-4 flex items-baseline justify-between">
               <span className="text-sm uppercase tracking-[0.18em] text-ink/70">Total</span>
-              <span className="font-display text-2xl">${total.toFixed(2)}</span>
+              <span className="font-display text-2xl">{format(total)}</span>
             </div>
           </aside>
         </div>

@@ -3,6 +3,7 @@ import { CheckCircle2, Truck } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { useAccount } from "@/lib/account";
+import { useCurrency } from "@/lib/currency";
 
 export const Route = createFileRoute("/order/$id")({
   head: () => ({ meta: [{ title: "Order confirmed — Fawzaan.store" }] }),
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/order/$id")({
 function OrderPage() {
   const { id } = Route.useParams();
   const { account } = useAccount();
+  const { format } = useCurrency();
   const order = account?.orders.find((o) => o.id === id);
 
   if (!order) {
@@ -64,14 +66,14 @@ function OrderPage() {
                 {i.variant && <p className="text-[11px] text-ink/55 uppercase tracking-widest">{i.variant}</p>}
                 <p className="text-xs text-ink/60 mt-0.5">Qty {i.qty}</p>
               </div>
-              <p className="text-sm">${(i.price * i.qty).toFixed(2)}</p>
+              <p className="text-sm">{format(i.price * i.qty)}</p>
             </li>
           ))}
         </ul>
 
         <div className="mt-4 flex justify-between text-lg font-display">
           <span>Total</span>
-          <span>${order.total.toFixed(2)}</span>
+          <span>{format(order.total)}</span>
         </div>
 
         <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
