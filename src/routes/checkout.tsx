@@ -4,6 +4,7 @@ import { Lock, ShieldCheck, ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { useCart, FREE_SHIP_THRESHOLD } from "@/lib/cart";
 import { useAccount } from "@/lib/account";
+import { useCurrency } from "@/lib/currency";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout")({
@@ -17,6 +18,7 @@ function CheckoutPage() {
   const nav = useNavigate();
   const { items, subtotal, clear } = useCart();
   const { account, signIn, addOrder, addAddress } = useAccount();
+  const { format } = useCurrency();
 
   const [step, setStep] = useState<Step>(1);
   const [email, setEmail] = useState(account?.email ?? "");
@@ -33,7 +35,7 @@ function CheckoutPage() {
   const [pay, setPay] = useState<"card" | "cod" | "upi">("card");
   const [processing, setProcessing] = useState(false);
 
-  const shipCost = subtotal >= FREE_SHIP_THRESHOLD ? 0 : ship === "express" ? 14 : 6.9;
+  const shipCost = subtotal >= FREE_SHIP_THRESHOLD ? 0 : ship === "express" ? 350 : 150; // INR
   const tax = +(subtotal * 0.05).toFixed(2);
   const total = +(subtotal + shipCost + tax).toFixed(2);
 
@@ -207,7 +209,7 @@ function CheckoutPage() {
                     disabled={processing}
                     className="flex-1 inline-flex items-center justify-center gap-2 bg-ink text-ivory px-6 py-4 text-xs font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition disabled:opacity-60"
                   >
-                    {processing ? "Placing order…" : <><Lock className="h-4 w-4" /> Place order · ${total.toFixed(2)}</>}
+                    {processing ? "Placing order…" : <><Lock className="h-4 w-4" /> Place order · {format(total)}</>}
                   </button>
                 </div>
               </section>
