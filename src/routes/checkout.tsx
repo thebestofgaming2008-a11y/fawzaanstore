@@ -4,6 +4,7 @@ import { Lock, ShieldCheck, ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { useCart, FREE_SHIP_THRESHOLD } from "@/lib/cart";
 import { useAccount } from "@/lib/account";
+import { useCurrency } from "@/lib/currency";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout")({
@@ -17,6 +18,7 @@ function CheckoutPage() {
   const nav = useNavigate();
   const { items, subtotal, clear } = useCart();
   const { account, signIn, addOrder, addAddress } = useAccount();
+  const { format } = useCurrency();
 
   const [step, setStep] = useState<Step>(1);
   const [email, setEmail] = useState(account?.email ?? "");
@@ -33,7 +35,7 @@ function CheckoutPage() {
   const [pay, setPay] = useState<"card" | "cod" | "upi">("card");
   const [processing, setProcessing] = useState(false);
 
-  const shipCost = subtotal >= FREE_SHIP_THRESHOLD ? 0 : ship === "express" ? 14 : 6.9;
+  const shipCost = subtotal >= FREE_SHIP_THRESHOLD ? 0 : ship === "express" ? 350 : 150; // INR
   const tax = +(subtotal * 0.05).toFixed(2);
   const total = +(subtotal + shipCost + tax).toFixed(2);
 
@@ -207,7 +209,7 @@ function CheckoutPage() {
                     disabled={processing}
                     className="flex-1 inline-flex items-center justify-center gap-2 bg-ink text-ivory px-6 py-4 text-xs font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition disabled:opacity-60"
                   >
-                    {processing ? "Placing order…" : <><Lock className="h-4 w-4" /> Place order · ${total.toFixed(2)}</>}
+                    {processing ? "Placing order…" : <><Lock className="h-4 w-4" /> Place order · {format(total)}</>}
                   </button>
                 </div>
               </section>
@@ -228,18 +230,18 @@ function CheckoutPage() {
                     <p className="truncate">{i.name}</p>
                     {i.variant && <p className="text-[11px] text-ink/55 uppercase tracking-widest">{i.variant}</p>}
                   </div>
-                  <p className="shrink-0">${(i.price * i.qty).toFixed(2)}</p>
+                  <p className="shrink-0">{format(i.price * i.qty)}</p>
                 </li>
               ))}
             </ul>
             <dl className="mt-5 space-y-2 text-sm border-t border-ink/15 pt-4">
-              <div className="flex justify-between"><dt className="text-ink/70">Subtotal</dt><dd>${subtotal.toFixed(2)}</dd></div>
-              <div className="flex justify-between"><dt className="text-ink/70">Shipping</dt><dd>{shipCost === 0 ? "Free" : `$${shipCost.toFixed(2)}`}</dd></div>
-              <div className="flex justify-between"><dt className="text-ink/70">Tax (5%)</dt><dd>${tax.toFixed(2)}</dd></div>
+              <div className="flex justify-between"><dt className="text-ink/70">Subtotal</dt><dd>{format(subtotal)}</dd></div>
+              <div className="flex justify-between"><dt className="text-ink/70">Shipping</dt><dd>{shipCost === 0 ? "Free" : format(shipCost)}</dd></div>
+              <div className="flex justify-between"><dt className="text-ink/70">Tax (5%)</dt><dd>{format(tax)}</dd></div>
             </dl>
             <div className="mt-4 border-t border-ink/15 pt-4 flex items-baseline justify-between">
               <span className="text-sm uppercase tracking-[0.18em] text-ink/70">Total</span>
-              <span className="font-display text-2xl">${total.toFixed(2)}</span>
+              <span className="font-display text-2xl">{format(total)}</span>
             </div>
           </aside>
         </div>

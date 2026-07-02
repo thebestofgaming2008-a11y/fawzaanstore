@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { useCart } from "@/lib/cart";
+import { useCurrency } from "@/lib/currency";
 import { catalog, type Product } from "@/lib/products";
 import { toast } from "sonner";
 
@@ -10,6 +11,7 @@ export type { Product };
 
 export function ProductRail({ heading, items = catalog, to }: { heading?: string; items?: Product[]; to?: string }) {
   const { add } = useCart();
+  const { format } = useCurrency();
 
   return (
     <section className="bg-ivory">
@@ -54,7 +56,7 @@ export function ProductRail({ heading, items = catalog, to }: { heading?: string
                 </Link>
                 <div className="mt-3 flex items-center justify-between">
                   <p className="text-[13px] uppercase tracking-[0.14em] text-ink truncate">{p.name}</p>
-                  <p className="text-sm text-ink/70 shrink-0 ml-2">${p.price}</p>
+                  <p className="text-sm text-ink/70 shrink-0 ml-2">{format(p.price)}</p>
                 </div>
               </div>
             </li>

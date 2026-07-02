@@ -2,12 +2,14 @@ import { Link } from "@tanstack/react-router";
 import { Plus, Heart } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
+import { useCurrency } from "@/lib/currency";
 import type { Product } from "@/lib/products";
 import { toast } from "sonner";
 
 export function ProductCard({ p, priority = false }: { p: Product; priority?: boolean }) {
   const { add } = useCart();
   const { has, toggle } = useWishlist();
+  const { format } = useCurrency();
   const wished = has(p.slug);
 
   return (
@@ -65,8 +67,8 @@ export function ProductCard({ p, priority = false }: { p: Product; priority?: bo
             {p.name}
           </Link>
           <div className="mt-1 flex items-center gap-2">
-            <p className="text-[13px] text-ink/80">${p.price.toFixed(2)}</p>
-            {p.compareAt && <p className="text-[12px] text-ink/40 line-through">${p.compareAt.toFixed(2)}</p>}
+            <p className="text-[13px] text-ink/80">{format(p.price)}</p>
+            {p.compareAt && <p className="text-[12px] text-ink/40 line-through">{format(p.compareAt)}</p>}
           </div>
         </div>
         <button
