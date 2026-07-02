@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "@/lib/cart";
 import { WishlistProvider } from "@/lib/wishlist";
 import { AccountProvider } from "@/lib/account";
+import { CurrencyProvider } from "@/lib/currency";
 import { AnnouncementBar } from "@/components/brand/AnnouncementBar";
 import { CartDrawer } from "@/components/brand/CartDrawer";
 import { Toaster } from "sonner";
@@ -131,17 +132,19 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AccountProvider>
-        <WishlistProvider>
-          <CartProvider>
-            <AnnouncementBar />
-            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-            <Outlet />
-            <CartDrawer />
-            <Toaster position="bottom-center" theme="light" richColors closeButton />
-          </CartProvider>
-        </WishlistProvider>
-      </AccountProvider>
+      <CurrencyProvider>
+        <AccountProvider>
+          <WishlistProvider>
+            <CartProvider>
+              <AnnouncementBar />
+              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+              <Outlet />
+              <CartDrawer />
+              <Toaster position="bottom-center" theme="light" richColors closeButton />
+            </CartProvider>
+          </WishlistProvider>
+        </AccountProvider>
+      </CurrencyProvider>
     </QueryClientProvider>
   );
 }

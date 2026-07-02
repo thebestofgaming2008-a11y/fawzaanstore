@@ -1,5 +1,5 @@
 // Central product catalog for Fawzaan Store.
-// All routes/components read from here. Adding a new product = add to `catalog`.
+// Prices are in INR (₹). Currency is converted at render via useCurrency().
 
 import shemaghFront from "@/assets/shemagh-red-front.jpg";
 import shemaghSide from "@/assets/shemagh-red-side.jpg";
@@ -11,9 +11,13 @@ import kufiFront from "@/assets/kufi-white-front.jpg";
 import kufiSide from "@/assets/kufi-white-side.jpg";
 import niqabRedFront from "@/assets/niqab-red-front.jpg";
 import niqabRedSide from "@/assets/niqab-red-side.jpg";
+import niqabKhadija1 from "@/assets/niqab-khadija-grid.jpg";
+import niqabKhadija2 from "@/assets/niqab-khadija-grid2.jpg";
 import niqabBlackFront from "@/assets/niqab-black-front.jpg";
 import heroGloves from "@/assets/hero-gloves.jpg";
-import heroHoney from "@/assets/hero-honey.jpg";
+import honeyMulti from "@/assets/honey-kashmir-multiflora.jpg";
+import honeyAcacia from "@/assets/honey-kashmir-acacia.jpg";
+import honeyBlack from "@/assets/honey-kashmir-black.jpg";
 
 export type Collection = "shemaghs" | "niqabs" | "kufis" | "gloves" | "honey";
 export type Gender = "men" | "women" | "unisex";
@@ -25,8 +29,8 @@ export type Product = {
   name: string;
   collection: Collection;
   gender: Gender;
-  price: number;
-  compareAt?: number;
+  price: number; // INR base
+  compareAt?: number; // INR base
   rating: number;
   reviews: number;
   images: string[];
@@ -42,24 +46,24 @@ export type Product = {
 
 export const catalog: Product[] = [
   {
-    slug: "classic-red-shemagh",
-    name: "Classic Red Shemagh",
+    slug: "yemeni-shemagh",
+    name: "Yemeni Shemagh",
     collection: "shemaghs",
     gender: "men",
-    price: 39,
-    compareAt: 56,
+    price: 2200,
+    compareAt: 2800,
     rating: 4.9,
     reviews: 1240,
-    images: [shemaghFront, shemaghSide, shemaghWrap, shemaghBack, shemaghFlat, shemaghHead],
+    images: [shemaghFront, shemaghSide, shemaghHead, shemaghWrap, shemaghBack, shemaghFlat],
     colors: [
       { name: "Red / White", swatch: "#c2330c" },
       { name: "Black / White", swatch: "#000000" },
       { name: "Ivory", swatch: "#faf6ea" },
     ],
-    sizes: ["Standard 130×130"],
-    short: "Hand-loomed keffiyeh with heritage red pattern.",
+    sizes: ["Standard 130 × 130 cm"],
+    short: "Hand-loomed Yemeni keffiyeh — the heritage wrap.",
     description:
-      "Hand-loomed in 100% long-staple cotton with a tight herringbone weave and knotted tassels. A generous 130×130 cm cut wraps without slipping — the shemagh, honest as ever.",
+      "Hand-loomed in 100% long-staple cotton with a tight herringbone weave and knotted tassels. A generous 130 × 130 cm cut wraps without slipping — Yemeni craft, honest as ever.",
     features: [
       "100% combed cotton, mid-weight",
       "Hand-knotted fringe tassels",
@@ -71,72 +75,36 @@ export const catalog: Product[] = [
     tag: "Bestseller",
   },
   {
-    slug: "onyx-shemagh",
-    name: "Onyx Shemagh",
-    collection: "shemaghs",
-    gender: "men",
-    price: 42,
-    rating: 4.8,
-    reviews: 412,
-    images: [shemaghSide, shemaghFront, shemaghFlat],
-    colors: [
-      { name: "Ink Black", swatch: "#000000" },
-      { name: "Charcoal", swatch: "#2a2a2a" },
-    ],
-    sizes: ["Standard 130×130"],
-    short: "Deep black weave — the everyday classic.",
-    description: "Our darkest black shemagh — deeper than usual dye lots, with the same hand-loomed weave and hand-knotted fringe.",
-    features: ["Deep-vat black dye", "Hand-knotted fringe", "130 × 130 cm", "Machine washable cold"],
-    materials: "100% long-staple cotton.",
-    care: "Machine wash cold, hang dry.",
-    tag: "New",
-  },
-  {
-    slug: "desert-sand-shemagh",
-    name: "Desert Sand Shemagh",
-    collection: "shemaghs",
-    gender: "men",
-    price: 39,
-    rating: 4.9,
-    reviews: 322,
-    images: [shemaghWrap, shemaghHead, shemaghBack],
-    colors: [{ name: "Sand", swatch: "#d8c9a3" }, { name: "Camel", swatch: "#b18e5c" }],
-    sizes: ["Standard 130×130"],
-    short: "Warm sand tones, the classic desert wrap.",
-    description: "Traditional cross-woven pattern in warm sand tones. Breathable in summer, warm at night.",
-    features: ["Breathable weave", "Hand-knotted fringe", "130 × 130 cm"],
-    materials: "100% long-staple cotton.",
-    care: "Machine wash cold, hang dry.",
-  },
-  {
-    slug: "premium-niqab-black",
-    name: "Premium Niqab — Onyx",
+    slug: "khadija-niqab",
+    name: "Khadija Niqab",
     collection: "niqabs",
     gender: "women",
-    price: 34,
-    compareAt: 44,
+    price: 650,
     rating: 4.9,
     reviews: 986,
-    images: [niqabBlackFront],
-    colors: [
-      { name: "Onyx Black", swatch: "#000000" },
-      { name: "Ink", swatch: "#111111" },
-    ],
-    sizes: ["One Size", "Long"],
-    short: "Featherlight chiffon with a secure two-strap fit.",
+    images: [niqabKhadija1, niqabKhadija2, niqabBlackFront],
+    colors: [{ name: "Onyx Black", swatch: "#000000" }],
+    sizes: ["One Size"],
+    short: "Two-layer chiffon niqab with long draping veil.",
     description:
-      "Two-layer chiffon niqab with a soft nose-piece and adjustable ties. Breathable, opaque, and drapes without static.",
-    features: ["Two-layer breathable chiffon", "Adjustable double-tie fit", "Soft nose-bridge", "Wrinkle-resistant"],
+      "Featherlight two-layer chiffon niqab with an extended draping veil. Breathable, opaque, and drapes without static. Cut generously to layer beautifully over any abaya.",
+    features: [
+      "First layer: 54 in — Second layer: 34 in",
+      "Face veil: 22.5 × 13.5 in",
+      "Gear: 82 in",
+      "Premium chiffon fabric",
+      "Adjustable elastic band",
+    ],
     materials: "Premium chiffon.",
     care: "Hand wash cold, hang dry.",
     tag: "Bestseller",
   },
   {
-    slug: "premium-niqab-red",
-    name: "Premium Niqab — Rouge",
+    slug: "rouge-niqab",
+    name: "Rouge Niqab",
     collection: "niqabs",
     gender: "women",
-    price: 34,
+    price: 720,
     rating: 4.8,
     reviews: 214,
     images: [niqabRedFront, niqabRedSide],
@@ -146,7 +114,7 @@ export const catalog: Product[] = [
     ],
     sizes: ["One Size", "Long"],
     short: "A quiet colour statement in premium chiffon.",
-    description: "Same premium chiffon build as our onyx, in a rich rouge dye. Layered, breathable, and drapes softly.",
+    description: "Same premium chiffon build as our Khadija, in a rich rouge dye. Layered, breathable, and drapes softly.",
     features: ["Two-layer chiffon", "Adjustable ties", "Colour-fast"],
     materials: "Premium chiffon.",
     care: "Hand wash cold, hang dry.",
@@ -157,7 +125,7 @@ export const catalog: Product[] = [
     name: "White Woven Kufi",
     collection: "kufis",
     gender: "men",
-    price: 18,
+    price: 450,
     rating: 4.7,
     reviews: 148,
     images: [kufiFront, kufiSide],
@@ -174,8 +142,8 @@ export const catalog: Product[] = [
     name: "Heritage Leather Gloves",
     collection: "gloves",
     gender: "unisex",
-    price: 62,
-    compareAt: 78,
+    price: 3600,
+    compareAt: 4200,
     rating: 4.8,
     reviews: 96,
     images: [heroGloves],
@@ -188,37 +156,74 @@ export const catalog: Product[] = [
     care: "Wipe with a soft dry cloth.",
   },
   {
-    slug: "raw-sidr-honey-250",
-    name: "Raw Sidr Honey · 250g",
+    slug: "kashmir-multiflora-honey",
+    name: "Kashmir Multi-Flora Honey · 500g",
     collection: "honey",
     gender: "unisex",
-    price: 28,
+    price: 850,
     rating: 4.9,
     reviews: 621,
-    images: [heroHoney],
-    sizes: ["250g", "500g"],
-    short: "Single-origin, unheated Sidr honey.",
-    description: "Cold-extracted Sidr honey from a single highland origin. Never heated, never filtered.",
-    features: ["Single-origin", "Cold-extracted", "Unfiltered"],
-    materials: "Raw Sidr honey.",
-    care: "Store cool and dry.",
-    tag: "Limited",
+    images: [honeyMulti],
+    sizes: ["500g"],
+    short: "Pure Kashmiri highland honey — no adulteration.",
+    description:
+      "Premium multi-flora honey from the highlands of Kashmir. Cold-extracted, unfiltered and completely free from adulteration. Rich amber colour with a full floral finish.",
+    features: [
+      "Sourced from Kashmir highlands",
+      "100% pure — no adulteration",
+      "Cold-extracted, unfiltered",
+      "Multi-flora blend",
+      "500g glass jar",
+    ],
+    materials: "Raw honey.",
+    care: "Store cool and dry. Natural crystallisation is normal.",
+    tag: "Bestseller",
   },
   {
-    slug: "raw-acacia-honey-250",
-    name: "Raw Acacia Honey · 250g",
+    slug: "kashmir-acacia-honey",
+    name: "Kashmir Acacia Honey · 500g",
     collection: "honey",
     gender: "unisex",
-    price: 22,
+    price: 900,
     rating: 4.8,
     reviews: 187,
-    images: [heroHoney],
-    sizes: ["250g", "500g"],
-    short: "Delicate, slow to crystallise.",
-    description: "Light, floral acacia honey. Slow to crystallise, gentle on the palate.",
-    features: ["Single-origin", "Cold-extracted"],
-    materials: "Raw Acacia honey.",
+    images: [honeyAcacia],
+    sizes: ["500g"],
+    short: "Light, floral Kashmiri acacia. Slow to crystallise.",
+    description:
+      "Delicate acacia honey from Kashmir — light golden in colour, gentle on the palate, and slow to crystallise. Pure and unfiltered.",
+    features: [
+      "Kashmir acacia origin",
+      "100% pure — no adulteration",
+      "Slow to crystallise",
+      "500g glass jar",
+    ],
+    materials: "Raw acacia honey.",
     care: "Store cool and dry.",
+    tag: "New",
+  },
+  {
+    slug: "kashmir-black-honey",
+    name: "Kashmir Wild Black Honey · 500g",
+    collection: "honey",
+    gender: "unisex",
+    price: 1200,
+    rating: 4.9,
+    reviews: 92,
+    images: [honeyBlack],
+    sizes: ["500g"],
+    short: "Rare dark-forest honey — intense, minerally, wild.",
+    description:
+      "Deep near-black honey harvested from wild Kashmiri forest blooms. Intense, minerally, and prized for its density. Limited seasonal batches.",
+    features: [
+      "Wild forest Kashmir",
+      "100% pure — no adulteration",
+      "Cold-extracted",
+      "500g glass jar",
+    ],
+    materials: "Raw wild honey.",
+    care: "Store cool and dry.",
+    tag: "Limited",
   },
 ];
 
