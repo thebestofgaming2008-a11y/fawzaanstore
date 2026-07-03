@@ -97,7 +97,7 @@ function ProductPage() {
   const variant = [color, size].filter(Boolean).join(" · ");
   const price = product.price;
 
-  const handleAdd = (opts?: { silent?: boolean }) => {
+  const handleAdd = (opts?: { silent?: boolean; withBundle?: boolean }) => {
     setAddLoading(true);
     add({
       id: `${product.slug}__${color}__${size}`,
@@ -107,13 +107,14 @@ function ProductPage() {
       img: product.images[0],
       qty,
     });
-    // Add bundle picks
-    complementary.forEach((p) => {
-      if (bundlePicks[p.slug]) {
-        add({ id: p.slug, name: p.name, price: p.price, img: p.images[0] });
-      }
-    });
-    if (!opts?.silent) toast.success(`${product.name} added to cart`);
+    if (opts?.withBundle) {
+      complementary.forEach((p) => {
+        if (bundlePicks[p.slug]) {
+          add({ id: p.slug, name: p.name, price: p.price, img: p.images[0] });
+        }
+      });
+    }
+    if (!opts?.silent) toast.success(opts?.withBundle ? "Bundle added to cart" : `${product.name} added to cart`);
     setTimeout(() => setAddLoading(false), 500);
   };
 
