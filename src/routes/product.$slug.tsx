@@ -462,7 +462,7 @@ function ProductPage() {
                   </div>
                 </div>
                 <button
-                  onClick={() => handleAdd()}
+                  onClick={() => handleAdd({ withBundle: true })}
                   className="text-[10px] uppercase tracking-[0.22em] bg-ink text-ivory px-4 py-2.5 hover:bg-gold-deep transition"
                 >
                   Add bundle
