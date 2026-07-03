@@ -5,7 +5,7 @@ import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductCard } from "@/components/brand/ProductCard";
 import { catalog, byGender } from "@/lib/products";
-import shemagh from "@/assets/shemagh-red-head.jpg";
+import shemagh from "@/assets/hero-shemagh-editorial.jpg";
 import niqab from "@/assets/hero-niqab.jpg";
 import gloves from "@/assets/hero-gloves.jpg";
 import honey from "@/assets/hero-honey.jpg";
