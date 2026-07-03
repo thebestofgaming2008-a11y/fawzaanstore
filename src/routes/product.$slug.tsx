@@ -369,7 +369,7 @@ function ProductPage() {
                   </>
                 ) : (
                   <>
-                    <ShoppingBag className="h-4 w-4" /> Add to cart · {format(bundleTotal * qty - (bundleTotal - product.price) * (qty - 1))}
+                    <ShoppingBag className="h-4 w-4" /> Add to cart · {format(price * qty)}
                   </>
                 )}
               </button>
