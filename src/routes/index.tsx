@@ -128,8 +128,8 @@ function Home() {
 
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3 md:gap-4">
           <CollectionTile to="/shemaghs" name="Shemaghs" img={shemagh} eyebrow="Signature" className="col-span-2 md:col-span-3 aspect-[4/5] md:aspect-auto md:h-[420px]" size="lg" />
-          <CollectionTile to="/niqabs" name="Niqabs" img={niqab} eyebrow="For Her" className="col-span-2 md:col-span-3 aspect-[4/5] md:aspect-auto md:h-[420px]" size="lg" />
-          <CollectionTile to="/honey" name="Honey" img={honey} className="col-span-2 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]" size="sm" />
+          <CollectionTile to="/niqabs" name="Niqabs" img={niqabTile} eyebrow="For Her" className="col-span-2 md:col-span-3 aspect-[4/5] md:aspect-auto md:h-[420px]" size="lg" />
+          <CollectionTile to="/honey" name="Honey" img={honeyTile} className="col-span-2 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]" size="sm" />
           <CollectionTile to="/gloves" name="Gloves" img={gloves} className="col-span-1 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]" size="sm" />
           <CollectionTile to="/kufis" name="Kufis" img={kufi} className="col-span-1 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]" size="sm" />
         </div>
