@@ -31,35 +31,26 @@ function Home() {
     <div className="min-h-screen bg-ivory text-ink">
       <SiteHeader />
 
-      {/* HERO — full-bleed, editorial */}
-      <section className="relative w-full overflow-hidden bg-ink">
+      {/* HERO — full-bleed, editorial (mannequin close-up, exactly as reference) */}
+      <section className="relative w-full overflow-hidden bg-cream">
         <div className="relative h-[100svh] min-h-[640px] md:min-h-[720px]">
           <img
             src={shemagh}
             alt="Heritage Yemeni shemagh, hand-loomed"
             className="absolute inset-0 h-full w-full object-cover object-center animate-ken-burns"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-ink/20 via-ink/10 to-ink/70" />
-          <div className="relative z-10 h-full flex flex-col items-center justify-end pb-16 md:pb-24 px-5">
-            <div className="text-center text-ivory max-w-2xl animate-fade-up">
-              <p className="text-[11px] md:text-[12px] uppercase tracking-[0.32em] text-gold-soft">The 2026 Collection</p>
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/40 via-transparent to-cream/60" />
+          <div className="relative z-10 h-full flex flex-col items-center justify-center px-5">
+            <div className="text-center text-ink max-w-2xl animate-fade-up">
+              <p className="text-[11px] md:text-[12px] uppercase tracking-[0.32em] text-ink/70">New Collection</p>
               <h1 className="font-display text-6xl sm:text-7xl md:text-8xl mt-4 leading-[0.95] tracking-tight">
-                Heritage,<br />
-                <span className="italic text-gold">worn quietly.</span>
+                Heritage
               </h1>
-              <p className="mt-5 text-sm md:text-base text-ivory/80 max-w-md mx-auto">
-                Hand-loomed shemaghs, chiffon niqabs and raw Kashmiri honey — sourced at origin, made to last.
-              </p>
-              <div className="mt-8 flex items-center justify-center gap-3">
-                <Link to="/women" className="bg-ivory text-ink px-7 md:px-9 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold transition shadow-elegant">Shop Women</Link>
-                <Link to="/men" className="border border-ivory/70 text-ivory px-7 md:px-9 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-ivory hover:text-ink transition">Shop Men</Link>
+              <div className="mt-8 flex items-center justify-center gap-0 shadow-elegant">
+                <Link to="/women" className="bg-ivory text-ink px-8 md:px-10 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold transition">Women</Link>
+                <Link to="/men" className="bg-ink text-ivory px-8 md:px-10 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition">Men</Link>
               </div>
             </div>
-          </div>
-          {/* Scroll cue */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-ivory/70 text-[10px] uppercase tracking-[0.3em] animate-fade-up">
-            <span className="block text-center mb-1">Scroll</span>
-            <span className="block h-6 w-px bg-ivory/50 mx-auto" />
           </div>
         </div>
       </section>
