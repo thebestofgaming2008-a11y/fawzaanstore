@@ -5,11 +5,12 @@ import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductCard } from "@/components/brand/ProductCard";
 import { catalog, byGender } from "@/lib/products";
-import shemagh from "@/assets/hero-shemagh-editorial.jpg";
-import niqab from "@/assets/hero-niqab.jpg";
+import shemagh from "@/assets/shemagh-red-head.jpg";
+import niqabTile from "@/assets/niqab-khadija-2.jpg";
 import gloves from "@/assets/hero-gloves.jpg";
 import honey from "@/assets/hero-honey.jpg";
-import kufi from "@/assets/hero-kufi.jpg";
+import honeyTile from "@/assets/honey-kashmir-multiflora.jpg";
+import kufi from "@/assets/kufi-white-front.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
