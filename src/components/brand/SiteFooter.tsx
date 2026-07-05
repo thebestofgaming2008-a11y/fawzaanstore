@@ -7,7 +7,7 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-5 md:px-8 py-14 md:py-20">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
-            <img src={logo.url} alt="Fawzaan Store" width={112} height={112} className="h-24 w-24 rounded-full bg-ivory object-contain" />
+            <img src={logo.url} alt="Fawzaan Store" width={280} height={120} className="h-16 md:h-20 w-auto object-contain" />
 
             <p className="mt-5 max-w-md text-sm text-ivory/70 leading-relaxed">
               Crafted essentials for the modern Muslim. Heritage textiles, modest accessories,

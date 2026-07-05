@@ -62,9 +62,9 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
             <img
               src={logo.url}
               alt="Fawzaan Store"
-              width={128}
-              height={128}
-              className={`h-12 w-12 md:h-16 md:w-16 rounded-full object-contain ${dark ? "bg-ivory" : "bg-transparent"} transition-transform duration-500 group-hover:scale-105 group-hover:rotate-[4deg]`}
+              width={220}
+              height={94}
+              className="h-9 md:h-11 w-auto object-contain transition-transform duration-500 group-hover:scale-[1.04]"
             />
           </Link>
 

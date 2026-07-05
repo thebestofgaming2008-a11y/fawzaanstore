@@ -33,11 +33,11 @@ function Home() {
 
       {/* HERO — full-bleed, editorial (mannequin close-up, exactly as reference) */}
       <section className="relative w-full overflow-hidden bg-cream">
-        <div className="relative h-[100svh] min-h-[640px] md:min-h-[720px]">
+        <div className="relative h-[82svh] min-h-[560px] md:h-[92svh] md:min-h-[680px]">
           <img
             src={shemagh}
             alt="Heritage Yemeni shemagh, hand-loomed"
-            className="absolute inset-0 h-full w-full object-cover object-center animate-ken-burns"
+            className="absolute inset-0 h-full w-full object-cover object-[center_28%] md:object-[center_35%] animate-ken-burns"
           />
           {/* Warm ivory + gold vignette to match the logo's brand feel */}
           <div className="absolute inset-0 bg-gradient-to-b from-cream/50 via-transparent to-cream/70" />
