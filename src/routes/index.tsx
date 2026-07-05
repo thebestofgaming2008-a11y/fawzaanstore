@@ -39,21 +39,30 @@ function Home() {
             alt="Heritage Yemeni shemagh, hand-loomed"
             className="absolute inset-0 h-full w-full object-cover object-center animate-ken-burns"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-cream/40 via-transparent to-cream/60" />
+          {/* Warm ivory + gold vignette to match the logo's brand feel */}
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/50 via-transparent to-cream/70" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(201,151,0,0.18)_100%)] mix-blend-multiply" />
           <div className="relative z-10 h-full flex flex-col items-center justify-center px-5">
             <div className="text-center text-ink max-w-2xl animate-fade-up">
               <p className="text-[11px] md:text-[12px] uppercase tracking-[0.32em] text-ink/70">New Collection</p>
-              <h1 className="font-display text-6xl sm:text-7xl md:text-8xl mt-4 leading-[0.95] tracking-tight">
+              <div className="mt-3 flex justify-center" aria-hidden>
+                <svg viewBox="0 0 120 12" className="h-3 w-28 text-gold-deep" fill="currentColor">
+                  <path d="M0 6 Q15 0 30 6 T60 6 T90 6 T120 6" stroke="currentColor" strokeWidth="0.8" fill="none"/>
+                  <circle cx="60" cy="6" r="1.6"/>
+                </svg>
+              </div>
+              <h1 className="font-display text-6xl sm:text-7xl md:text-8xl mt-3 leading-[0.95] tracking-tight shimmer-gold">
                 Heritage
               </h1>
               <div className="mt-8 flex items-center justify-center gap-0 shadow-elegant">
-                <Link to="/women" className="bg-ivory text-ink px-8 md:px-10 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold transition">Women</Link>
+                <Link to="/women" className="bg-ivory text-ink px-8 md:px-10 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold hover:text-ink transition">Women</Link>
                 <Link to="/men" className="bg-ink text-ivory px-8 md:px-10 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition">Men</Link>
               </div>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* Best sellers */}
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-16 md:py-24">
