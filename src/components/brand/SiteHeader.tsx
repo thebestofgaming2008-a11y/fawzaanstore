@@ -58,17 +58,14 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
             <Menu className="h-6 w-6" />
           </button>
 
-          <Link to="/" className="flex items-center gap-2 group md:flex-1">
+          <Link to="/" aria-label="Fawzaan Store — home" className="flex items-center group md:flex-1">
             <img
               src={logo.url}
               alt="Fawzaan Store"
-              width={36}
-              height={36}
-              className={`h-9 w-9 rounded-full ${dark ? "bg-ivory" : "bg-cream"} shadow-soft transition-transform group-hover:scale-105`}
+              width={128}
+              height={128}
+              className={`h-12 w-12 md:h-16 md:w-16 rounded-full object-contain ${dark ? "bg-ivory" : "bg-transparent"} transition-transform duration-500 group-hover:scale-105 group-hover:rotate-[4deg]`}
             />
-            <span className="font-display text-lg md:text-2xl tracking-wide leading-none">
-              Fawzaan<span className="text-gold">.</span>store
-            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-7 md:flex-1 md:justify-center">
