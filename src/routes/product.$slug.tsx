@@ -6,7 +6,6 @@ import {
   Truck,
   ShieldCheck,
   RotateCcw,
-  Star,
   Minus,
   Plus,
   Heart,
@@ -14,12 +13,11 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
 } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductCard } from "@/components/brand/ProductCard";
-import { catalog, getProduct, related } from "@/lib/products";
+import { getProduct, related } from "@/lib/products";
 import { getProductBySlug, useCatalogProduct } from "@/services/productService";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
@@ -74,22 +72,12 @@ function ProductPage() {
   const wished = has(product.slug);
   const relatedItems = useMemo(() => related(product.slug, 4), [product.slug]);
 
-  // Cross-collection upsell - "Complete your ritual"
-  const complementary = useMemo(() => {
-    return catalog
-      .filter((p) => p.slug !== product.slug && p.collection !== product.collection)
-      .slice(0, 3);
-  }, [product.collection, product.slug]);
-
   const [imgIdx, setImgIdx] = useState(0);
   const [color, setColor] = useState(product.colors?.[0]?.name ?? "");
   const [size, setSize] = useState(product.sizes?.[0] ?? "");
   const [qty, setQty] = useState(1);
   const [openAcc, setOpenAcc] = useState<"details" | "shipping" | "materials" | null>("details");
   const [addLoading, setAddLoading] = useState(false);
-  const [bundlePicks, setBundlePicks] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(complementary.slice(0, 1).map((p) => [p.slug, true])),
-  );
 
   // Reset gallery when product changes
   useEffect(() => {
@@ -116,7 +104,7 @@ function ProductPage() {
   const variant = [color, size].filter(Boolean).join(" / ");
   const price = product.price;
 
-  const handleAdd = (opts?: { silent?: boolean; withBundle?: boolean }) => {
+  const handleAdd = (opts?: { silent?: boolean }) => {
     setAddLoading(true);
     add({
       id: `${product.slug}__${color}__${size}`,
@@ -128,24 +116,7 @@ function ProductPage() {
       img: product.images[0],
       qty,
     });
-    if (opts?.withBundle) {
-      complementary.forEach((p) => {
-        if (bundlePicks[p.slug]) {
-          const bundleVariant = [p.colors?.[0]?.name, p.sizes?.[0]].filter(Boolean).join(" / ");
-          add({
-            id: p.slug,
-            productId: p.id,
-            slug: p.slug,
-            name: p.name,
-            variant: bundleVariant || undefined,
-            price: p.price,
-            img: p.images[0],
-          });
-        }
-      });
-    }
-    if (!opts?.silent)
-      toast.success(opts?.withBundle ? "Bundle added to cart" : `${product.name} added to cart`);
+    if (!opts?.silent) toast.success(`${product.name} added to cart`);
     setTimeout(() => setAddLoading(false), 500);
   };
 
@@ -155,12 +126,6 @@ function ProductPage() {
       window.location.href = "/checkout";
     }, 120);
   };
-
-  const bundleTotal =
-    product.price + complementary.reduce((s, p) => s + (bundlePicks[p.slug] ? p.price : 0), 0);
-  const bundleCompareTotal =
-    (product.compareAt ?? product.price) +
-    complementary.reduce((s, p) => s + (bundlePicks[p.slug] ? (p.compareAt ?? p.price) : 0), 0);
 
   const nextImg = () => setImgIdx((i) => (i + 1) % product.images.length);
   const prevImg = () => setImgIdx((i) => (i - 1 + product.images.length) % product.images.length);
@@ -221,13 +186,13 @@ function ProductPage() {
             {/* Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-1.5">
               {product.tag && (
-                <span className="bg-ivory/95 text-ink text-[11px] font-semibold uppercase tracking-[0.08em] px-2.5 py-1 shadow-soft">
+                <span className="bg-ivory/92 text-ink text-[10px] font-semibold uppercase tracking-[0.16em] px-3 py-1.5 shadow-soft">
                   {product.tag}
                 </span>
               )}
               {product.compareAt && (
-                <span className="bg-ink text-ivory text-[11px] font-semibold uppercase tracking-[0.08em] px-2.5 py-1">
-                  -{Math.round((1 - product.price / product.compareAt) * 100)}%
+                <span className="bg-gold/92 text-ink text-[10px] font-semibold uppercase tracking-[0.16em] px-3 py-1.5">
+                  Save {Math.round((1 - product.price / product.compareAt) * 100)}%
                 </span>
               )}
             </div>
@@ -289,28 +254,8 @@ function ProductPage() {
             {product.name}
           </h1>
 
-          {/* Rating */}
-          <button
-            onClick={() =>
-              document.getElementById("reviews")?.scrollIntoView({ behavior: "smooth" })
-            }
-            className="mt-4 flex items-center gap-2 text-sm font-medium text-ink/70 hover:text-ink transition"
-          >
-            <div className="flex text-gold-deep">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  className={`h-3.5 w-3.5 ${i < Math.round(product.rating) ? "fill-current" : ""}`}
-                />
-              ))}
-            </div>
-            <span className="underline underline-offset-4 decoration-ink/20 hover:decoration-ink">
-              {product.rating} / {product.reviews.toLocaleString()} reviews
-            </span>
-          </button>
-
           {/* Price */}
-          <div className="mt-6 flex flex-wrap items-baseline gap-3">
+          <div className="mt-7 flex flex-wrap items-baseline gap-3">
             <span className="text-3xl font-semibold leading-none text-ink md:text-4xl">
               {format(price * qty)}
             </span>
@@ -325,12 +270,14 @@ function ProductPage() {
               </>
             )}
           </div>
-          <p className="mt-2 text-sm text-ink/60">
-            Taxes included / Shipping calculated at checkout
+          <p className="mt-2 text-sm text-ink/55">
+            India shipping included. International shipping confirmed on WhatsApp.
           </p>
 
           {/* Short pitch */}
-          <p className="mt-5 max-w-xl text-base leading-7 text-ink/80">{product.short}</p>
+          <p className="mt-6 max-w-xl border-y border-ink/10 py-5 text-base leading-7 text-ink/76">
+            {product.short}
+          </p>
 
           {/* Colour */}
           {product.colors && product.colors.length > 0 && (
@@ -442,7 +389,7 @@ function ProductPage() {
             </div>
             <button
               onClick={handleBuyNow}
-              className="w-full inline-flex items-center justify-center gap-2 bg-gold text-ink px-6 py-4 text-sm font-semibold hover:bg-gold-deep hover:text-ivory active:scale-[0.99] transition"
+              className="w-full inline-flex items-center justify-center gap-2 border border-ink/20 bg-ivory text-ink px-6 py-4 text-sm font-semibold hover:border-ink hover:bg-cream active:scale-[0.99] transition"
             >
               Buy it now
             </button>
@@ -463,107 +410,6 @@ function ProductPage() {
               <span>Secure checkout</span>
             </li>
           </ul>
-
-          {/* ============ Complete your ritual - upsell ============ */}
-          {complementary.length > 0 && (
-            <div className="mt-8 border border-ink/10 bg-cream/40 p-4 md:p-5 animate-fade-in">
-              <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="h-4 w-4 text-gold-deep" />
-                <p className="text-sm font-semibold text-ink">Complete your ritual</p>
-              </div>
-              <ul className="space-y-3">
-                {[
-                  {
-                    slug: product.slug,
-                    name: product.name,
-                    price: product.price,
-                    compareAt: product.compareAt,
-                    img: product.images[0],
-                    base: true,
-                  },
-                  ...complementary.map((c) => ({
-                    slug: c.slug,
-                    name: c.name,
-                    price: c.price,
-                    compareAt: c.compareAt,
-                    img: c.images[0],
-                    base: false,
-                  })),
-                ].map((item) => {
-                  const isBase = item.base;
-                  const checked = isBase ? true : !!bundlePicks[item.slug];
-                  return (
-                    <li key={item.slug} className="flex items-center gap-3">
-                      <button
-                        onClick={() =>
-                          !isBase && setBundlePicks((b) => ({ ...b, [item.slug]: !b[item.slug] }))
-                        }
-                        aria-pressed={checked}
-                        disabled={isBase}
-                        className={`h-5 w-5 shrink-0 border flex items-center justify-center transition ${
-                          checked
-                            ? "bg-ink border-ink text-ivory"
-                            : "border-ink/25 hover:border-ink"
-                        } ${isBase ? "opacity-90" : ""}`}
-                      >
-                        {checked && <Check className="h-3 w-3" />}
-                      </button>
-                      <img
-                        src={item.img}
-                        alt=""
-                        className="h-14 w-12 object-cover bg-ivory shrink-0"
-                      />
-                      <div className="min-w-0 flex-1">
-                        {isBase ? (
-                          <p className="text-sm font-semibold leading-tight truncate">
-                            <span className="text-ink/50">This item / </span>
-                            {item.name}
-                          </p>
-                        ) : (
-                          <Link
-                            to="/product/$slug"
-                            params={{ slug: item.slug }}
-                            className="block text-sm font-semibold leading-tight truncate hover:text-ink/70 transition"
-                          >
-                            {item.name}
-                          </Link>
-                        )}
-                        <div className="mt-0.5 flex items-baseline gap-1.5">
-                          <p className="text-sm font-semibold text-ink">{format(item.price)}</p>
-                          {item.compareAt && (
-                            <p className="text-sm text-ink/50 line-through">
-                              {format(item.compareAt)}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-              <div className="mt-4 pt-3 border-t border-ink/10 flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-ink/55">
-                    Bundle total
-                  </p>
-                  <div className="flex items-baseline gap-2 mt-0.5">
-                    <p className="text-xl font-semibold text-ink">{format(bundleTotal)}</p>
-                    {bundleCompareTotal > bundleTotal && (
-                      <p className="text-xs text-ink/40 line-through">
-                        {format(bundleCompareTotal)}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleAdd({ withBundle: true })}
-                  className="text-sm font-semibold bg-ink text-ivory px-4 py-2.5 hover:bg-gold-deep transition"
-                >
-                  Add bundle
-                </button>
-              </div>
-            </div>
-          )}
 
           {/* Accordion */}
           <div className="mt-8 border-t border-ink/10">
@@ -638,68 +484,6 @@ function ProductPage() {
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ Reviews teaser ============ */}
-      <section id="reviews" className="border-t border-ink/10 bg-cream/30">
-        <div className="mx-auto max-w-7xl px-4 md:px-8 py-14 md:py-20">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-            <div>
-              <p className="eyebrow text-gold-deep">Reviews</p>
-              <h2 className="mt-2 font-sans-ui text-2xl font-semibold md:text-3xl">What customers are saying</h2>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex text-gold-deep">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-4 w-4 ${i < Math.round(product.rating) ? "fill-current" : ""}`}
-                  />
-                ))}
-              </div>
-              <p className="text-sm font-medium text-ink/65">
-                {product.rating}/5 / {product.reviews.toLocaleString()} reviews
-              </p>
-            </div>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4 md:gap-6">
-            {[
-              {
-                name: "Yusuf R.",
-                city: "London",
-                body: "Quality is exceptional - the weight and drape feel true to tradition. Shipped fast to the UK.",
-                stars: 5,
-              },
-              {
-                name: "Amina K.",
-                city: "Toronto",
-                body: "Beautifully finished. Sits softly and holds shape all day. Will be ordering more colours.",
-                stars: 5,
-              },
-              {
-                name: "Faisal M.",
-                city: "Dubai",
-                body: "Honest craft. Colour is deep and true to the photos. Recommended for anyone serious about quality.",
-                stars: 4,
-              },
-            ].map((r, i) => (
-              <article
-                key={i}
-                className="bg-ivory border border-ink/10 p-5 md:p-6 hover:shadow-soft transition"
-              >
-                <div className="flex text-gold-deep mb-3">
-                  {Array.from({ length: 5 }).map((_, j) => (
-                    <Star key={j} className={`h-3.5 w-3.5 ${j < r.stars ? "fill-current" : ""}`} />
-                  ))}
-                </div>
-                <p className="text-base leading-7 text-ink/80">"{r.body}"</p>
-                <p className="mt-4 text-sm font-semibold text-ink/60">
-                  {r.name} / {r.city}
-                </p>
-              </article>
             ))}
           </div>
         </div>
