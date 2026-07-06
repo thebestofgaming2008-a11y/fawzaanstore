@@ -32,36 +32,51 @@ function Home() {
       <SiteHeader />
 
       {/* HERO — full-bleed, editorial (mannequin close-up, exactly as reference) */}
-      <section className="relative w-full overflow-hidden bg-cream">
-        <div className="relative h-[82svh] min-h-[560px] md:h-[92svh] md:min-h-[680px]">
+      <section className="relative w-full overflow-hidden bg-cream -mt-px">
+        <div className="relative h-[88svh] min-h-[600px] md:h-[96svh] md:min-h-[720px]">
           <img
             src={shemagh}
             alt="Heritage Yemeni shemagh, hand-loomed"
-            className="absolute inset-0 h-full w-full object-cover object-[center_28%] md:object-[center_35%] animate-ken-burns"
+            className="absolute inset-0 h-full w-full object-cover object-[center_top] md:object-[center_15%] scale-[1.08] animate-ken-burns"
           />
-          {/* Warm ivory + gold vignette to match the logo's brand feel */}
-          <div className="absolute inset-0 bg-gradient-to-b from-cream/50 via-transparent to-cream/70" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(201,151,0,0.18)_100%)] mix-blend-multiply" />
-          <div className="relative z-10 h-full flex flex-col items-center justify-center px-5">
-            <div className="text-center text-ink max-w-2xl animate-fade-up">
-              <p className="text-[11px] md:text-[12px] uppercase tracking-[0.32em] text-ink/70">New Collection</p>
+          {/* Warm ink vignette for title readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/10 via-ink/25 to-ink/55" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.35)_100%)]" />
+          <div className="relative z-10 h-full flex flex-col items-center justify-end pb-16 md:pb-24 px-5">
+            <div className="text-center text-ivory max-w-2xl animate-fade-up">
+              <p className="text-[11px] md:text-[12px] uppercase tracking-[0.4em] shimmer-gold font-semibold">New Collection</p>
               <div className="mt-3 flex justify-center" aria-hidden>
-                <svg viewBox="0 0 120 12" className="h-3 w-28 text-gold-deep" fill="currentColor">
+                <svg viewBox="0 0 120 12" className="h-3 w-28 text-gold" fill="currentColor">
                   <path d="M0 6 Q15 0 30 6 T60 6 T90 6 T120 6" stroke="currentColor" strokeWidth="0.8" fill="none"/>
                   <circle cx="60" cy="6" r="1.6"/>
                 </svg>
               </div>
-              <h1 className="font-display text-6xl sm:text-7xl md:text-8xl mt-3 leading-[0.95] tracking-tight shimmer-gold">
+              <h1 className="font-display text-6xl sm:text-7xl md:text-8xl mt-3 leading-[0.95] tracking-tight text-ivory drop-shadow-[0_4px_18px_rgba(0,0,0,0.55)]">
                 Heritage
               </h1>
-              <div className="mt-8 flex items-center justify-center gap-0 shadow-elegant">
-                <Link to="/women" className="bg-ivory text-ink px-8 md:px-10 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold hover:text-ink transition">Women</Link>
-                <Link to="/men" className="bg-ink text-ivory px-8 md:px-10 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition">Men</Link>
+
+              {/* Refined Women / Men selector — segmented pill with gold ring */}
+              <div className="mt-8 inline-flex items-stretch p-1 rounded-full bg-ivory/95 backdrop-blur-sm border border-gold/40 shadow-elegant relative">
+                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-inset ring-gold/20" />
+                <Link
+                  to="/women"
+                  className="relative px-7 md:px-10 py-3 rounded-full text-[11px] font-semibold uppercase tracking-[0.28em] text-ink hover:bg-gold hover:text-ink transition-all group"
+                >
+                  <span className="relative">Women</span>
+                </Link>
+                <span aria-hidden className="w-px my-2 bg-gold/40" />
+                <Link
+                  to="/men"
+                  className="relative px-7 md:px-10 py-3 rounded-full text-[11px] font-semibold uppercase tracking-[0.28em] text-ink hover:bg-ink hover:text-gold transition-all"
+                >
+                  <span className="relative">Men</span>
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </section>
+
 
 
       {/* Best sellers */}
