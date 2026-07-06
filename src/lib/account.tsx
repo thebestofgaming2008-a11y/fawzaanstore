@@ -26,7 +26,7 @@ export type OrderItem = { name: string; variant?: string; qty: number; price: nu
 export type Order = {
   id: string;
   date: string;
-  status: "Processing" | "Shipped" | "Delivered";
+  status: string;
   items: OrderItem[];
   total: number;
   address: Address;
@@ -40,7 +40,7 @@ type Ctx = {
   update: (patch: Partial<Account>) => void;
   addAddress: (a: Omit<Address, "id">) => void;
   removeAddress: (id: string) => void;
-  addOrder: (o: Omit<Order, "id" | "date" | "status">) => Order;
+  addOrder: (o: Omit<Order, "id" | "date" | "status"> & Partial<Pick<Order, "id" | "date" | "status">>) => Order;
 };
 
 const AccCtx = createContext<Ctx | null>(null);
@@ -82,7 +82,12 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     } : prev),
     removeAddress: (id) => setAccount((prev) => prev ? { ...prev, addresses: prev.addresses.filter((a) => a.id !== id) } : prev),
     addOrder: (o) => {
-      const order: Order = { ...o, id: "FZ-" + Math.random().toString(36).slice(2, 8).toUpperCase(), date: new Date().toISOString(), status: "Processing" };
+      const order: Order = {
+        ...o,
+        id: o.id ?? "FZ-" + Math.random().toString(36).slice(2, 8).toUpperCase(),
+        date: o.date ?? new Date().toISOString(),
+        status: o.status ?? "Processing",
+      };
       setAccount((prev) => prev ? { ...prev, orders: [order, ...prev.orders] } : prev);
       return order;
     },

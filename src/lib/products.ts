@@ -25,6 +25,7 @@ export type Gender = "men" | "women" | "unisex";
 export type Variant = { name: string; swatch?: string };
 
 export type Product = {
+  id?: string;
   slug: string;
   name: string;
   collection: Collection;
@@ -61,13 +62,13 @@ export const catalog: Product[] = [
       { name: "Ivory", swatch: "#faf6ea" },
     ],
     sizes: ["Standard 130 × 130 cm"],
-    short: "Hand-loomed Yemeni keffiyeh — the heritage wrap.",
+    short: "Hand-loomed Yemeni keffiyeh - the heritage wrap.",
     description:
-      "Hand-loomed in 100% long-staple cotton with a tight herringbone weave and knotted tassels. A generous 130 × 130 cm cut wraps without slipping — Yemeni craft, honest as ever.",
+      "Hand-loomed in 100% long-staple cotton with a tight herringbone weave and knotted tassels. A generous 130 × 130 cm cut wraps without slipping - Yemeni craft, honest as ever.",
     features: [
       "100% combed cotton, mid-weight",
       "Hand-knotted fringe tassels",
-      "130 × 130 cm — wraps without slipping",
+      "130 × 130 cm - wraps without slipping",
       "Colour-fast dye, machine washable cold",
     ],
     materials: "100% long-staple cotton.",
@@ -89,7 +90,7 @@ export const catalog: Product[] = [
     description:
       "Featherlight two-layer chiffon niqab with an extended draping veil. Breathable, opaque, and drapes without static. Cut generously to layer beautifully over any abaya.",
     features: [
-      "First layer: 54 in — Second layer: 34 in",
+      "First layer: 54 in - Second layer: 34 in",
       "Face veil: 22.5 × 13.5 in",
       "Gear: 82 in",
       "Premium chiffon fabric",
@@ -157,7 +158,7 @@ export const catalog: Product[] = [
   },
   {
     slug: "kashmir-multiflora-honey",
-    name: "Kashmir Multi-Flora Honey · 500g",
+    name: "Kashmir Multi-Flora Honey  /  500g",
     collection: "honey",
     gender: "unisex",
     price: 850,
@@ -165,12 +166,12 @@ export const catalog: Product[] = [
     reviews: 621,
     images: [honeyMulti],
     sizes: ["500g"],
-    short: "Pure Kashmiri highland honey — no adulteration.",
+    short: "Pure Kashmiri highland honey - no adulteration.",
     description:
       "Premium multi-flora honey from the highlands of Kashmir. Cold-extracted, unfiltered and completely free from adulteration. Rich amber colour with a full floral finish.",
     features: [
       "Sourced from Kashmir highlands",
-      "100% pure — no adulteration",
+      "100% pure - no adulteration",
       "Cold-extracted, unfiltered",
       "Multi-flora blend",
       "500g glass jar",
@@ -181,7 +182,7 @@ export const catalog: Product[] = [
   },
   {
     slug: "kashmir-acacia-honey",
-    name: "Kashmir Acacia Honey · 500g",
+    name: "Kashmir Acacia Honey  /  500g",
     collection: "honey",
     gender: "unisex",
     price: 900,
@@ -191,10 +192,10 @@ export const catalog: Product[] = [
     sizes: ["500g"],
     short: "Light, floral Kashmiri acacia. Slow to crystallise.",
     description:
-      "Delicate acacia honey from Kashmir — light golden in colour, gentle on the palate, and slow to crystallise. Pure and unfiltered.",
+      "Delicate acacia honey from Kashmir - light golden in colour, gentle on the palate, and slow to crystallise. Pure and unfiltered.",
     features: [
       "Kashmir acacia origin",
-      "100% pure — no adulteration",
+      "100% pure - no adulteration",
       "Slow to crystallise",
       "500g glass jar",
     ],
@@ -204,7 +205,7 @@ export const catalog: Product[] = [
   },
   {
     slug: "kashmir-black-honey",
-    name: "Kashmir Wild Black Honey · 500g",
+    name: "Kashmir Wild Black Honey  /  500g",
     collection: "honey",
     gender: "unisex",
     price: 1200,
@@ -212,12 +213,12 @@ export const catalog: Product[] = [
     reviews: 92,
     images: [honeyBlack],
     sizes: ["500g"],
-    short: "Rare dark-forest honey — intense, minerally, wild.",
+    short: "Rare dark-forest honey - intense, minerally, wild.",
     description:
       "Deep near-black honey harvested from wild Kashmiri forest blooms. Intense, minerally, and prized for its density. Limited seasonal batches.",
     features: [
       "Wild forest Kashmir",
-      "100% pure — no adulteration",
+      "100% pure - no adulteration",
       "Cold-extracted",
       "500g glass jar",
     ],

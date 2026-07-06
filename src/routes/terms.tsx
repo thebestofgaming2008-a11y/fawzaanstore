@@ -76,7 +76,7 @@ function TermsPage() {
           <section>
             <h2 className="font-display text-2xl mt-8 mb-3">7. Intellectual Property</h2>
             <p>
-              All content on this site — logos, images, text, designs — is the property of Fawzaan
+              All content on this site - logos, images, text, designs - is the property of Fawzaan
               Store and protected by copyright and trademark laws. You may not reproduce, distribute,
               or use any content without written permission.
             </p>

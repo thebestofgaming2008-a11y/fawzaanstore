@@ -4,20 +4,23 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
+import { reportClientError } from "../lib/errorReporting";
 import { CartProvider } from "@/lib/cart";
 import { WishlistProvider } from "@/lib/wishlist";
 import { AccountProvider } from "@/lib/account";
 import { CurrencyProvider } from "@/lib/currency";
+import { convex } from "@/lib/backend";
 import { AnnouncementBar } from "@/components/brand/AnnouncementBar";
 import { CartDrawer } from "@/components/brand/CartDrawer";
 import { Toaster } from "sonner";
+import { ConvexAuthProvider } from "@convex-dev/auth/react";
 
 function NotFoundComponent() {
   return (
@@ -45,7 +48,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    reportClientError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (
@@ -84,26 +87,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Fawzaan Store — Shemaghs, Niqabs, Gloves & Pure Honey" },
-      { name: "description", content: "Heritage essentials for the modern Muslim. Premium shemaghs, niqabs, modest gloves and raw honey — crafted with intention." },
+      { title: "Fawzaan Store - Shemaghs, Niqabs, Gloves & Pure Honey" },
+      { name: "description", content: "Heritage essentials for the modern Muslim. Premium shemaghs, niqabs, modest gloves and raw honey - crafted with intention." },
       { name: "author", content: "Fawzaan Store" },
       { name: "theme-color", content: "#1a1a1a" },
-      { property: "og:title", content: "Fawzaan Store — Shemaghs, Niqabs, Gloves & Pure Honey" },
-      { property: "og:description", content: "Heritage essentials for the modern Muslim. Premium shemaghs, niqabs, modest gloves and raw honey — crafted with intention." },
+      { property: "og:title", content: "Fawzaan Store - Shemaghs, Niqabs, Gloves & Pure Honey" },
+      { property: "og:description", content: "Heritage essentials for the modern Muslim. Premium shemaghs, niqabs, modest gloves and raw honey - crafted with intention." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Fawzaan Store — Shemaghs, Niqabs, Gloves & Pure Honey" },
-      { name: "twitter:description", content: "Heritage essentials for the modern Muslim. Premium shemaghs, niqabs, modest gloves and raw honey — crafted with intention." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/exeSw4qYuJaqSyFyyVnVqcmkJnF2/social-images/social-1782569144325-image.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/exeSw4qYuJaqSyFyyVnVqcmkJnF2/social-images/social-1782569144325-image.webp" },
+      { name: "twitter:title", content: "Fawzaan Store - Shemaghs, Niqabs, Gloves & Pure Honey" },
+      { name: "twitter:description", content: "Heritage essentials for the modern Muslim. Premium shemaghs, niqabs, modest gloves and raw honey - crafted with intention." },
+      { property: "og:image", content: "https://fawzaanstore.pages.dev/og-image.jpg" },
+      { name: "twitter:image", content: "https://fawzaanstore.pages.dev/og-image.jpg" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "canonical", href: "https://fawzaanstore.pages.dev" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap",
       },
     ],
   }),
@@ -129,17 +133,19 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const isAdminRoute = pathname.startsWith("/admin");
 
-  return (
+  const app = (
     <QueryClientProvider client={queryClient}>
       <CurrencyProvider>
         <AccountProvider>
           <WishlistProvider>
             <CartProvider>
-              <AnnouncementBar />
+              {!isAdminRoute && <AnnouncementBar />}
               {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
               <Outlet />
-              <CartDrawer />
+              {!isAdminRoute && <CartDrawer />}
               <Toaster position="bottom-center" theme="light" richColors closeButton />
             </CartProvider>
           </WishlistProvider>
@@ -147,4 +153,6 @@ function RootComponent() {
       </CurrencyProvider>
     </QueryClientProvider>
   );
+
+  return convex ? <ConvexAuthProvider client={convex}>{app}</ConvexAuthProvider> : app;
 }

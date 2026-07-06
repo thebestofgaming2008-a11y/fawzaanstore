@@ -7,7 +7,7 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About Us | Fawzaan.store" },
-      { name: "description", content: "The story behind Fawzaan Store — heritage textiles, modest essentials, and raw honey crafted with intention." },
+      { name: "description", content: "The story behind Fawzaan Store - heritage textiles, modest essentials, and raw honey crafted with intention." },
     ],
   }),
   component: AboutPage,
@@ -24,7 +24,7 @@ function AboutPage() {
           <p className="text-ink/70 text-lg leading-relaxed max-w-2xl mx-auto">
             Fawzaan Store was founded in 2021 with a simple idea: source the finest essentials for
             the modern Muslim, work directly with the artisans who make them, and sell them at a
-            fair price — without the markups of middlemen.
+            fair price - without the markups of middlemen.
           </p>
         </section>
 
@@ -40,7 +40,7 @@ function AboutPage() {
                 for our raw honey range.
               </p>
               <p className="text-ink/75 leading-relaxed">
-                Every product passes our quality bench before it ships — and if it doesn't meet our
+                Every product passes our quality bench before it ships - and if it doesn't meet our
                 standard, it doesn't go in the box.
               </p>
             </div>
@@ -72,8 +72,8 @@ function AboutPage() {
             <p className="eyebrow text-gold mb-3">Our promise</p>
             <h2 className="font-display text-3xl md:text-4xl mb-5">Quality first. Always.</h2>
             <p className="text-ivory/75 leading-relaxed">
-              If anything you receive isn't what you expected — wrong fit, wrong shade, just not for
-              you — send it back within 30 days for a full refund. No questions, no hassle.
+              If anything you receive isn't what you expected - wrong fit, wrong shade, just not for
+              you - send it back within 30 days for a full refund. No questions, no hassle.
             </p>
           </div>
         </section>

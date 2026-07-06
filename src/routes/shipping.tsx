@@ -25,7 +25,7 @@ function ShippingPage() {
           <section>
             <h2 className="font-display text-2xl mt-8 mb-3">Processing Time</h2>
             <p>
-              Orders are processed within <strong>1–2 business days</strong> (Monday–Friday, excluding
+              Orders are processed within <strong>1-2 business days</strong> (Monday-Friday, excluding
               public holidays). You will receive a confirmation email with tracking once your order ships.
             </p>
           </section>
@@ -42,11 +42,11 @@ function ShippingPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-ink/10">
-                  <tr><td className="px-4 py-3">India</td><td className="px-4 py-3">3–5 business days</td><td className="px-4 py-3">1–2 business days</td></tr>
-                  <tr><td className="px-4 py-3">Middle East</td><td className="px-4 py-3">5–8 business days</td><td className="px-4 py-3">2–3 business days</td></tr>
-                  <tr><td className="px-4 py-3">Europe / UK</td><td className="px-4 py-3">7–10 business days</td><td className="px-4 py-3">3–5 business days</td></tr>
-                  <tr><td className="px-4 py-3">North America</td><td className="px-4 py-3">7–12 business days</td><td className="px-4 py-3">3–5 business days</td></tr>
-                  <tr><td className="px-4 py-3">Rest of World</td><td className="px-4 py-3">10–15 business days</td><td className="px-4 py-3">5–7 business days</td></tr>
+                  <tr><td className="px-4 py-3">India</td><td className="px-4 py-3">3-5 business days</td><td className="px-4 py-3">1-2 business days</td></tr>
+                  <tr><td className="px-4 py-3">Middle East</td><td className="px-4 py-3">5-8 business days</td><td className="px-4 py-3">2-3 business days</td></tr>
+                  <tr><td className="px-4 py-3">Europe / UK</td><td className="px-4 py-3">7-10 business days</td><td className="px-4 py-3">3-5 business days</td></tr>
+                  <tr><td className="px-4 py-3">North America</td><td className="px-4 py-3">7-12 business days</td><td className="px-4 py-3">3-5 business days</td></tr>
+                  <tr><td className="px-4 py-3">Rest of World</td><td className="px-4 py-3">10-15 business days</td><td className="px-4 py-3">5-7 business days</td></tr>
                 </tbody>
               </table>
             </div>

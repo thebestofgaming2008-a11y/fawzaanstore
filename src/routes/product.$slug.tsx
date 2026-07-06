@@ -2,27 +2,40 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Product } from "@/lib/products";
 import {
-  ShoppingBag, Truck, ShieldCheck, RotateCcw, Star, Minus, Plus, Heart,
-  ChevronDown, Check, ChevronLeft, ChevronRight, Sparkles,
+  ShoppingBag,
+  Truck,
+  ShieldCheck,
+  RotateCcw,
+  Star,
+  Minus,
+  Plus,
+  Heart,
+  ChevronDown,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
 } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductCard } from "@/components/brand/ProductCard";
 import { catalog, getProduct, related } from "@/lib/products";
+import { getProductBySlug, useCatalogProduct } from "@/services/productService";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import { useCurrency } from "@/lib/currency";
+import { FREE_SHIP_THRESHOLD } from "@/lib/shipping";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/product/$slug")({
   head: ({ params }) => {
     const p = getProduct(params.slug);
-    if (!p) return { meta: [{ title: "Product — Fawzaan.store" }] };
+    if (!p) return { meta: [{ title: "Product - Fawzaan.store" }] };
     return {
       meta: [
-        { title: `${p.name} — Fawzaan.store` },
+        { title: `${p.name} - Fawzaan.store` },
         { name: "description", content: p.short },
-        { property: "og:title", content: `${p.name} — Fawzaan.store` },
+        { property: "og:title", content: `${p.name} - Fawzaan.store` },
         { property: "og:description", content: p.short },
         { property: "og:image", content: p.images[0] },
         { name: "twitter:card", content: "summary_large_image" },
@@ -30,17 +43,19 @@ export const Route = createFileRoute("/product/$slug")({
       ],
     };
   },
-  loader: ({ params }) => {
-    const p = getProduct(params.slug);
-    if (!p) throw notFound();
-    return { product: p };
+  loader: async ({ params }) => {
+    const product = getProduct(params.slug) ?? (await getProductBySlug(params.slug));
+    if (!product) throw notFound();
+    return { product, slug: params.slug };
   },
   notFoundComponent: () => (
     <div className="min-h-screen flex items-center justify-center bg-ivory">
       <div className="text-center">
         <p className="eyebrow text-ink/50">404</p>
         <h1 className="font-display text-4xl mt-2">Product not found</h1>
-        <Link to="/" className="mt-6 inline-block text-sm underline underline-offset-4">Back home</Link>
+        <Link to="/" className="mt-6 inline-block text-sm underline underline-offset-4">
+          Back home
+        </Link>
       </div>
     </div>
   ),
@@ -48,19 +63,23 @@ export const Route = createFileRoute("/product/$slug")({
 });
 
 function ProductPage() {
-  const { product } = Route.useLoaderData() as { product: Product };
+  const { product: initialProduct, slug } = Route.useLoaderData() as {
+    product: Product;
+    slug: string;
+  };
+  const product = useCatalogProduct(slug, initialProduct) ?? initialProduct;
   const { add } = useCart();
   const { has, toggle } = useWishlist();
   const { format } = useCurrency();
   const wished = has(product.slug);
   const relatedItems = useMemo(() => related(product.slug, 4), [product.slug]);
 
-  // Cross-collection upsell — "Complete your ritual"
+  // Cross-collection upsell - "Complete your ritual"
   const complementary = useMemo(() => {
     return catalog
       .filter((p) => p.slug !== product.slug && p.collection !== product.collection)
       .slice(0, 3);
-  }, [product.slug]);
+  }, [product.collection, product.slug]);
 
   const [imgIdx, setImgIdx] = useState(0);
   const [color, setColor] = useState(product.colors?.[0]?.name ?? "");
@@ -78,29 +97,31 @@ function ProductPage() {
     setColor(product.colors?.[0]?.name ?? "");
     setSize(product.sizes?.[0] ?? "");
     setQty(1);
-  }, [product.slug]);
+  }, [product.colors, product.sizes, product.slug]);
 
-  // Sticky bar reveal — only after primary CTA scrolls out of view
+  // Sticky bar reveal - only after primary CTA scrolls out of view
   const primaryCtaRef = useRef<HTMLDivElement | null>(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
   useEffect(() => {
     const el = primaryCtaRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => setShowStickyBar(!entry.isIntersecting),
-      { rootMargin: "0px 0px -20% 0px", threshold: 0 },
-    );
+    const io = new IntersectionObserver(([entry]) => setShowStickyBar(!entry.isIntersecting), {
+      rootMargin: "0px 0px -20% 0px",
+      threshold: 0,
+    });
     io.observe(el);
     return () => io.disconnect();
   }, [product.slug]);
 
-  const variant = [color, size].filter(Boolean).join(" · ");
+  const variant = [color, size].filter(Boolean).join(" / ");
   const price = product.price;
 
   const handleAdd = (opts?: { silent?: boolean; withBundle?: boolean }) => {
     setAddLoading(true);
     add({
       id: `${product.slug}__${color}__${size}`,
+      productId: product.id,
+      slug: product.slug,
       name: product.name,
       variant,
       price,
@@ -110,17 +131,29 @@ function ProductPage() {
     if (opts?.withBundle) {
       complementary.forEach((p) => {
         if (bundlePicks[p.slug]) {
-          add({ id: p.slug, name: p.name, price: p.price, img: p.images[0] });
+          const bundleVariant = [p.colors?.[0]?.name, p.sizes?.[0]].filter(Boolean).join(" / ");
+          add({
+            id: p.slug,
+            productId: p.id,
+            slug: p.slug,
+            name: p.name,
+            variant: bundleVariant || undefined,
+            price: p.price,
+            img: p.images[0],
+          });
         }
       });
     }
-    if (!opts?.silent) toast.success(opts?.withBundle ? "Bundle added to cart" : `${product.name} added to cart`);
+    if (!opts?.silent)
+      toast.success(opts?.withBundle ? "Bundle added to cart" : `${product.name} added to cart`);
     setTimeout(() => setAddLoading(false), 500);
   };
 
   const handleBuyNow = () => {
     handleAdd({ silent: true });
-    setTimeout(() => { window.location.href = "/checkout"; }, 120);
+    setTimeout(() => {
+      window.location.href = "/checkout";
+    }, 120);
   };
 
   const bundleTotal =
@@ -138,10 +171,17 @@ function ProductPage() {
 
       {/* Breadcrumb */}
       <div className="mx-auto max-w-7xl px-4 md:px-8 pt-5 md:pt-8">
-        <nav aria-label="Breadcrumb" className="text-[10px] uppercase tracking-[0.24em] text-ink/45">
-          <Link to="/" className="hover:text-ink transition">Home</Link>
+        <nav aria-label="Breadcrumb" className="font-sans-ui text-xs font-medium text-ink/60">
+          <Link to="/" className="hover:text-ink transition">
+            Home
+          </Link>
           <span className="mx-2 text-ink/25">/</span>
-          <Link to={`/${product.collection}` as string} className="hover:text-ink capitalize transition">{product.collection}</Link>
+          <Link
+            to={`/${product.collection}` as string}
+            className="hover:text-ink capitalize transition"
+          >
+            {product.collection}
+          </Link>
           <span className="mx-2 text-ink/25">/</span>
           <span className="text-ink/70">{product.name}</span>
         </nav>
@@ -154,11 +194,11 @@ function ProductPage() {
             <img
               key={imgIdx}
               src={product.images[imgIdx]}
-              alt={`${product.name} — view ${imgIdx + 1}`}
+              alt={`${product.name} - view ${imgIdx + 1}`}
               className="absolute inset-0 h-full w-full object-cover animate-fade-in"
             />
 
-            {/* Prev / Next — desktop */}
+            {/* Prev / Next - desktop */}
             {product.images.length > 1 && (
               <>
                 <button
@@ -181,12 +221,12 @@ function ProductPage() {
             {/* Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-1.5">
               {product.tag && (
-                <span className="bg-ivory/95 text-ink text-[10px] uppercase tracking-[0.22em] px-2.5 py-1 shadow-soft">
+                <span className="bg-ivory/95 text-ink text-[11px] font-semibold uppercase tracking-[0.08em] px-2.5 py-1 shadow-soft">
                   {product.tag}
                 </span>
               )}
               {product.compareAt && (
-                <span className="bg-ink text-ivory text-[10px] uppercase tracking-[0.22em] px-2.5 py-1">
+                <span className="bg-ink text-ivory text-[11px] font-semibold uppercase tracking-[0.08em] px-2.5 py-1">
                   -{Math.round((1 - product.price / product.compareAt) * 100)}%
                 </span>
               )}
@@ -195,10 +235,15 @@ function ProductPage() {
             {/* Wishlist */}
             <button
               aria-label={wished ? "Remove from wishlist" : "Save to wishlist"}
-              onClick={() => { toggle(product.slug); toast(wished ? "Removed from wishlist" : "Saved to wishlist"); }}
+              onClick={() => {
+                toggle(product.slug);
+                toast(wished ? "Removed from wishlist" : "Saved to wishlist");
+              }}
               className="absolute top-4 right-4 h-10 w-10 rounded-full bg-ivory/95 backdrop-blur shadow-soft flex items-center justify-center hover:scale-105 active:scale-95 transition"
             >
-              <Heart className={`h-4 w-4 transition ${wished ? "fill-red-600 text-red-600" : ""}`} />
+              <Heart
+                className={`h-4 w-4 transition ${wished ? "fill-red-600 text-red-600" : ""}`}
+              />
             </button>
 
             {/* Mobile dot indicators */}
@@ -216,7 +261,7 @@ function ProductPage() {
             )}
           </div>
 
-          {/* Thumbnails — desktop only */}
+          {/* Thumbnails - desktop only */}
           {product.images.length > 1 && (
             <div className="hidden md:grid mt-3 grid-cols-6 gap-2">
               {product.images.map((src, i) => (
@@ -236,51 +281,62 @@ function ProductPage() {
         </div>
 
         {/* ============ Details ============ */}
-        <div className="md:pt-1">
-          <p className="eyebrow text-gold-deep capitalize">{product.collection}</p>
-          <h1 className="mt-2.5 font-display text-[2rem] md:text-5xl leading-[1.05] text-balance">
+        <div className="md:pt-1 font-sans-ui">
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-ink/65 capitalize">
+            {product.collection}
+          </p>
+          <h1 className="mt-2.5 max-w-xl text-3xl font-semibold leading-tight text-ink text-balance md:text-5xl">
             {product.name}
           </h1>
 
           {/* Rating */}
           <button
-            onClick={() => document.getElementById("reviews")?.scrollIntoView({ behavior: "smooth" })}
-            className="mt-3 flex items-center gap-2 text-sm text-ink/70 hover:text-ink transition"
+            onClick={() =>
+              document.getElementById("reviews")?.scrollIntoView({ behavior: "smooth" })
+            }
+            className="mt-4 flex items-center gap-2 text-sm font-medium text-ink/70 hover:text-ink transition"
           >
             <div className="flex text-gold-deep">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className={`h-3.5 w-3.5 ${i < Math.round(product.rating) ? "fill-current" : ""}`} />
+                <Star
+                  key={i}
+                  className={`h-3.5 w-3.5 ${i < Math.round(product.rating) ? "fill-current" : ""}`}
+                />
               ))}
             </div>
             <span className="underline underline-offset-4 decoration-ink/20 hover:decoration-ink">
-              {product.rating} · {product.reviews.toLocaleString()} reviews
+              {product.rating} / {product.reviews.toLocaleString()} reviews
             </span>
           </button>
 
           {/* Price */}
-          <div className="mt-5 flex items-baseline gap-3">
-            <span className="font-display text-3xl md:text-[2.25rem] leading-none">{format(price * qty)}</span>
+          <div className="mt-6 flex flex-wrap items-baseline gap-3">
+            <span className="text-3xl font-semibold leading-none text-ink md:text-4xl">
+              {format(price * qty)}
+            </span>
             {product.compareAt && (
               <>
-                <span className="text-ink/40 line-through text-lg">{format(product.compareAt * qty)}</span>
-                <span className="text-[10px] uppercase tracking-[0.22em] bg-gold-soft/70 text-gold-deep px-2 py-1">
+                <span className="text-lg font-medium text-ink/50 line-through">
+                  {format(product.compareAt * qty)}
+                </span>
+                <span className="text-xs font-semibold bg-gold-soft/70 text-ink px-2.5 py-1">
                   Save {format((product.compareAt - product.price) * qty)}
                 </span>
               </>
             )}
           </div>
-          <p className="mt-1.5 text-[11px] uppercase tracking-[0.18em] text-ink/50">
-            Taxes included · Shipping calculated at checkout
+          <p className="mt-2 text-sm text-ink/60">
+            Taxes included / Shipping calculated at checkout
           </p>
 
           {/* Short pitch */}
-          <p className="mt-5 text-ink/75 leading-relaxed text-[15px] max-w-md">{product.short}</p>
+          <p className="mt-5 max-w-xl text-base leading-7 text-ink/80">{product.short}</p>
 
           {/* Colour */}
           {product.colors && product.colors.length > 0 && (
             <div className="mt-7">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-ink/55 mb-3">
-                Colour · <span className="text-ink">{color}</span>
+              <p className="mb-3 text-sm font-semibold text-ink">
+                Colour / <span className="text-ink">{color}</span>
               </p>
               <div className="flex flex-wrap gap-2.5">
                 {product.colors.map((c) => (
@@ -297,10 +353,16 @@ function ProductPage() {
                     style={{ backgroundColor: c.swatch ?? "#eee" }}
                   >
                     {color === c.name && (
-                      <Check className={`absolute inset-0 m-auto h-4 w-4 ${
-                        c.swatch === "#faf6ea" || c.swatch === "#f5f2ea" || c.swatch === "#d8c9a3" || c.swatch === "#FFFFFF"
-                          ? "text-ink" : "text-ivory"
-                      }`} />
+                      <Check
+                        className={`absolute inset-0 m-auto h-4 w-4 ${
+                          c.swatch === "#faf6ea" ||
+                          c.swatch === "#f5f2ea" ||
+                          c.swatch === "#d8c9a3" ||
+                          c.swatch === "#FFFFFF"
+                            ? "text-ink"
+                            : "text-ivory"
+                        }`}
+                      />
                     )}
                   </button>
                 ))}
@@ -312,10 +374,13 @@ function ProductPage() {
           {product.sizes && product.sizes.length > 1 && (
             <div className="mt-6">
               <div className="flex items-center justify-between mb-3">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-ink/55">
-                  Size · <span className="text-ink">{size}</span>
+                <p className="text-sm font-semibold text-ink">
+                  Size / <span className="text-ink">{size}</span>
                 </p>
-                <Link to="/faq" className="text-[11px] uppercase tracking-[0.22em] text-ink/55 underline underline-offset-2 hover:text-ink transition">
+                <Link
+                  to="/faq"
+                  className="text-sm font-medium text-ink/60 underline underline-offset-2 hover:text-ink transition"
+                >
                   Size guide
                 </Link>
               </div>
@@ -325,7 +390,7 @@ function ProductPage() {
                     key={s}
                     onClick={() => setSize(s)}
                     aria-pressed={size === s}
-                    className={`min-w-[64px] px-4 py-2.5 text-[11px] uppercase tracking-[0.22em] border transition-all ${
+                    className={`min-w-[64px] px-4 py-2.5 text-sm font-semibold border transition-all ${
                       size === s
                         ? "bg-ink text-ivory border-ink"
                         : "border-ink/15 hover:border-ink hover:bg-cream/60"
@@ -362,7 +427,7 @@ function ProductPage() {
               <button
                 onClick={() => handleAdd()}
                 disabled={addLoading}
-                className="flex-1 relative overflow-hidden inline-flex items-center justify-center gap-2 bg-ink text-ivory px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] hover:bg-ink/85 active:scale-[0.99] transition disabled:opacity-70"
+                className="flex-1 relative overflow-hidden inline-flex items-center justify-center gap-2 bg-ink text-ivory px-6 py-4 text-sm font-semibold hover:bg-ink/85 active:scale-[0.99] transition disabled:opacity-70"
               >
                 {addLoading ? (
                   <>
@@ -370,24 +435,24 @@ function ProductPage() {
                   </>
                 ) : (
                   <>
-                    <ShoppingBag className="h-4 w-4" /> Add to cart · {format(price * qty)}
+                    <ShoppingBag className="h-4 w-4" /> Add to cart / {format(price * qty)}
                   </>
                 )}
               </button>
             </div>
             <button
               onClick={handleBuyNow}
-              className="w-full inline-flex items-center justify-center gap-2 bg-gold text-ink px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.24em] hover:bg-gold-deep hover:text-ivory active:scale-[0.99] transition"
+              className="w-full inline-flex items-center justify-center gap-2 bg-gold text-ink px-6 py-4 text-sm font-semibold hover:bg-gold-deep hover:text-ivory active:scale-[0.99] transition"
             >
               Buy it now
             </button>
           </div>
 
           {/* Trust bar */}
-          <ul className="mt-6 grid grid-cols-3 gap-2 py-4 border-y border-ink/10 text-[10px] uppercase tracking-[0.18em] text-ink/65">
+          <ul className="mt-6 grid grid-cols-3 gap-2 py-4 border-y border-ink/10 text-xs font-medium leading-snug text-ink/70">
             <li className="flex flex-col items-center text-center gap-1.5">
               <Truck className="h-4 w-4 text-gold-deep" />
-              <span>Free over ₹2,000</span>
+              <span>Free over {format(FREE_SHIP_THRESHOLD)}</span>
             </li>
             <li className="flex flex-col items-center text-center gap-1.5">
               <RotateCcw className="h-4 w-4 text-gold-deep" />
@@ -399,51 +464,76 @@ function ProductPage() {
             </li>
           </ul>
 
-          {/* ============ Complete your ritual — upsell ============ */}
+          {/* ============ Complete your ritual - upsell ============ */}
           {complementary.length > 0 && (
             <div className="mt-8 border border-ink/10 bg-cream/40 p-4 md:p-5 animate-fade-in">
               <div className="flex items-center gap-2 mb-4">
                 <Sparkles className="h-4 w-4 text-gold-deep" />
-                <p className="text-[11px] uppercase tracking-[0.24em]">Complete your ritual</p>
+                <p className="text-sm font-semibold text-ink">Complete your ritual</p>
               </div>
               <ul className="space-y-3">
                 {[
-                  { slug: product.slug, name: product.name, price: product.price, compareAt: product.compareAt, img: product.images[0], base: true },
-                  ...complementary.map((c) => ({ slug: c.slug, name: c.name, price: c.price, compareAt: c.compareAt, img: c.images[0], base: false })),
+                  {
+                    slug: product.slug,
+                    name: product.name,
+                    price: product.price,
+                    compareAt: product.compareAt,
+                    img: product.images[0],
+                    base: true,
+                  },
+                  ...complementary.map((c) => ({
+                    slug: c.slug,
+                    name: c.name,
+                    price: c.price,
+                    compareAt: c.compareAt,
+                    img: c.images[0],
+                    base: false,
+                  })),
                 ].map((item) => {
                   const isBase = item.base;
                   const checked = isBase ? true : !!bundlePicks[item.slug];
                   return (
                     <li key={item.slug} className="flex items-center gap-3">
                       <button
-                        onClick={() => !isBase && setBundlePicks((b) => ({ ...b, [item.slug]: !b[item.slug] }))}
+                        onClick={() =>
+                          !isBase && setBundlePicks((b) => ({ ...b, [item.slug]: !b[item.slug] }))
+                        }
                         aria-pressed={checked}
                         disabled={isBase}
                         className={`h-5 w-5 shrink-0 border flex items-center justify-center transition ${
-                          checked ? "bg-ink border-ink text-ivory" : "border-ink/25 hover:border-ink"
+                          checked
+                            ? "bg-ink border-ink text-ivory"
+                            : "border-ink/25 hover:border-ink"
                         } ${isBase ? "opacity-90" : ""}`}
                       >
                         {checked && <Check className="h-3 w-3" />}
                       </button>
-                      <img src={item.img} alt="" className="h-14 w-12 object-cover bg-ivory shrink-0" />
+                      <img
+                        src={item.img}
+                        alt=""
+                        className="h-14 w-12 object-cover bg-ivory shrink-0"
+                      />
                       <div className="min-w-0 flex-1">
                         {isBase ? (
-                          <p className="text-[13px] leading-tight truncate">
-                            <span className="text-ink/50">This item · </span>{item.name}
+                          <p className="text-sm font-semibold leading-tight truncate">
+                            <span className="text-ink/50">This item / </span>
+                            {item.name}
                           </p>
                         ) : (
                           <Link
                             to="/product/$slug"
                             params={{ slug: item.slug }}
-                            className="text-[13px] leading-tight truncate hover:text-gold-deep transition block"
+                            className="block text-sm font-semibold leading-tight truncate hover:text-ink/70 transition"
                           >
                             {item.name}
                           </Link>
                         )}
                         <div className="mt-0.5 flex items-baseline gap-1.5">
-                          <p className="text-[12px] text-ink/70">{format(item.price)}</p>
+                          <p className="text-sm font-semibold text-ink">{format(item.price)}</p>
                           {item.compareAt && (
-                            <p className="text-[11px] text-ink/35 line-through">{format(item.compareAt)}</p>
+                            <p className="text-sm text-ink/50 line-through">
+                              {format(item.compareAt)}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -453,17 +543,21 @@ function ProductPage() {
               </ul>
               <div className="mt-4 pt-3 border-t border-ink/10 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-ink/50">Bundle total</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-ink/55">
+                    Bundle total
+                  </p>
                   <div className="flex items-baseline gap-2 mt-0.5">
-                    <p className="font-display text-xl">{format(bundleTotal)}</p>
+                    <p className="text-xl font-semibold text-ink">{format(bundleTotal)}</p>
                     {bundleCompareTotal > bundleTotal && (
-                      <p className="text-xs text-ink/40 line-through">{format(bundleCompareTotal)}</p>
+                      <p className="text-xs text-ink/40 line-through">
+                        {format(bundleCompareTotal)}
+                      </p>
                     )}
                   </div>
                 </div>
                 <button
                   onClick={() => handleAdd({ withBundle: true })}
-                  className="text-[10px] uppercase tracking-[0.22em] bg-ink text-ivory px-4 py-2.5 hover:bg-gold-deep transition"
+                  className="text-sm font-semibold bg-ink text-ivory px-4 py-2.5 hover:bg-gold-deep transition"
                 >
                   Add bundle
                 </button>
@@ -478,11 +572,12 @@ function ProductPage() {
                 key: "details" as const,
                 label: "Details & fit",
                 body: (
-                  <ul className="space-y-2.5 text-[14px] text-ink/75 leading-relaxed">
+                  <ul className="space-y-2.5 text-base text-ink/80 leading-7">
                     <li className="text-ink">{product.description}</li>
                     {product.features.map((f) => (
                       <li key={f} className="flex gap-2">
-                        <Check className="h-4 w-4 text-gold-deep mt-0.5 shrink-0" />{f}
+                        <Check className="h-4 w-4 text-gold-deep mt-0.5 shrink-0" />
+                        {f}
                       </li>
                     ))}
                   </ul>
@@ -492,9 +587,15 @@ function ProductPage() {
                 key: "materials" as const,
                 label: "Materials & care",
                 body: (
-                  <div className="text-[14px] text-ink/75 space-y-2.5 leading-relaxed">
-                    <p><span className="text-ink font-medium">Materials · </span>{product.materials}</p>
-                    <p><span className="text-ink font-medium">Care · </span>{product.care}</p>
+                  <div className="text-base text-ink/80 space-y-2.5 leading-7">
+                    <p>
+                      <span className="text-ink font-medium">Materials / </span>
+                      {product.materials}
+                    </p>
+                    <p>
+                      <span className="text-ink font-medium">Care / </span>
+                      {product.care}
+                    </p>
                   </div>
                 ),
               },
@@ -502,9 +603,18 @@ function ProductPage() {
                 key: "shipping" as const,
                 label: "Shipping & returns",
                 body: (
-                  <div className="text-[14px] text-ink/75 space-y-2.5 leading-relaxed">
-                    <p>Dispatched within 24 hours from our atelier. Free shipping on orders over ₹2,000.</p>
-                    <p>30-day returns on unworn items — <Link to="/returns" className="underline underline-offset-2">read the policy</Link>.</p>
+                  <div className="text-base text-ink/80 space-y-2.5 leading-7">
+                    <p>
+                      Dispatched within 24 hours from our atelier. Free shipping on orders over{" "}
+                      {format(FREE_SHIP_THRESHOLD)}.
+                    </p>
+                    <p>
+                      30-day returns on unworn items -{" "}
+                      <Link to="/returns" className="underline underline-offset-2">
+                        read the policy
+                      </Link>
+                      .
+                    </p>
                   </div>
                 ),
               },
@@ -512,13 +622,17 @@ function ProductPage() {
               <div key={a.key} className="border-b border-ink/10">
                 <button
                   onClick={() => setOpenAcc(openAcc === a.key ? null : a.key)}
-                  className="w-full flex items-center justify-between py-4 text-[12px] uppercase tracking-[0.24em] hover:text-gold-deep transition"
+                  className="w-full flex items-center justify-between py-4 text-sm font-semibold text-ink hover:text-ink/70 transition"
                   aria-expanded={openAcc === a.key}
                 >
                   {a.label}
-                  <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${openAcc === a.key ? "rotate-180" : ""}`} />
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-300 ${openAcc === a.key ? "rotate-180" : ""}`}
+                  />
                 </button>
-                <div className={`grid transition-all duration-300 ${openAcc === a.key ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                <div
+                  className={`grid transition-all duration-300 ${openAcc === a.key ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+                >
                   <div className="overflow-hidden">
                     <div className="pb-5">{a.body}</div>
                   </div>
@@ -535,31 +649,56 @@ function ProductPage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>
               <p className="eyebrow text-gold-deep">Reviews</p>
-              <h2 className="mt-2 font-display text-3xl md:text-4xl">What customers are saying</h2>
+              <h2 className="mt-2 font-sans-ui text-2xl font-semibold md:text-3xl">What customers are saying</h2>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex text-gold-deep">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className={`h-4 w-4 ${i < Math.round(product.rating) ? "fill-current" : ""}`} />
+                  <Star
+                    key={i}
+                    className={`h-4 w-4 ${i < Math.round(product.rating) ? "fill-current" : ""}`}
+                  />
                 ))}
               </div>
-              <p className="text-sm text-ink/60">{product.rating}/5 · {product.reviews.toLocaleString()} reviews</p>
+              <p className="text-sm font-medium text-ink/65">
+                {product.rating}/5 / {product.reviews.toLocaleString()} reviews
+              </p>
             </div>
           </div>
           <div className="grid md:grid-cols-3 gap-4 md:gap-6">
             {[
-              { name: "Yusuf R.", city: "London", body: "Quality is exceptional — the weight and drape feel true to tradition. Shipped fast to the UK.", stars: 5 },
-              { name: "Amina K.", city: "Toronto", body: "Beautifully finished. Sits softly and holds shape all day. Will be ordering more colours.", stars: 5 },
-              { name: "Faisal M.", city: "Dubai", body: "Honest craft. Colour is deep and true to the photos. Recommended for anyone serious about quality.", stars: 4 },
+              {
+                name: "Yusuf R.",
+                city: "London",
+                body: "Quality is exceptional - the weight and drape feel true to tradition. Shipped fast to the UK.",
+                stars: 5,
+              },
+              {
+                name: "Amina K.",
+                city: "Toronto",
+                body: "Beautifully finished. Sits softly and holds shape all day. Will be ordering more colours.",
+                stars: 5,
+              },
+              {
+                name: "Faisal M.",
+                city: "Dubai",
+                body: "Honest craft. Colour is deep and true to the photos. Recommended for anyone serious about quality.",
+                stars: 4,
+              },
             ].map((r, i) => (
-              <article key={i} className="bg-ivory border border-ink/10 p-5 md:p-6 hover:shadow-soft transition">
+              <article
+                key={i}
+                className="bg-ivory border border-ink/10 p-5 md:p-6 hover:shadow-soft transition"
+              >
                 <div className="flex text-gold-deep mb-3">
                   {Array.from({ length: 5 }).map((_, j) => (
                     <Star key={j} className={`h-3.5 w-3.5 ${j < r.stars ? "fill-current" : ""}`} />
                   ))}
                 </div>
-                <p className="text-[14px] leading-relaxed text-ink/80">"{r.body}"</p>
-                <p className="mt-4 text-[11px] uppercase tracking-[0.22em] text-ink/50">{r.name} · {r.city}</p>
+                <p className="text-base leading-7 text-ink/80">"{r.body}"</p>
+                <p className="mt-4 text-sm font-semibold text-ink/60">
+                  {r.name} / {r.city}
+                </p>
               </article>
             ))}
           </div>
@@ -572,42 +711,51 @@ function ProductPage() {
           <div className="flex items-end justify-between mb-8">
             <div>
               <p className="eyebrow text-gold-deep">You may also like</p>
-              <h2 className="mt-2 font-display text-3xl md:text-4xl">More from the collection</h2>
+              <h2 className="mt-2 font-sans-ui text-2xl font-semibold md:text-3xl">More from the collection</h2>
             </div>
             <Link
               to={`/${product.collection}` as string}
-              className="text-[11px] uppercase tracking-[0.22em] text-ink/60 hover:text-ink transition hidden md:inline"
+              className="hidden text-sm font-semibold text-ink/65 hover:text-ink transition md:inline"
             >
-              View all →
+              View all
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
-            {relatedItems.map((p) => <ProductCard key={p.slug} p={p} />)}
+            {relatedItems.map((p) => (
+              <ProductCard key={p.slug} p={p} />
+            ))}
           </div>
         </section>
       )}
 
       <SiteFooter />
 
-      {/* ============ Mobile sticky buy — reveals after primary CTA scrolls out ============ */}
+      {/* ============ Mobile sticky buy - reveals after primary CTA scrolls out ============ */}
       <div
         className={`md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border bg-ivory/95 backdrop-blur-md shadow-elegant transition-all duration-300 ${
-          showStickyBar ? "translate-y-0 opacity-100" : "translate-y-full opacity-0 pointer-events-none"
+          showStickyBar
+            ? "translate-y-0 opacity-100"
+            : "translate-y-full opacity-0 pointer-events-none"
         }`}
       >
         <div className="px-4 py-3 flex items-center gap-3">
-          <img src={product.images[imgIdx]} alt="" className="h-11 w-10 object-cover bg-cream shrink-0" />
+          <img
+            src={product.images[imgIdx]}
+            alt=""
+            className="h-11 w-10 object-cover bg-cream shrink-0"
+          />
           <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-medium truncate leading-tight">{product.name}</p>
-            <p className="text-[11px] text-ink/55 truncate leading-tight">
-              {variant || "Choose options"} · <span className="text-ink">{format(price * qty)}</span>
+            <p className="text-sm font-semibold truncate leading-tight">{product.name}</p>
+            <p className="text-xs font-medium text-ink/65 truncate leading-tight">
+              {variant || "Choose options"} /{" "}
+              <span className="text-ink">{format(price * qty)}</span>
             </p>
           </div>
           <button
             onClick={() => handleAdd()}
             aria-label="Add to cart"
             disabled={addLoading}
-            className="shrink-0 inline-flex items-center justify-center gap-1.5 bg-ink text-ivory px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.22em] rounded-full active:scale-95 hover:bg-gold-deep transition disabled:opacity-70"
+            className="shrink-0 inline-flex items-center justify-center gap-1.5 bg-ink text-ivory px-5 py-3 text-sm font-semibold rounded-full active:scale-95 hover:bg-gold-deep transition disabled:opacity-70"
           >
             {addLoading ? <Check className="h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}
             {addLoading ? "Added" : "Add"}

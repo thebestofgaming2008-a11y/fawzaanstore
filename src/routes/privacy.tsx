@@ -35,10 +35,10 @@ function PrivacyPage() {
             <h2 className="font-display text-2xl mt-8 mb-3">2. Information We Collect</h2>
             <p>We collect the following categories of information:</p>
             <ul className="list-disc pl-6 space-y-1">
-              <li><strong>Personal details</strong> — name, email address, shipping address, phone number.</li>
-              <li><strong>Payment information</strong> — processed securely through Razorpay; we do not store full card numbers on our servers.</li>
-              <li><strong>Order history</strong> — products purchased, dates, and amounts.</li>
-              <li><strong>Technical data</strong> — IP address, browser type, device information, and cookies.</li>
+              <li><strong>Personal details</strong> - name, email address, shipping address, phone number.</li>
+              <li><strong>Payment information</strong> - processed securely through Razorpay; we do not store full card numbers on our servers.</li>
+              <li><strong>Order history</strong> - products purchased, dates, and amounts.</li>
+              <li><strong>Technical data</strong> - IP address, browser type, device information, and cookies.</li>
             </ul>
           </section>
 
@@ -48,7 +48,7 @@ function PrivacyPage() {
               <li>To process and fulfil your orders.</li>
               <li>To send order confirmations, shipping updates, and customer service replies.</li>
               <li>To improve our website, products, and customer experience.</li>
-              <li>To send marketing emails (only if you opt in — you may unsubscribe at any time).</li>
+              <li>To send marketing emails (only if you opt in - you may unsubscribe at any time).</li>
               <li>To detect fraud and comply with legal obligations.</li>
             </ul>
           </section>
@@ -57,7 +57,7 @@ function PrivacyPage() {
             <h2 className="font-display text-2xl mt-8 mb-3">4. Sharing of Information</h2>
             <p>
               We do not sell your personal data. We share information only with trusted service providers
-              who help us run our business — payment processors (Razorpay), shipping carriers, and
+              who help us run our business - payment processors (Razorpay), shipping carriers, and
               email service providers. These partners are contractually bound to protect your data.
             </p>
           </section>
