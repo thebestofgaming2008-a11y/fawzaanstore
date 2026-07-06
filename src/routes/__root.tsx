@@ -17,7 +17,9 @@ import { AccountProvider } from "@/lib/account";
 import { CurrencyProvider } from "@/lib/currency";
 import { AnnouncementBar } from "@/components/brand/AnnouncementBar";
 import { CartDrawer } from "@/components/brand/CartDrawer";
+import { SideAccountRail } from "@/components/brand/SideAccountRail";
 import { Toaster } from "sonner";
+
 
 function NotFoundComponent() {
   return (
@@ -140,7 +142,9 @@ function RootComponent() {
               {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
               <Outlet />
               <CartDrawer />
+              <SideAccountRail />
               <Toaster position="bottom-center" theme="light" richColors closeButton />
+
             </CartProvider>
           </WishlistProvider>
         </AccountProvider>

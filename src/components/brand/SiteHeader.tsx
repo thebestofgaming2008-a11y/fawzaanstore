@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Menu, X, ShoppingBag, Search, Heart, User, ChevronDown, LogOut, Package } from "lucide-react";
+import { Menu, X, ShoppingBag, Search, Heart, User, ChevronDown } from "lucide-react";
 import logo from "@/assets/fawzaan-logo.png.asset.json";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
@@ -21,10 +21,11 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
   const [searchOpen, setSearchOpen] = useState(false);
   const [q, setQ] = useState("");
   const [utilOpen, setUtilOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const dark = variant === "dark";
   const { count, open: openCart } = useCart();
   const { count: wishCount } = useWishlist();
-  const { account, signOut } = useAccount();
+  const { account } = useAccount();
   const { currency, setCurrency, format } = useCurrency();
   const utilRef = useRef<HTMLDivElement | null>(null);
 
@@ -32,6 +33,13 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
     document.body.style.overflow = open || searchOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open, searchOpen]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!utilOpen) return;
@@ -49,11 +57,26 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
   return (
     <>
       <header
-        className={`sticky top-0 z-40 backdrop-blur-md border-b transition-colors ${
-          dark ? "bg-ink/85 border-white/10 text-ivory" : "bg-ivory/90 border-border text-ink"
+        className={`sticky top-0 z-40 backdrop-blur-md border-b transition-all duration-500 ${
+          dark ? "bg-ink/85 border-white/10 text-ivory" : "text-ink"
+        } ${
+          dark
+            ? ""
+            : scrolled
+              ? "bg-ivory/95 border-ink/10 shadow-soft"
+              : "bg-ivory/70 border-transparent"
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8 md:py-4">
+        {/* Animated gold hairline that grows as user scrolls */}
+        {!dark && (
+          <span
+            aria-hidden
+            className={`absolute left-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent transition-all duration-700 ${
+              scrolled ? "w-full opacity-100" : "w-0 opacity-0"
+            }`}
+          />
+        )}
+        <div className={`mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8 transition-all duration-500 ${scrolled ? "py-2 md:py-2.5" : "py-3 md:py-4"}`}>
           <button aria-label="Menu" className="md:hidden p-2 -ml-2 hover:text-gold-deep transition" onClick={() => setOpen(true)}>
             <Menu className="h-6 w-6" />
           </button>
@@ -64,7 +87,7 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
               alt="Fawzaan Store"
               width={220}
               height={94}
-              className="h-9 md:h-11 w-auto object-contain transition-transform duration-500 group-hover:scale-[1.04]"
+              className={`w-auto object-contain transition-all duration-500 group-hover:scale-[1.04] ${scrolled ? "h-8 md:h-9" : "h-10 md:h-12"}`}
             />
           </Link>
 
@@ -86,23 +109,21 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
               <Search className="h-5 w-5" />
             </button>
 
-            {/* Currency + Account combined popover */}
+            {/* Currency picker — account lives in the SideAccountRail */}
             <div className="relative" ref={utilRef}>
               <button
                 onClick={() => setUtilOpen((o) => !o)}
-                aria-label="Currency and account"
+                aria-label="Currency"
                 aria-expanded={utilOpen}
                 className="flex items-center gap-1 p-2 hover:text-gold-deep transition text-xs font-semibold uppercase tracking-widest"
               >
-                <span className="hidden sm:inline">{currency}</span>
-                <User className="h-5 w-5 sm:hidden" />
+                <span>{currency}</span>
                 <ChevronDown className={`h-3 w-3 transition-transform ${utilOpen ? "rotate-180" : ""}`} />
               </button>
 
               {utilOpen && (
-                <div className="absolute right-0 top-full mt-2 w-72 bg-ivory text-ink shadow-elegant border border-border rounded-sm overflow-hidden animate-scale-in origin-top-right">
-                  {/* Currency selector */}
-                  <div className="px-4 pt-4 pb-3 border-b border-border/60">
+                <div className="absolute right-0 top-full mt-2 w-64 bg-ivory text-ink shadow-elegant border border-border rounded-sm overflow-hidden animate-scale-in origin-top-right">
+                  <div className="px-4 pt-4 pb-3">
                     <p className="text-[10px] uppercase tracking-[0.22em] text-ink/50 mb-2">Currency</p>
                     <div className="grid grid-cols-5 gap-1">
                       {(Object.keys(CURRENCIES) as CurrencyCode[]).map((c) => (
@@ -120,56 +141,11 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
                     </div>
                     <p className="mt-2 text-[10px] text-ink/45">Sample · {format(1000)}</p>
                   </div>
-
-                  {/* Account section */}
-                  <div className="px-4 py-3">
-                    {account ? (
-                      <>
-                        <p className="text-[10px] uppercase tracking-[0.22em] text-ink/50">Signed in as</p>
-                        <p className="mt-0.5 font-display text-lg leading-tight">{account.firstName || account.email}</p>
-                        <p className="text-xs text-ink/55 truncate">{account.email}</p>
-                        <div className="mt-3 grid gap-1">
-                          <Link to="/account" onClick={() => setUtilOpen(false)} className="flex items-center gap-2 py-2 text-sm hover:text-gold-deep transition">
-                            <User className="h-4 w-4" /> My account
-                          </Link>
-                          <Link to="/account" onClick={() => setUtilOpen(false)} className="flex items-center gap-2 py-2 text-sm hover:text-gold-deep transition">
-                            <Package className="h-4 w-4" /> Orders
-                          </Link>
-                          <Link to="/wishlist" onClick={() => setUtilOpen(false)} className="flex items-center gap-2 py-2 text-sm hover:text-gold-deep transition">
-                            <Heart className="h-4 w-4" /> Wishlist ({wishCount})
-                          </Link>
-                          <button
-                            onClick={() => { signOut(); setUtilOpen(false); }}
-                            className="flex items-center gap-2 py-2 text-sm text-ink/70 hover:text-ink transition"
-                          >
-                            <LogOut className="h-4 w-4" /> Sign out
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <p className="font-display text-lg leading-tight">Welcome</p>
-                        <p className="text-xs text-ink/60">Sign in for a faster checkout.</p>
-                        <Link
-                          to="/account"
-                          onClick={() => setUtilOpen(false)}
-                          className="mt-3 w-full inline-flex items-center justify-center gap-2 bg-ink text-ivory px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] hover:bg-gold-deep transition"
-                        >
-                          Sign in
-                        </Link>
-                        <Link
-                          to="/wishlist"
-                          onClick={() => setUtilOpen(false)}
-                          className="mt-2 w-full inline-flex items-center justify-center gap-2 py-2 text-xs uppercase tracking-widest border-b border-ink/10 hover:text-gold-deep transition"
-                        >
-                          <Heart className="h-3.5 w-3.5" /> Wishlist ({wishCount})
-                        </Link>
-                      </>
-                    )}
-                  </div>
                 </div>
               )}
             </div>
+
+
 
             <Link to="/wishlist" aria-label={`Wishlist, ${wishCount} items`} className="relative p-2 hover:text-gold-deep transition hidden sm:inline-flex">
               <Heart className="h-5 w-5" />
