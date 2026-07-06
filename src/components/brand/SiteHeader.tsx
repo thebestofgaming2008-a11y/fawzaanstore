@@ -21,10 +21,11 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
   const [searchOpen, setSearchOpen] = useState(false);
   const [q, setQ] = useState("");
   const [utilOpen, setUtilOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const dark = variant === "dark";
   const { count, open: openCart } = useCart();
   const { count: wishCount } = useWishlist();
-  const { account, signOut } = useAccount();
+  const { account } = useAccount();
   const { currency, setCurrency, format } = useCurrency();
   const utilRef = useRef<HTMLDivElement | null>(null);
 
@@ -32,6 +33,13 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
     document.body.style.overflow = open || searchOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open, searchOpen]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!utilOpen) return;
@@ -49,11 +57,26 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
   return (
     <>
       <header
-        className={`sticky top-0 z-40 backdrop-blur-md border-b transition-colors ${
-          dark ? "bg-ink/85 border-white/10 text-ivory" : "bg-ivory/90 border-border text-ink"
+        className={`sticky top-0 z-40 backdrop-blur-md border-b transition-all duration-500 ${
+          dark ? "bg-ink/85 border-white/10 text-ivory" : "text-ink"
+        } ${
+          dark
+            ? ""
+            : scrolled
+              ? "bg-ivory/95 border-ink/10 shadow-soft"
+              : "bg-ivory/70 border-transparent"
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8 md:py-4">
+        {/* Animated gold hairline that grows as user scrolls */}
+        {!dark && (
+          <span
+            aria-hidden
+            className={`absolute left-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent transition-all duration-700 ${
+              scrolled ? "w-full opacity-100" : "w-0 opacity-0"
+            }`}
+          />
+        )}
+        <div className={`mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8 transition-all duration-500 ${scrolled ? "py-2 md:py-2.5" : "py-3 md:py-4"}`}>
           <button aria-label="Menu" className="md:hidden p-2 -ml-2 hover:text-gold-deep transition" onClick={() => setOpen(true)}>
             <Menu className="h-6 w-6" />
           </button>
