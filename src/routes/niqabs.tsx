@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CollectionPage } from "@/components/brand/CollectionPage";
-import hero from "@/assets/hero-niqab.jpg";
+import hero from "@/assets/niqab-khadija-2.jpg";
 
 export const Route = createFileRoute("/niqabs")({
   head: () => ({
