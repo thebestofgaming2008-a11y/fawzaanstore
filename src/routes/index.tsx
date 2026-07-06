@@ -37,7 +37,7 @@ function Home() {
           <img
             src={shemagh}
             alt="Heritage Yemeni shemagh, hand-loomed"
-            className="absolute inset-0 h-full w-full object-cover object-[center_top] md:object-[center_15%] scale-[1.08] animate-ken-burns"
+            className="absolute inset-0 h-full w-full object-cover object-[center_top] scale-[1.45] md:scale-[1.25] origin-top animate-ken-burns"
           />
           {/* Warm ink vignette for title readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-ink/10 via-ink/25 to-ink/55" />
