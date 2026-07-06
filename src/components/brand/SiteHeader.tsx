@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Menu, X, ShoppingBag, Search, Heart, User, ChevronDown, LogOut, Package } from "lucide-react";
+import { Menu, X, ShoppingBag, Search, Heart, User, ChevronDown } from "lucide-react";
 import logo from "@/assets/fawzaan-logo.png.asset.json";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
