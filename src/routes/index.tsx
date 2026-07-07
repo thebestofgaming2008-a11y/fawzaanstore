@@ -83,12 +83,21 @@ function Home() {
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-16 md:py-24">
         <div className="text-center">
           <p className="text-[11px] uppercase tracking-[0.3em] text-ink/60">Our Best Sellers</p>
-          <div className="mt-5 inline-flex items-center gap-8">
+
+          {/* Segmented selector — sliding gold indicator */}
+          <div className="mt-6 inline-flex relative rounded-full border border-ink/10 bg-cream p-1">
+            <span
+              aria-hidden
+              className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-full bg-ink shadow-soft transition-transform duration-500 ease-[cubic-bezier(0.2,0.7,0.2,1)]"
+              style={{ transform: tab === "women" ? "translateX(0)" : "translateX(100%)" }}
+            />
             {(["women", "men"] as const).map((k) => (
               <button
                 key={k}
                 onClick={() => setTab(k)}
-                className={`font-display text-3xl md:text-4xl pb-1 transition capitalize ${tab === k ? "text-ink border-b-2 border-gold-deep" : "text-ink/40 hover:text-ink"}`}
+                className={`relative z-10 px-8 md:px-12 py-2.5 rounded-full text-[11px] font-semibold uppercase tracking-[0.28em] transition-colors duration-500 ${
+                  tab === k ? "text-gold" : "text-ink/60 hover:text-ink"
+                }`}
               >
                 {k}
               </button>
@@ -96,7 +105,7 @@ function Home() {
           </div>
         </div>
 
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
+        <div key={tab} className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 animate-fade-up">
           {items.map((p, i) => <ProductCard key={p.slug} p={p} priority={i < 2} />)}
         </div>
 
@@ -106,6 +115,33 @@ function Home() {
           </Link>
         </div>
       </section>
+
+      {/* Premium brand strip — gold foil */}
+      <section aria-label="House philosophy" className="relative overflow-hidden bg-ink text-ivory">
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-60"
+          style={{
+            background:
+              "radial-gradient(ellipse at 20% 50%, rgba(244,180,0,0.22), transparent 55%), radial-gradient(ellipse at 80% 50%, rgba(255,222,128,0.18), transparent 60%)",
+          }}
+        />
+        <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent" />
+        <span aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent" />
+        <div className="relative mx-auto max-w-5xl px-6 py-16 md:py-24 text-center">
+          <p className="font-arabic text-3xl md:text-4xl shimmer-gold">فوزان</p>
+          <p className="eyebrow mt-4 text-gold-soft">Est. Heritage · Yemen · Kashmir</p>
+          <h2 className="font-display text-3xl md:text-5xl mt-5 leading-tight text-balance">
+            Quietly bold heritage —<br className="hidden md:block" /> made to be worn, not displayed.
+          </h2>
+          <div className="mt-6 flex items-center justify-center">
+            <span className="h-px w-16 bg-gold/60" />
+            <span className="mx-3 text-gold text-sm">✦</span>
+            <span className="h-px w-16 bg-gold/60" />
+          </div>
+        </div>
+      </section>
+
 
       {/* Honey banner */}
       <section className="relative w-full overflow-hidden">
