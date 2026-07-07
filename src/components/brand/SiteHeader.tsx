@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { Menu, X, ShoppingBag, Search, Heart, User, ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Menu, X, ShoppingBag, Search, Heart, User } from "lucide-react";
 import logo from "@/assets/fawzaan-logo.png.asset.json";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
@@ -20,14 +20,12 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [q, setQ] = useState("");
-  const [utilOpen, setUtilOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const dark = variant === "dark";
   const { count, open: openCart } = useCart();
   const { count: wishCount } = useWishlist();
   const { account } = useAccount();
   const { currency, setCurrency, format } = useCurrency();
-  const utilRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     document.body.style.overflow = open || searchOpen ? "hidden" : "";
@@ -41,14 +39,6 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    if (!utilOpen) return;
-    const onDoc = (e: MouseEvent) => {
-      if (utilRef.current && !utilRef.current.contains(e.target as Node)) setUtilOpen(false);
-    };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
-  }, [utilOpen]);
 
   const results = q.trim().length > 1
     ? catalog.filter((p) => (p.name + " " + p.short + " " + p.collection).toLowerCase().includes(q.toLowerCase())).slice(0, 6)
