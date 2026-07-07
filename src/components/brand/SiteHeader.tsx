@@ -109,52 +109,7 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
               <Search className="h-5 w-5" />
             </button>
 
-            {/* Currency picker — account lives in the SideAccountRail */}
-            <div className="relative" ref={utilRef}>
-              <button
-                onClick={() => setUtilOpen((o) => !o)}
-                aria-label="Currency"
-                aria-expanded={utilOpen}
-                className="flex items-center gap-1 p-2 hover:text-gold-deep transition text-xs font-semibold uppercase tracking-widest"
-              >
-                <span>{currency}</span>
-                <ChevronDown className={`h-3 w-3 transition-transform ${utilOpen ? "rotate-180" : ""}`} />
-              </button>
-
-              {utilOpen && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-ivory text-ink shadow-elegant border border-border rounded-sm overflow-hidden animate-scale-in origin-top-right">
-                  <div className="px-4 pt-4 pb-3">
-                    <p className="text-[10px] uppercase tracking-[0.22em] text-ink/50 mb-2">Currency</p>
-                    <div className="grid grid-cols-5 gap-1">
-                      {(Object.keys(CURRENCIES) as CurrencyCode[]).map((c) => (
-                        <button
-                          key={c}
-                          onClick={() => setCurrency(c)}
-                          className={`py-1.5 text-[11px] font-semibold uppercase tracking-widest rounded-sm transition ${
-                            c === currency ? "bg-ink text-ivory" : "hover:bg-cream"
-                          }`}
-                          title={CURRENCIES[c].label}
-                        >
-                          {c}
-                        </button>
-                      ))}
-                    </div>
-                    <p className="mt-2 text-[10px] text-ink/45">Sample · {format(1000)}</p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-
-
-            <Link to="/wishlist" aria-label={`Wishlist, ${wishCount} items`} className="relative p-2 hover:text-gold-deep transition hidden sm:inline-flex">
-              <Heart className="h-5 w-5" />
-              {wishCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-ink text-ivory text-[10px] font-bold flex items-center justify-center">
-                  {wishCount}
-                </span>
-              )}
-            </Link>
+            {/* Currency + wishlist moved to mobile drawer and SideAccountRail to keep header minimal */}
             <button
               aria-label={`Cart, ${count} items`}
               onClick={openCart}
