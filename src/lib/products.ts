@@ -1,19 +1,20 @@
 // Central product catalog for Fawzaan Store.
 // Prices are in INR (₹). Currency is converted at render via useCurrency().
 
-import shemaghFront from "@/assets/shemagh-red-front.jpg";
-import shemaghSide from "@/assets/shemagh-red-side.jpg";
-import shemaghWrap from "@/assets/shemagh-red-wrap.jpg";
-import shemaghBack from "@/assets/shemagh-red-back.jpg";
-import shemaghFlat from "@/assets/shemagh-red-flat.jpg";
-import shemaghHead from "@/assets/shemagh-red-head.jpg";
+import shemaghRedHead from "@/assets/shemagh-red-head.jpg";
+import shemaghIvoryFront from "@/assets/shemagh-red-front.jpg";
+import shemaghIvorySide from "@/assets/shemagh-red-side.jpg";
+import shemaghIvoryWrap from "@/assets/shemagh-red-wrap.jpg";
+import shemaghIvoryBack from "@/assets/shemagh-red-back.jpg";
+import shemaghIvoryFlat from "@/assets/shemagh-red-flat.jpg";
 import kufiFront from "@/assets/kufi-white-front.jpg";
 import kufiSide from "@/assets/kufi-white-side.jpg";
 import niqabRedFront from "@/assets/niqab-red-front.jpg";
 import niqabRedSide from "@/assets/niqab-red-side.jpg";
-import niqabKhadija1 from "@/assets/niqab-khadija-grid.jpg";
-import niqabKhadija2 from "@/assets/niqab-khadija-grid2.jpg";
-import niqabBlackFront from "@/assets/niqab-black-front.jpg";
+import niqabKhadija1 from "@/assets/niqab-khadija-1.jpg";
+import niqabKhadija2 from "@/assets/niqab-khadija-2.jpg";
+import niqabKhadija3 from "@/assets/niqab-khadija-3.jpg";
+import niqabKhadija4 from "@/assets/niqab-khadija-4.jpg";
 import heroGloves from "@/assets/hero-gloves.jpg";
 import honeyMulti from "@/assets/honey-kashmir-multiflora.jpg";
 import honeyAcacia from "@/assets/honey-kashmir-acacia.jpg";
@@ -25,7 +26,6 @@ export type Gender = "men" | "women" | "unisex";
 export type Variant = { name: string; swatch?: string };
 
 export type Product = {
-  id?: string;
   slug: string;
   name: string;
   collection: Collection;
@@ -47,33 +47,51 @@ export type Product = {
 
 export const catalog: Product[] = [
   {
-    slug: "yemeni-shemagh",
-    name: "Yemeni Shemagh",
+    slug: "yemeni-shemagh-red",
+    name: "Yemeni Shemagh — Red & White",
     collection: "shemaghs",
     gender: "men",
     price: 2200,
     compareAt: 2800,
     rating: 4.9,
     reviews: 1240,
-    images: [shemaghFront, shemaghSide, shemaghHead, shemaghWrap, shemaghBack, shemaghFlat],
-    colors: [
-      { name: "Red / White", swatch: "#c2330c" },
-      { name: "Black / White", swatch: "#000000" },
-      { name: "Ivory", swatch: "#faf6ea" },
-    ],
-    sizes: ["Standard 130 × 130 cm"],
-    short: "Hand-loomed Yemeni keffiyeh - the heritage wrap.",
+    images: [shemaghRedHead],
+    sizes: ["Standard · 130 × 130 cm"],
+    short: "The heritage red-and-white keffiyeh, hand-loomed in Yemen.",
     description:
-      "Hand-loomed in 100% long-staple cotton with a tight herringbone weave and knotted tassels. A generous 130 × 130 cm cut wraps without slipping - Yemeni craft, honest as ever.",
+      "Hand-loomed in 100% long-staple cotton with the classic red-and-white herringbone weave. A generous 130 × 130 cm cut wraps without slipping — the honest Yemeni original.",
     features: [
       "100% combed cotton, mid-weight",
-      "Hand-knotted fringe tassels",
-      "130 × 130 cm - wraps without slipping",
+      "Traditional red-and-white herringbone weave",
+      "130 × 130 cm — wraps without slipping",
       "Colour-fast dye, machine washable cold",
     ],
     materials: "100% long-staple cotton.",
     care: "Machine wash cold, hang dry. Iron on low.",
     tag: "Bestseller",
+  },
+  {
+    slug: "ivory-embroidered-shemagh",
+    name: "Ivory Embroidered Shemagh",
+    collection: "shemaghs",
+    gender: "men",
+    price: 2400,
+    rating: 4.8,
+    reviews: 312,
+    images: [shemaghIvoryFront, shemaghIvorySide, shemaghIvoryWrap, shemaghIvoryBack, shemaghIvoryFlat],
+    sizes: ["Standard · 130 × 130 cm"],
+    short: "Ivory shemagh with rose-red embroidered borders.",
+    description:
+      "A softer, dressier take on the Yemeni original. Featherlight ivory ground with delicate rose-red embroidery running along the borders. Drapes cleanly, holds shape.",
+    features: [
+      "Ivory ground with rose-red embroidered borders",
+      "Featherlight, breathable weave",
+      "130 × 130 cm — full drape",
+      "Suitable for daily and formal wear",
+    ],
+    materials: "Cotton blend with embroidered detailing.",
+    care: "Hand wash cold, hang dry.",
+    tag: "New",
   },
   {
     slug: "khadija-niqab",
@@ -83,14 +101,14 @@ export const catalog: Product[] = [
     price: 650,
     rating: 4.9,
     reviews: 986,
-    images: [niqabKhadija1, niqabKhadija2, niqabBlackFront],
+    images: [niqabKhadija2, niqabKhadija1, niqabKhadija3, niqabKhadija4],
     colors: [{ name: "Onyx Black", swatch: "#000000" }],
     sizes: ["One Size"],
     short: "Two-layer chiffon niqab with long draping veil.",
     description:
       "Featherlight two-layer chiffon niqab with an extended draping veil. Breathable, opaque, and drapes without static. Cut generously to layer beautifully over any abaya.",
     features: [
-      "First layer: 54 in - Second layer: 34 in",
+      "First layer: 54 in — Second layer: 34 in",
       "Face veil: 22.5 × 13.5 in",
       "Gear: 82 in",
       "Premium chiffon fabric",
@@ -158,7 +176,7 @@ export const catalog: Product[] = [
   },
   {
     slug: "kashmir-multiflora-honey",
-    name: "Kashmir Multi-Flora Honey  /  500g",
+    name: "Kashmir Multi-Flora Honey · 500g",
     collection: "honey",
     gender: "unisex",
     price: 850,
@@ -166,12 +184,12 @@ export const catalog: Product[] = [
     reviews: 621,
     images: [honeyMulti],
     sizes: ["500g"],
-    short: "Pure Kashmiri highland honey - no adulteration.",
+    short: "Pure Kashmiri highland honey — no adulteration.",
     description:
       "Premium multi-flora honey from the highlands of Kashmir. Cold-extracted, unfiltered and completely free from adulteration. Rich amber colour with a full floral finish.",
     features: [
       "Sourced from Kashmir highlands",
-      "100% pure - no adulteration",
+      "100% pure — no adulteration",
       "Cold-extracted, unfiltered",
       "Multi-flora blend",
       "500g glass jar",
@@ -182,7 +200,7 @@ export const catalog: Product[] = [
   },
   {
     slug: "kashmir-acacia-honey",
-    name: "Kashmir Acacia Honey  /  500g",
+    name: "Kashmir Acacia Honey · 500g",
     collection: "honey",
     gender: "unisex",
     price: 900,
@@ -192,10 +210,10 @@ export const catalog: Product[] = [
     sizes: ["500g"],
     short: "Light, floral Kashmiri acacia. Slow to crystallise.",
     description:
-      "Delicate acacia honey from Kashmir - light golden in colour, gentle on the palate, and slow to crystallise. Pure and unfiltered.",
+      "Delicate acacia honey from Kashmir — light golden in colour, gentle on the palate, and slow to crystallise. Pure and unfiltered.",
     features: [
       "Kashmir acacia origin",
-      "100% pure - no adulteration",
+      "100% pure — no adulteration",
       "Slow to crystallise",
       "500g glass jar",
     ],
@@ -205,7 +223,7 @@ export const catalog: Product[] = [
   },
   {
     slug: "kashmir-black-honey",
-    name: "Kashmir Wild Black Honey  /  500g",
+    name: "Kashmir Wild Black Honey · 500g",
     collection: "honey",
     gender: "unisex",
     price: 1200,
@@ -213,12 +231,12 @@ export const catalog: Product[] = [
     reviews: 92,
     images: [honeyBlack],
     sizes: ["500g"],
-    short: "Rare dark-forest honey - intense, minerally, wild.",
+    short: "Rare dark-forest honey — intense, minerally, wild.",
     description:
       "Deep near-black honey harvested from wild Kashmiri forest blooms. Intense, minerally, and prized for its density. Limited seasonal batches.",
     features: [
       "Wild forest Kashmir",
-      "100% pure - no adulteration",
+      "100% pure — no adulteration",
       "Cold-extracted",
       "500g glass jar",
     ],

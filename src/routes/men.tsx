@@ -5,7 +5,7 @@ import hero from "@/assets/shemagh-red-head.jpg";
 export const Route = createFileRoute("/men")({
   head: () => ({
     meta: [
-      { title: "Men - Fawzaan.store" },
+      { title: "Men — Fawzaan.store" },
       { name: "description", content: "Shemaghs, kufis, gloves and heritage essentials for him." },
       { property: "og:image", content: hero },
     ],

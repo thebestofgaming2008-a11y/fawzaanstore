@@ -5,7 +5,7 @@ import hero from "@/assets/hero-kufi.jpg";
 export const Route = createFileRoute("/kufis")({
   head: () => ({
     meta: [
-      { title: "Kufis - Fawzaan.store" },
+      { title: "Kufis — Fawzaan.store" },
       { name: "description", content: "Breathable openwork kufis, hand-finished." },
       { property: "og:image", content: hero },
     ],

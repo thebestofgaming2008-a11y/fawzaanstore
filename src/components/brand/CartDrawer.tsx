@@ -1,8 +1,7 @@
 import { X, Plus, Minus, ShoppingBag, Lock } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { useCart } from "@/lib/cart";
+import { useCart, FREE_SHIP_THRESHOLD } from "@/lib/cart";
 import { useCurrency } from "@/lib/currency";
-import { FREE_SHIP_THRESHOLD } from "@/lib/shipping";
 
 export function CartDrawer() {
   const { items, isOpen, close, remove, setQty, subtotal, count } = useCart();
@@ -14,12 +13,7 @@ export function CartDrawer() {
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-[60]"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Shopping cart"
-    >
+    <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Shopping cart">
       <button
         aria-label="Close cart"
         onClick={close}
@@ -30,15 +24,9 @@ export function CartDrawer() {
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <div className="flex items-center gap-2">
             <ShoppingBag className="h-4 w-4 text-gold-deep" />
-            <h2 className="font-display text-xl">
-              Your cart {count > 0 && <span className="text-ink/50 text-sm">({count})</span>}
-            </h2>
+            <h2 className="font-display text-xl">Your cart {count > 0 && <span className="text-ink/50 text-sm">({count})</span>}</h2>
           </div>
-          <button
-            onClick={close}
-            aria-label="Close"
-            className="p-2 -mr-2 hover:bg-cream rounded-full"
-          >
+          <button onClick={close} aria-label="Close" className="p-2 -mr-2 hover:bg-cream rounded-full">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -47,17 +35,13 @@ export function CartDrawer() {
         <div className="px-5 py-3 bg-cream border-b border-border">
           {remaining > 0 ? (
             <p className="text-xs text-ink/70">
-              Add <span className="font-semibold text-ink">{format(remaining)}</span> more for free
-              shipping
+              Add <span className="font-semibold text-ink">{format(remaining)}</span> more for free shipping
             </p>
           ) : (
-            <p className="text-xs font-semibold text-gold-deep">* You've unlocked free shipping</p>
+            <p className="text-xs font-semibold text-gold-deep">✦ You've unlocked free shipping</p>
           )}
           <div className="mt-2 h-1.5 rounded-full bg-ivory overflow-hidden">
-            <div
-              className="h-full bg-gradient-gold transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            />
+            <div className="h-full bg-gradient-gold transition-all duration-500" style={{ width: `${progress}%` }} />
           </div>
         </div>
 
@@ -70,10 +54,7 @@ export function CartDrawer() {
               </div>
               <p className="mt-4 font-display text-2xl">Your cart is empty</p>
               <p className="mt-1 text-sm text-ink/60">Add a piece to begin.</p>
-              <button
-                onClick={close}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink text-ivory px-6 py-3 text-sm font-semibold"
-              >
+              <button onClick={close} className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink text-ivory px-6 py-3 text-sm font-semibold">
                 Continue shopping
               </button>
             </div>
@@ -81,11 +62,7 @@ export function CartDrawer() {
             <ul className="space-y-5">
               {items.map((i) => (
                 <li key={i.id} className="flex gap-4">
-                  <img
-                    src={i.img}
-                    alt={i.name}
-                    className="h-24 w-20 object-cover rounded-sm bg-cream"
-                  />
+                  <img src={i.img} alt={i.name} className="h-24 w-20 object-cover rounded-sm bg-cream" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
@@ -96,28 +73,11 @@ export function CartDrawer() {
                     </div>
                     <div className="mt-3 flex items-center justify-between">
                       <div className="inline-flex items-center border border-border rounded-full">
-                        <button
-                          aria-label="Decrease"
-                          onClick={() => setQty(i.id, i.qty - 1)}
-                          className="p-2 hover:text-gold-deep"
-                        >
-                          <Minus className="h-3.5 w-3.5" />
-                        </button>
+                        <button aria-label="Decrease" onClick={() => setQty(i.id, i.qty - 1)} className="p-2 hover:text-gold-deep"><Minus className="h-3.5 w-3.5" /></button>
                         <span className="w-7 text-center text-sm">{i.qty}</span>
-                        <button
-                          aria-label="Increase"
-                          onClick={() => setQty(i.id, i.qty + 1)}
-                          className="p-2 hover:text-gold-deep"
-                        >
-                          <Plus className="h-3.5 w-3.5" />
-                        </button>
+                        <button aria-label="Increase" onClick={() => setQty(i.id, i.qty + 1)} className="p-2 hover:text-gold-deep"><Plus className="h-3.5 w-3.5" /></button>
                       </div>
-                      <button
-                        onClick={() => remove(i.id)}
-                        className="text-xs text-ink/55 hover:text-ink underline underline-offset-2"
-                      >
-                        Remove
-                      </button>
+                      <button onClick={() => remove(i.id)} className="text-xs text-ink/55 hover:text-ink underline underline-offset-2">Remove</button>
                     </div>
                   </div>
                 </li>
@@ -139,23 +99,13 @@ export function CartDrawer() {
               onClick={close}
               className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-ink text-ivory px-6 py-4 text-sm font-semibold hover:bg-ink/85 shadow-elegant transition"
             >
-              <Lock className="h-4 w-4" /> Checkout / {format(subtotal)}
+              <Lock className="h-4 w-4" /> Checkout · {format(subtotal)}
             </Link>
-            <Link
-              to="/cart"
-              onClick={close}
-              className="mt-2 w-full inline-flex items-center justify-center text-xs uppercase tracking-[0.22em] text-ink/60 hover:text-ink py-2"
-            >
+            <Link to="/cart" onClick={close} className="mt-2 w-full inline-flex items-center justify-center text-xs uppercase tracking-[0.22em] text-ink/60 hover:text-ink py-2">
               View full cart
             </Link>
             <div className="mt-3 flex items-center justify-center gap-3 text-[10px] tracking-widest uppercase text-ink/45">
-              <span>Visa</span>
-              <span> / </span>
-              <span>Mastercard</span>
-              <span> / </span>
-              <span>Amex</span>
-              <span> / </span>
-              <span>PayPal</span>
+              <span>Visa</span><span>·</span><span>Mastercard</span><span>·</span><span>Amex</span><span>·</span><span>PayPal</span>
             </div>
           </div>
         )}

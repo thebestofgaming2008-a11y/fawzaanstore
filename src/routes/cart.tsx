@@ -2,17 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Minus, Plus, X, ShoppingBag, Lock } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
-import { useCart } from "@/lib/cart";
+import { useCart, FREE_SHIP_THRESHOLD } from "@/lib/cart";
 import { useCurrency } from "@/lib/currency";
-import { FREE_SHIP_THRESHOLD } from "@/lib/shipping";
 
 export const Route = createFileRoute("/cart")({
-  head: () => ({
-    meta: [
-      { title: "Cart - Fawzaan.store" },
-      { name: "description", content: "Review your cart." },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Cart — Fawzaan.store" }, { name: "description", content: "Review your cart." }] }),
   component: CartPage,
 });
 
@@ -29,9 +23,7 @@ function CartPage() {
       <SiteHeader />
       <div className="mx-auto max-w-6xl px-4 md:px-8 py-10 md:py-14">
         <h1 className="font-display text-4xl md:text-5xl">Your cart</h1>
-        <p className="mt-1 text-sm text-ink/60">
-          {items.length} item{items.length === 1 ? "" : "s"}
-        </p>
+        <p className="mt-1 text-sm text-ink/60">{items.length} item{items.length === 1 ? "" : "s"}</p>
 
         {items.length === 0 ? (
           <div className="mt-16 text-center py-20 border-y border-ink/10">
@@ -39,11 +31,8 @@ function CartPage() {
               <ShoppingBag className="h-7 w-7 text-gold-deep" />
             </div>
             <p className="mt-5 font-display text-3xl">Nothing in your cart yet.</p>
-            <p className="mt-2 text-ink/60">A quiet start - pick something considered.</p>
-            <Link
-              to="/"
-              className="mt-8 inline-flex items-center bg-ink text-ivory px-6 py-3 text-xs uppercase tracking-[0.22em] hover:bg-gold-deep transition"
-            >
+            <p className="mt-2 text-ink/60">A quiet start — pick something considered.</p>
+            <Link to="/" className="mt-8 inline-flex items-center bg-ink text-ivory px-6 py-3 text-xs uppercase tracking-[0.22em] hover:bg-gold-deep transition">
               Continue shopping
             </Link>
           </div>
@@ -53,67 +42,35 @@ function CartPage() {
               {/* Free ship progress */}
               <div className="mb-8">
                 {remaining > 0 ? (
-                  <p className="text-sm text-ink/70">
-                    Add <span className="font-semibold text-ink">{format(remaining)}</span> more for
-                    free shipping.
-                  </p>
+                  <p className="text-sm text-ink/70">Add <span className="font-semibold text-ink">{format(remaining)}</span> more for free shipping.</p>
                 ) : (
-                  <p className="text-sm font-semibold text-gold-deep">
-                    * You've unlocked free shipping.
-                  </p>
+                  <p className="text-sm font-semibold text-gold-deep">✦ You've unlocked free shipping.</p>
                 )}
                 <div className="mt-2 h-1.5 rounded-full bg-cream overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-gold transition-all duration-500"
-                    style={{ width: `${progress}%` }}
-                  />
+                  <div className="h-full bg-gradient-gold transition-all duration-500" style={{ width: `${progress}%` }} />
                 </div>
               </div>
 
               <ul className="divide-y divide-ink/10 border-y border-ink/10">
                 {items.map((i) => (
                   <li key={i.id} className="py-6 flex gap-4 md:gap-6">
-                    <img
-                      src={i.img}
-                      alt={i.name}
-                      className="h-28 w-24 md:h-32 md:w-28 object-cover bg-cream shrink-0"
-                    />
+                    <img src={i.img} alt={i.name} className="h-28 w-24 md:h-32 md:w-28 object-cover bg-cream shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <p className="font-display text-xl">{i.name}</p>
-                          {i.variant && (
-                            <p className="text-xs text-ink/55 uppercase tracking-[0.18em] mt-1">
-                              {i.variant}
-                            </p>
-                          )}
+                          {i.variant && <p className="text-xs text-ink/55 uppercase tracking-[0.18em] mt-1">{i.variant}</p>}
                           <p className="mt-2 text-sm text-ink/70">{format(i.price)}</p>
                         </div>
-                        <button
-                          aria-label="Remove"
-                          onClick={() => remove(i.id)}
-                          className="p-1 text-ink/45 hover:text-ink"
-                        >
+                        <button aria-label="Remove" onClick={() => remove(i.id)} className="p-1 text-ink/45 hover:text-ink">
                           <X className="h-4 w-4" />
                         </button>
                       </div>
                       <div className="mt-3 flex items-center justify-between">
                         <div className="inline-flex items-center border border-ink/15">
-                          <button
-                            onClick={() => setQty(i.id, i.qty - 1)}
-                            aria-label="Decrease"
-                            className="p-2 hover:text-gold-deep"
-                          >
-                            <Minus className="h-3.5 w-3.5" />
-                          </button>
+                          <button onClick={() => setQty(i.id, i.qty - 1)} aria-label="Decrease" className="p-2 hover:text-gold-deep"><Minus className="h-3.5 w-3.5" /></button>
                           <span className="w-8 text-center text-sm">{i.qty}</span>
-                          <button
-                            onClick={() => setQty(i.id, i.qty + 1)}
-                            aria-label="Increase"
-                            className="p-2 hover:text-gold-deep"
-                          >
-                            <Plus className="h-3.5 w-3.5" />
-                          </button>
+                          <button onClick={() => setQty(i.id, i.qty + 1)} aria-label="Increase" className="p-2 hover:text-gold-deep"><Plus className="h-3.5 w-3.5" /></button>
                         </div>
                         <p className="font-medium">{format(i.price * i.qty)}</p>
                       </div>
@@ -122,27 +79,16 @@ function CartPage() {
                 ))}
               </ul>
 
-              <Link to="/" className="mt-6 inline-block text-sm underline underline-offset-4">
-                Back to shopping
-              </Link>
+              <Link to="/" className="mt-6 inline-block text-sm underline underline-offset-4">← Continue shopping</Link>
             </div>
 
             {/* Summary */}
             <aside className="lg:sticky lg:top-24 h-fit bg-cream p-6 md:p-8">
               <h2 className="font-display text-2xl">Order summary</h2>
               <dl className="mt-4 space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <dt className="text-ink/70">Subtotal</dt>
-                  <dd>{format(subtotal)}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-ink/70">Shipping</dt>
-                  <dd>{shipping === 0 ? "Free" : format(shipping)}</dd>
-                </div>
-                <div className="flex justify-between text-xs text-ink/55">
-                  <dt>Taxes</dt>
-                  <dd>Calculated at checkout</dd>
-                </div>
+                <div className="flex justify-between"><dt className="text-ink/70">Subtotal</dt><dd>{format(subtotal)}</dd></div>
+                <div className="flex justify-between"><dt className="text-ink/70">Shipping</dt><dd>{shipping === 0 ? "Free" : format(shipping)}</dd></div>
+                <div className="flex justify-between text-xs text-ink/55"><dt>Taxes</dt><dd>Calculated at checkout</dd></div>
               </dl>
               <div className="mt-4 border-t border-ink/15 pt-4 flex items-baseline justify-between">
                 <span className="text-sm uppercase tracking-[0.18em] text-ink/70">Total</span>
@@ -152,11 +98,9 @@ function CartPage() {
                 to="/checkout"
                 className="mt-6 w-full inline-flex items-center justify-center gap-2 bg-ink text-ivory px-6 py-4 text-xs font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition"
               >
-                <Lock className="h-4 w-4" /> Checkout / {format(total)}
+                <Lock className="h-4 w-4" /> Checkout · {format(total)}
               </Link>
-              <p className="mt-3 text-[11px] text-ink/50 text-center">
-                Secure encrypted payment / 30-day returns
-              </p>
+              <p className="mt-3 text-[11px] text-ink/50 text-center">Secure encrypted payment · 30-day returns</p>
             </aside>
           </div>
         )}

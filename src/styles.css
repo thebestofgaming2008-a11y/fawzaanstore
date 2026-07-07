@@ -4,9 +4,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Fawzaan Store - official brand palette
- * Gold #F4B400 / Gold Soft #FFDE80 / Ink #000 / Ivory #FFF
- * Display: Cormorant Garamond / Body: Inter / Arabic: Amiri
+/* Fawzaan Store — official brand palette
+ * Gold #F4B400 · Gold Soft #FFDE80 · Ink #000 · Ivory #FFF
+ * Display: Cormorant Garamond · Body: Inter · Arabic: Amiri
  */
 
 @theme inline {
@@ -35,12 +35,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-brand: var(--brand);
-  --color-brand-foreground: var(--brand-foreground);
-  --color-hero: var(--hero);
-  --color-hero-foreground: var(--hero-foreground);
-  --color-placeholder: var(--placeholder);
-  --color-search-surface: var(--search-surface);
 
   --color-ink: var(--ink);
   --color-ivory: var(--ivory);
@@ -50,9 +44,9 @@
   --color-gold-soft: var(--gold-soft);
 
   --font-display: "Cormorant Garamond", "Cormorant", Georgia, serif;
-  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-arabic: "Amiri", Georgia, serif;
+  --font-body: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-arabic: "Amiri", "Cormorant Garamond", serif;
 
   --shadow-soft: 0 4px 20px -8px rgb(0 0 0 / 0.18);
   --shadow-elegant: 0 20px 60px -20px rgb(0 0 0 / 0.30);
@@ -93,13 +87,6 @@
   --border: #ebe7da;
   --input: #ebe7da;
   --ring: var(--gold);
-
-  --brand: var(--ink);
-  --brand-foreground: var(--ivory);
-  --hero: #FAF8F2;
-  --hero-foreground: var(--ink);
-  --placeholder: #ebe7da;
-  --search-surface: #ebe7da;
 }
 
 .dark {
@@ -126,17 +113,12 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.6;
+    font-size: 17px;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "ss01", "cv01", "liga";
   }
-  h1, h2, h3, h4, .font-display {
-    font-family: var(--font-display);
-    letter-spacing: -0.015em;
-    font-weight: 500;
-    line-height: 1.08;
-  }
+  h1, h2, h3, h4, .font-display { font-family: var(--font-display); letter-spacing: -0.015em; font-weight: 500; }
   .font-arabic { font-family: var(--font-arabic); }
   .font-sans-ui { font-family: var(--font-sans); }
   /* Shopify-like small UI text uses Inter for legibility */
@@ -157,272 +139,19 @@
   .scrollbar-hide { scrollbar-width: none; }
 
   .eyebrow {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     letter-spacing: 0.28em;
     text-transform: uppercase;
     font-weight: 500;
   }
 
-  .divider-gold { color: var(--gold-deep); }
-
-  .admin-vibe,
-  .vibe-admin {
-    --vibe-background: 255 255 255;
-    --vibe-page: 250 250 250;
-    --vibe-foreground: 23 23 23;
-    --vibe-muted: 115 115 115;
-    --vibe-border: 229 229 229;
-    --vibe-accent: 244 244 245;
-    --vibe-surface: 245 245 245;
-    --vibe-soft: var(--vibe-accent);
-    --vibe-card: var(--vibe-background);
-    --vibe-ring: var(--vibe-foreground);
-    background: rgb(var(--vibe-page));
-    color: rgb(var(--vibe-foreground));
-    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    letter-spacing: 0;
+  .divider-gold {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    color: var(--gold-deep);
   }
-
-  .admin-vibe *,
-  .vibe-admin * {
-    letter-spacing: 0;
-  }
-
-  .admin-vibe h1,
-  .admin-vibe h2,
-  .admin-vibe h3,
-  .admin-vibe h4,
-  .vibe-admin h1,
-  .vibe-admin h2,
-  .vibe-admin h3,
-  .vibe-admin h4 {
-    font-family: "Fraunces", Georgia, serif;
-    letter-spacing: 0;
-  }
-
-  .admin-vibe button,
-  .admin-vibe input,
-  .admin-vibe select,
-  .admin-vibe textarea,
-  .vibe-admin button,
-  .vibe-admin input,
-  .vibe-admin select,
-  .vibe-admin textarea {
-    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    letter-spacing: 0;
-  }
-
-  .vibe-card {
-    border: 1px solid rgb(var(--vibe-border));
-    border-radius: 0.75rem;
-    background: rgb(var(--vibe-card));
-    box-shadow: 0 2px 12px rgb(0 0 0 / 0.04);
-    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
-  }
-
-  .admin-vibe .vibe-card:hover,
-  .vibe-admin .vibe-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 28px rgb(0 0 0 / 0.06);
-  }
-
-  .admin-vibe button,
-  .vibe-admin button,
-  .admin-vibe a,
-  .vibe-admin a,
-  .admin-vibe input,
-  .admin-vibe select,
-  .admin-vibe textarea {
-    transition-property: background-color, border-color, color, opacity, box-shadow, transform;
-    transition-duration: 160ms;
-    transition-timing-function: ease;
-  }
-
-  .admin-vibe button:active,
-  .vibe-admin button:active {
-    transform: scale(0.985);
-  }
-
-  .admin-vibe main > div > *,
-  .vibe-admin main > div > * {
-    animation: admin-fade-up 260ms ease both;
-  }
-
-  .admin-vibe main > div > *:nth-child(2),
-  .vibe-admin main > div > *:nth-child(2) {
-    animation-delay: 45ms;
-  }
-
-  .admin-vibe main > div > *:nth-child(3),
-  .vibe-admin main > div > *:nth-child(3) {
-    animation-delay: 90ms;
-  }
-
-  .admin-vibe article,
-  .vibe-admin article,
-  .admin-vibe tbody tr,
-  .vibe-admin tbody tr {
-    animation: admin-soft-in 220ms ease both;
-  }
-
-  .admin-drawer-backdrop {
-    animation: admin-fade-in 180ms ease both;
-  }
-
-  .admin-drawer-panel {
-    animation: admin-slide-in 240ms cubic-bezier(.2, .7, .2, 1) both;
-    box-shadow: -18px 0 55px rgb(0 0 0 / 0.12);
-  }
-
-  @keyframes admin-fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes admin-fade-up {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes admin-soft-in {
-    from {
-      opacity: 0;
-      transform: translateY(4px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes admin-slide-in {
-    from {
-      opacity: 0;
-      transform: translateX(22px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .admin-vibe *,
-    .vibe-admin * {
-      animation-duration: 1ms !important;
-      animation-iteration-count: 1 !important;
-      scroll-behavior: auto !important;
-      transition-duration: 1ms !important;
-    }
-
-    .admin-vibe .vibe-card:hover,
-    .vibe-admin .vibe-card:hover,
-    .admin-vibe button:active,
-    .vibe-admin button:active {
-      transform: none;
-    }
-  }
-
-  .admin-button {
-    display: inline-flex;
-    min-height: 2.25rem;
-    max-width: 100%;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    border-radius: 0.5rem;
-    background: #171717;
-    padding: 0.55rem 0.9rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: white;
-    white-space: nowrap;
-    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
-  }
-
-  .admin-button:hover { background: #2a241b; }
-  .admin-button:disabled { opacity: 0.55; cursor: not-allowed; }
-
-  .admin-button-secondary {
-    border: 1px solid #e5e5e5;
-    background: white;
-    color: #171717;
-  }
-
-  .admin-button-secondary:hover { background: #f4f4f5; }
-
-  .admin-input {
-    width: 100%;
-    min-width: 0;
-    border-radius: 0.5rem;
-    border: 1px solid #d4d4d8;
-    background: white;
-    padding: 0.62rem 0.75rem;
-    font-size: 0.875rem;
-    color: #171717;
-    outline: none;
-    transition: border-color 160ms ease, box-shadow 160ms ease;
-  }
-
-  .admin-input:focus {
-    border-color: #171717;
-    box-shadow: 0 0 0 3px rgb(23 23 23 / 0.06);
-  }
-
-  .admin-table {
-    width: 100%;
-    min-width: 720px;
-    border-collapse: separate;
-    border-spacing: 0;
-    font-size: 0.875rem;
-  }
-
-  .admin-table th {
-    border-bottom: 1px solid #e5e5e5;
-    padding: 0.75rem;
-    text-align: left;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: #737373;
-  }
-
-  .admin-table td {
-    border-bottom: 1px solid #eeeeee;
-    padding: 0.75rem;
-    vertical-align: middle;
-    max-width: 22rem;
-  }
-
-  .admin-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.35rem 0.45rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--ink);
-  }
-
-  .admin-link:hover { text-decoration: underline; }
-
-  @media (max-width: 640px) {
-    .admin-button {
-      min-height: 2.5rem;
-      padding-inline: 0.75rem;
-      font-size: 0.75rem;
-    }
-
-    .admin-table {
-      min-width: 640px;
-    }
+  .divider-gold::before, .divider-gold::after {
+    content: ""; height: 1px; width: 2rem;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
   }
 }
 

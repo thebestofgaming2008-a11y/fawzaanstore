@@ -5,7 +5,7 @@ import hero from "@/assets/niqab-khadija-2.jpg";
 export const Route = createFileRoute("/women")({
   head: () => ({
     meta: [
-      { title: "Women - Fawzaan.store" },
+      { title: "Women — Fawzaan.store" },
       { name: "description", content: "Niqabs, honey and heritage essentials for her." },
       { property: "og:image", content: hero },
     ],

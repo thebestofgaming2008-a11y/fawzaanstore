@@ -7,7 +7,7 @@ import { ProductCard } from "@/components/brand/ProductCard";
 import { catalog } from "@/lib/products";
 
 export const Route = createFileRoute("/search")({
-  head: () => ({ meta: [{ title: "Search - Fawzaan.store" }] }),
+  head: () => ({ meta: [{ title: "Search — Fawzaan.store" }] }),
   component: SearchPage,
 });
 
@@ -23,7 +23,8 @@ function SearchPage() {
     <div className="min-h-screen bg-ivory text-ink">
       <SiteHeader />
       <div className="mx-auto max-w-6xl px-4 md:px-8 py-10 md:py-14">
-        <h1 className="text-3xl font-semibold md:text-4xl">Search</h1>
+        <p className="eyebrow text-gold-deep">Find</p>
+        <h1 className="mt-1 font-display text-4xl md:text-5xl">Search</h1>
 
         <div className="mt-6 relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-ink/50" />
@@ -31,7 +32,7 @@ function SearchPage() {
             autoFocus
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search shemagh, niqab, honey"
+            placeholder="Try “shemagh”, “niqab”, “sidr honey”…"
             className="w-full border border-ink/15 focus:border-ink outline-none pl-11 pr-4 py-4 bg-cream text-base font-sans-ui"
           />
         </div>
@@ -40,7 +41,7 @@ function SearchPage() {
 
         {results.length === 0 ? (
           <div className="mt-10 text-center py-16">
-            <p className="text-xl font-semibold">No results for "{q}".</p>
+            <p className="font-display text-2xl">No results for “{q}”.</p>
             <Link to="/" className="mt-4 inline-block text-sm underline">Back home</Link>
           </div>
         ) : (

@@ -5,7 +5,7 @@ import hero from "@/assets/hero-honey.jpg";
 export const Route = createFileRoute("/honey")({
   head: () => ({
     meta: [
-      { title: "Raw Honey - Fawzaan.store" },
+      { title: "Raw Honey — Fawzaan.store" },
       { name: "description", content: "Single-origin Sidr, Acacia and Wildflower honey. Cold-extracted, unfiltered." },
       { property: "og:image", content: hero },
     ],

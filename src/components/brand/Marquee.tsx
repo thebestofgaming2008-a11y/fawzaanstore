@@ -5,7 +5,7 @@ export function Marquee({ items }: { items: string[] }) {
       <div className="flex gap-12 py-3 animate-[marquee_28s_linear_infinite] whitespace-nowrap">
         {row.map((t, i) => (
           <span key={i} className="eyebrow text-ivory/70 flex items-center gap-12">
-            <span className="text-gold">*</span> {t}
+            <span className="text-gold">✦</span> {t}
           </span>
         ))}
       </div>

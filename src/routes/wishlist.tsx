@@ -7,7 +7,7 @@ import { useWishlist } from "@/lib/wishlist";
 import { catalog } from "@/lib/products";
 
 export const Route = createFileRoute("/wishlist")({
-  head: () => ({ meta: [{ title: "Wishlist - Fawzaan.store" }] }),
+  head: () => ({ meta: [{ title: "Wishlist — Fawzaan.store" }] }),
   component: WishlistPage,
 });
 

@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/brand/SiteFooter";
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "FAQ - Fawzaan.store" },
+      { title: "FAQ — Fawzaan.store" },
       { name: "description", content: "Answers to common questions on sizing, shipping, returns and care." },
     ],
   }),
@@ -19,7 +19,7 @@ const faqs = [
     section: "Orders & shipping",
     items: [
       { q: "How long does shipping take?", a: "Standard shipping arrives in 5-8 business days. Express is 2-3 days. Free worldwide shipping on orders over $75." },
-      { q: "Do you ship internationally?", a: "Yes - we ship worldwide with tracked parcels from India. Duties and taxes may apply at customs." },
+      { q: "Do you ship internationally?", a: "Yes — we ship worldwide with tracked parcels from India. Duties and taxes may apply at customs." },
       { q: "How do I track my order?", a: "You'll receive a tracking link by email as soon as your order ships (usually within 24h)." },
     ],
   },
@@ -33,7 +33,7 @@ const faqs = [
   {
     section: "Sizing & fit",
     items: [
-      { q: "How are shemaghs sized?", a: "All shemaghs are 130 × 130 cm - a generous cut that wraps comfortably." },
+      { q: "How are shemaghs sized?", a: "All shemaghs are 130 × 130 cm — a generous cut that wraps comfortably." },
       { q: "How does the niqab fit?", a: "One size fits most. Adjustable double-tie for a secure, custom feel. Choose 'Long' for extra length." },
       { q: "How should gloves fit?", a: "Leather softens over time. If between sizes, choose the smaller size for a snug fit." },
     ],
@@ -42,7 +42,7 @@ const faqs = [
     section: "Care",
     items: [
       { q: "How do I wash a shemagh?", a: "Machine wash cold on a gentle cycle. Hang dry. Iron on low if needed." },
-      { q: "How do I care for the niqab?", a: "Hand wash cold, hang dry. Avoid tumble drying - the chiffon holds its shape best that way." },
+      { q: "How do I care for the niqab?", a: "Hand wash cold, hang dry. Avoid tumble drying — the chiffon holds its shape best that way." },
       { q: "How do I care for leather gloves?", a: "Wipe with a soft, dry cloth. Avoid soaking. Condition once a year with leather balm." },
     ],
   },

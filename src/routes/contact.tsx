@@ -7,7 +7,7 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact Us | Fawzaan.store" },
-      { name: "description", content: "Get in touch with the Fawzaan Store team - email, phone, and business address." },
+      { name: "description", content: "Get in touch with the Fawzaan Store team — email, phone, and business address." },
     ],
   }),
   component: ContactPage,
@@ -65,7 +65,7 @@ function ContactPage() {
               </div>
               <div>
                 <h3 className="font-display text-xl">Hours</h3>
-                <p className="text-sm text-ink/70">Mon - Sat: 10:00 - 19:00 IST<br />Sun: Closed</p>
+                <p className="text-sm text-ink/70">Mon – Sat: 10:00 – 19:00 IST<br />Sun: Closed</p>
               </div>
             </div>
           </div>

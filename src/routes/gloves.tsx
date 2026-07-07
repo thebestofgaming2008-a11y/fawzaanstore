@@ -5,7 +5,7 @@ import hero from "@/assets/hero-gloves.jpg";
 export const Route = createFileRoute("/gloves")({
   head: () => ({
     meta: [
-      { title: "Gloves - Fawzaan.store" },
+      { title: "Gloves — Fawzaan.store" },
       { name: "description", content: "Full-grain leather gloves, silk-lined, hand-stitched." },
       { property: "og:image", content: hero },
     ],

@@ -44,7 +44,7 @@ function ReturnsPage() {
             <h2 className="font-display text-2xl mt-8 mb-3">How to Request a Return</h2>
             <ol className="list-decimal pl-6 space-y-2">
               <li>Email <a href="mailto:returns@fawzaan.store" className="text-gold-deep underline">returns@fawzaan.store</a> with your order number and reason for return.</li>
-              <li>We'll reply within 1-2 business days with a return authorisation and shipping label.</li>
+              <li>We'll reply within 1–2 business days with a return authorisation and shipping label.</li>
               <li>Pack the item securely and drop it off at the designated carrier.</li>
             </ol>
           </section>
@@ -54,8 +54,8 @@ function ReturnsPage() {
             <p>
               Once we receive and inspect your return (typically within 3 business days of arrival), we
               will notify you of approval. Approved refunds are processed to your original Razorpay
-              payment method within <strong>5-7 business days</strong>. Depending on your bank, it may
-              take an additional 3-5 days for the credit to appear on your statement.
+              payment method within <strong>5–7 business days</strong>. Depending on your bank, it may
+              take an additional 3–5 days for the credit to appear on your statement.
             </p>
           </section>
 
