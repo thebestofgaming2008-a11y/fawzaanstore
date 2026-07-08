@@ -1,52 +1,320 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { Lock, ShieldCheck, ChevronRight } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { ExternalLink, Lock, MapPin, MessageCircle, ShieldCheck } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
-import { useCart, FREE_SHIP_THRESHOLD } from "@/lib/cart";
-import { useAccount } from "@/lib/account";
+import { useCart } from "@/lib/cart";
+import { useAccount, type Address } from "@/lib/account";
 import { useCurrency } from "@/lib/currency";
+import {
+  createBackendWhatsAppOrder,
+  createRazorpayOrder,
+  verifyRazorpayPayment,
+} from "@/services/orderService";
 import { toast } from "sonner";
 
+type RazorpayFailure = { error?: { description?: string; reason?: string } };
+type RazorpaySuccess = {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+};
+type RazorpayInstance = {
+  open: () => void;
+  on: (event: "payment.failed", callback: (response: RazorpayFailure) => void) => void;
+};
+
+declare global {
+  interface Window {
+    Razorpay?: new (options: Record<string, unknown>) => RazorpayInstance;
+  }
+}
+
 export const Route = createFileRoute("/checkout")({
-  head: () => ({ meta: [{ title: "Checkout — Fawzaan.store" }, { name: "description", content: "Secure checkout." }] }),
+  head: () => ({
+    meta: [
+      { title: "Checkout - Fawzaan.store" },
+      { name: "description", content: "Secure checkout for Fawzaan Store orders." },
+    ],
+  }),
   component: CheckoutPage,
 });
 
-type Step = 1 | 2 | 3;
+const COUNTRIES = [
+  "India",
+  "United States",
+  "United Kingdom",
+  "United Arab Emirates",
+  "Saudi Arabia",
+  "Canada",
+  "Australia",
+  "Germany",
+  "France",
+  "Belgium",
+  "Netherlands",
+  "South Africa",
+  "Malaysia",
+  "Singapore",
+  "Qatar",
+  "Kuwait",
+  "Oman",
+  "Bahrain",
+];
+
+const GEO_COUNTRY: Record<string, string> = {
+  IN: "India",
+  US: "United States",
+  GB: "United Kingdom",
+  AE: "United Arab Emirates",
+  SA: "Saudi Arabia",
+  CA: "Canada",
+  AU: "Australia",
+  DE: "Germany",
+  FR: "France",
+  BE: "Belgium",
+  NL: "Netherlands",
+  ZA: "South Africa",
+  MY: "Malaysia",
+  SG: "Singapore",
+  QA: "Qatar",
+  KW: "Kuwait",
+  OM: "Oman",
+  BH: "Bahrain",
+};
+
+function isIndia(country: string) {
+  return country.trim().toLowerCase() === "india";
+}
+
+function fullName(first: string, last: string) {
+  return `${first} ${last}`.replace(/\s+/g, " ").trim();
+}
+
+function loadRazorpayScript() {
+  return new Promise<void>((resolve, reject) => {
+    if (typeof window === "undefined")
+      return reject(new Error("Checkout is only available in the browser."));
+    if (window.Razorpay) return resolve();
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[src="https://checkout.razorpay.com/v1/checkout.js"]',
+    );
+    if (existing) {
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener(
+        "error",
+        () => reject(new Error("Could not load Razorpay checkout.")),
+        { once: true },
+      );
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Could not load Razorpay checkout."));
+    document.head.appendChild(script);
+  });
+}
 
 function CheckoutPage() {
-  const nav = useNavigate();
   const { items, subtotal, clear } = useCart();
-  const { account, signIn, addOrder, addAddress } = useAccount();
+  const { account, addAddress, addOrder } = useAccount();
   const { format } = useCurrency();
 
-  const [step, setStep] = useState<Step>(1);
+  const defaultAddress = useMemo(
+    () => account?.addresses.find((address) => address.isDefault) ?? account?.addresses[0] ?? null,
+    [account],
+  );
+
   const [email, setEmail] = useState(account?.email ?? "");
-  const [first, setFirst] = useState(account?.firstName ?? "");
-  const [last, setLast] = useState(account?.lastName ?? "");
-  const [addr1, setAddr1] = useState("");
-  const [addr2, setAddr2] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [postal, setPostal] = useState("");
-  const [country, setCountry] = useState("India");
-  const [phone, setPhone] = useState("");
-  const [ship, setShip] = useState<"standard" | "express">("standard");
-  const [pay, setPay] = useState<"card" | "cod" | "upi">("card");
+  const [first, setFirst] = useState(
+    account?.firstName ?? defaultAddress?.name.split(" ")[0] ?? "",
+  );
+  const [last, setLast] = useState(
+    account?.lastName ?? defaultAddress?.name.split(" ").slice(1).join(" ") ?? "",
+  );
+  const [addr1, setAddr1] = useState(defaultAddress?.line1 ?? "");
+  const [addr2, setAddr2] = useState(defaultAddress?.line2 ?? "");
+  const [city, setCity] = useState(defaultAddress?.city ?? "");
+  const [state, setState] = useState(defaultAddress?.state ?? "");
+  const [postal, setPostal] = useState(defaultAddress?.postal ?? "");
+  const [country, setCountry] = useState(defaultAddress?.country ?? "India");
+  const [phone, setPhone] = useState(defaultAddress?.phone ?? "");
   const [processing, setProcessing] = useState(false);
 
-  const shipCost = subtotal >= FREE_SHIP_THRESHOLD ? 0 : ship === "express" ? 350 : 150; // INR
-  const tax = +(subtotal * 0.05).toFixed(2);
-  const total = +(subtotal + shipCost + tax).toFixed(2);
+  useEffect(() => {
+    if (defaultAddress) return;
+    let cancelled = false;
+    fetch("/api/geo")
+      .then((response) => response.json())
+      .then((geo) => {
+        const detected = GEO_COUNTRY[String(geo?.country ?? "").toUpperCase()];
+        if (!cancelled && detected) setCountry(detected);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [defaultAddress]);
+
+  const indiaCheckout = isIndia(country);
+  const shippingLabel = indiaCheckout ? "Included" : "Confirmed on WhatsApp";
+  const total = subtotal;
+  const canPlaceOrder =
+    email.includes("@") &&
+    first.trim() &&
+    last.trim() &&
+    addr1.trim() &&
+    city.trim() &&
+    postal.trim() &&
+    phone.trim();
+
+  const customer = {
+    email: email.trim(),
+    phone: phone.trim(),
+    name: fullName(first, last),
+    address_line_1: addr1.trim(),
+    address_line_2: addr2.trim() || undefined,
+    city: city.trim(),
+    state: state.trim() || undefined,
+    postal_code: postal.trim(),
+    country,
+  };
+
+  const rememberAddress = () => {
+    if (!account) return;
+    const address: Omit<Address, "id"> = {
+      name: customer.name,
+      line1: customer.address_line_1,
+      line2: customer.address_line_2,
+      city: customer.city,
+      state: customer.state,
+      postal: customer.postal_code,
+      country: customer.country,
+      phone: customer.phone,
+      isDefault: true,
+    };
+    addAddress(address);
+  };
+
+  const placeInternationalOrder = async () => {
+    const result = await createBackendWhatsAppOrder({ cart: items, customer, total });
+    rememberAddress();
+    window.open(result.whatsappUrl, "_blank", "noopener,noreferrer");
+    clear();
+    toast.success("WhatsApp order message opened.");
+  };
+
+  const placeIndiaOrder = async () => {
+    await loadRazorpayScript();
+    if (!window.Razorpay) throw new Error("Razorpay checkout is unavailable.");
+    const order = await createRazorpayOrder({
+      cart: items,
+      customer,
+      subtotal,
+      shipping: 0,
+      total,
+    });
+    const razorpay = new window.Razorpay({
+      key: order.key_id,
+      amount: order.amount,
+      currency: order.currency,
+      name: "Fawzaan Store",
+      description: "Fawzaan Store order",
+      order_id: order.order_id,
+      prefill: {
+        name: customer.name,
+        email: customer.email,
+        contact: customer.phone,
+      },
+      notes: {
+        country: customer.country,
+        city: customer.city,
+      },
+      theme: { color: "#111111" },
+      modal: {
+        ondismiss: () => {
+          setProcessing(false);
+          toast.message("Payment cancelled.");
+        },
+      },
+      handler: async (response: RazorpaySuccess) => {
+        try {
+          const savedOrder = await verifyRazorpayPayment({
+            payload: order.payload,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_signature: response.razorpay_signature,
+          });
+          rememberAddress();
+          if (account) {
+            addOrder({
+              items: items.map((item) => ({
+                name: item.name,
+                variant: item.variant,
+                qty: item.qty,
+                price: item.price,
+                img: item.img,
+              })),
+              total,
+              address: {
+                id: String(savedOrder?.id ?? response.razorpay_order_id),
+                name: customer.name,
+                line1: customer.address_line_1,
+                line2: customer.address_line_2,
+                city: customer.city,
+                state: customer.state,
+                postal: customer.postal_code,
+                country: customer.country,
+                phone: customer.phone,
+              },
+            });
+          }
+          clear();
+          toast.success("Payment captured. Your order is confirmed.");
+          window.location.href = "/account";
+        } catch (error) {
+          setProcessing(false);
+          toast.error(error instanceof Error ? error.message : "Payment verification failed.");
+        }
+      },
+    });
+    razorpay.on("payment.failed", (response) => {
+      setProcessing(false);
+      toast.error(
+        response.error?.description ||
+          response.error?.reason ||
+          "Payment failed. No order was created.",
+      );
+    });
+    razorpay.open();
+  };
+
+  const placeOrder = async () => {
+    if (!canPlaceOrder) {
+      toast.error("Complete the required address details.");
+      return;
+    }
+    setProcessing(true);
+    try {
+      if (indiaCheckout) await placeIndiaOrder();
+      else await placeInternationalOrder();
+    } catch (error) {
+      setProcessing(false);
+      toast.error(error instanceof Error ? error.message : "Checkout could not be completed.");
+    }
+  };
 
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-ivory text-ink">
         <SiteHeader />
-        <div className="max-w-xl mx-auto px-4 py-24 text-center">
+        <div className="mx-auto max-w-xl px-4 py-24 text-center">
           <h1 className="font-display text-4xl">Your cart is empty</h1>
           <p className="mt-2 text-ink/60">Add something before you check out.</p>
-          <Link to="/" className="mt-6 inline-flex items-center bg-ink text-ivory px-6 py-3 text-xs uppercase tracking-[0.22em]">
+          <Link
+            to="/"
+            className="mt-6 inline-flex items-center bg-ink px-6 py-3 text-xs uppercase tracking-[0.22em] text-ivory"
+          >
             Browse the store
           </Link>
         </div>
@@ -54,218 +322,255 @@ function CheckoutPage() {
     );
   }
 
-  const canContinue1 = email.includes("@") && first && last && addr1 && city && postal && phone;
-
-  const placeOrder = async () => {
-    if (!canContinue1) { setStep(1); toast.error("Complete your details."); return; }
-    setProcessing(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    if (!account) signIn(email);
-    const address = {
-      name: `${first} ${last}`.trim(), line1: addr1, line2: addr2, city, state, postal, country, phone, isDefault: true,
-    };
-    addAddress(address);
-    const order = addOrder({
-      items: items.map((i) => ({ name: i.name, variant: i.variant, qty: i.qty, price: i.price, img: i.img })),
-      total,
-      address: { ...address, id: "" },
-    });
-    clear();
-    nav({ to: "/order/$id", params: { id: order.id } });
-  };
-
   return (
     <div className="min-h-screen bg-ivory text-ink">
       <SiteHeader />
 
-      <div className="mx-auto max-w-6xl px-4 md:px-8 py-6 md:py-10">
-        <div className="flex items-center justify-between">
-          <h1 className="font-display text-3xl md:text-4xl">Checkout</h1>
-          <div className="flex items-center gap-1 text-[11px] uppercase tracking-[0.2em] text-ink/60">
+      <main className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-10">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-ink/50">Secure checkout</p>
+            <h1 className="mt-1 font-display text-3xl md:text-4xl">Delivery details</h1>
+          </div>
+          <div className="inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.2em] text-ink/60">
             <Lock className="h-3 w-3" /> Secure
           </div>
         </div>
 
-        {/* Steps indicator */}
-        <ol className="mt-4 flex items-center gap-2 text-[11px] uppercase tracking-[0.22em]">
-          {(["Details", "Shipping", "Payment"] as const).map((label, i) => {
-            const s = (i + 1) as Step;
-            const active = step === s;
-            const done = step > s;
-            return (
-              <li key={label} className="flex items-center gap-2">
-                <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] ${done ? "bg-gold-deep text-ivory" : active ? "bg-ink text-ivory" : "bg-cream text-ink/40"}`}>
-                  {s}
-                </span>
-                <span className={active || done ? "text-ink" : "text-ink/40"}>{label}</span>
-                {i < 2 && <ChevronRight className="h-3 w-3 text-ink/30" />}
-              </li>
-            );
-          })}
-        </ol>
-
-        <div className="mt-8 grid lg:grid-cols-[1fr_400px] gap-10">
-          <div>
-            {/* Step 1: contact + address */}
-            <section className={step === 1 ? "" : "opacity-60 pointer-events-none"}>
-              <h2 className="font-display text-2xl">Contact & delivery</h2>
-              <div className="mt-4 grid gap-3">
-                <Input label="Email" value={email} onChange={setEmail} type="email" required autoComplete="email" />
-                <div className="grid grid-cols-2 gap-3">
-                  <Input label="First name" value={first} onChange={setFirst} autoComplete="given-name" required />
-                  <Input label="Last name" value={last} onChange={setLast} autoComplete="family-name" required />
-                </div>
-                <Input label="Address" value={addr1} onChange={setAddr1} autoComplete="address-line1" required />
-                <Input label="Apartment, suite (optional)" value={addr2} onChange={setAddr2} autoComplete="address-line2" />
-                <div className="grid grid-cols-2 gap-3">
-                  <Input label="City" value={city} onChange={setCity} autoComplete="address-level2" required />
-                  <Input label="State / Region" value={state} onChange={setState} autoComplete="address-level1" />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <Input label="Postal code" value={postal} onChange={setPostal} autoComplete="postal-code" required />
-                  <label className="text-[11px] uppercase tracking-[0.18em] text-ink/60">
-                    Country
-                    <select value={country} onChange={(e) => setCountry(e.target.value)} className="mt-1 w-full border border-ink/15 px-3 py-2.5 bg-ivory text-sm">
-                      {["India", "United States", "United Kingdom", "United Arab Emirates", "Saudi Arabia", "Canada", "Australia", "Germany", "France"].map((c) => (
-                        <option key={c}>{c}</option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-                <Input label="Phone" value={phone} onChange={setPhone} type="tel" autoComplete="tel" required />
-              </div>
-              {step === 1 && (
-                <button
-                  onClick={() => canContinue1 ? setStep(2) : toast.error("Complete required fields")}
-                  className="mt-6 w-full inline-flex items-center justify-center bg-ink text-ivory px-6 py-4 text-xs font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition"
-                >
-                  Continue to shipping
-                </button>
-              )}
-            </section>
-
-            {/* Step 2: shipping */}
-            {step >= 2 && (
-              <section className={`mt-10 ${step === 2 ? "" : "opacity-60 pointer-events-none"}`}>
-                <h2 className="font-display text-2xl">Shipping method</h2>
-                <div className="mt-4 space-y-2">
-                  {[
-                    { key: "standard", label: "Standard (5-8 days)", cost: subtotal >= FREE_SHIP_THRESHOLD ? "Free" : "$6.90" },
-                    { key: "express", label: "Express (2-3 days)", cost: "$14.00" },
-                  ].map((o) => (
-                    <label key={o.key} className={`flex items-center justify-between border p-4 cursor-pointer transition ${ship === o.key ? "border-ink" : "border-ink/15 hover:border-ink/40"}`}>
-                      <div className="flex items-center gap-3">
-                        <input type="radio" name="ship" value={o.key} checked={ship === o.key} onChange={() => setShip(o.key as "standard" | "express")} className="accent-ink" />
-                        <span className="text-sm">{o.label}</span>
-                      </div>
-                      <span className="text-sm">{o.cost}</span>
-                    </label>
-                  ))}
-                </div>
-                {step === 2 && (
-                  <div className="mt-6 flex gap-3">
-                    <button onClick={() => setStep(1)} className="px-6 py-4 text-xs uppercase tracking-[0.22em] border border-ink/20">Back</button>
-                    <button onClick={() => setStep(3)} className="flex-1 bg-ink text-ivory px-6 py-4 text-xs font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition">
-                      Continue to payment
+        <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_400px]">
+          <section className="min-w-0">
+            {account?.addresses.length ? (
+              <div className="mb-6 border border-ink/10 bg-cream p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink/60">
+                  Saved addresses
+                </p>
+                <div className="mt-3 grid gap-2">
+                  {account.addresses.map((address) => (
+                    <button
+                      key={address.id}
+                      type="button"
+                      onClick={() => {
+                        const [nextFirst, ...rest] = address.name.split(" ");
+                        setFirst(nextFirst ?? "");
+                        setLast(rest.join(" "));
+                        setAddr1(address.line1);
+                        setAddr2(address.line2 ?? "");
+                        setCity(address.city);
+                        setState(address.state ?? "");
+                        setPostal(address.postal);
+                        setCountry(address.country);
+                        setPhone(address.phone ?? "");
+                      }}
+                      className="flex items-start gap-3 border border-ink/10 bg-ivory p-3 text-left text-sm transition hover:border-ink/30"
+                    >
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep" />
+                      <span>
+                        <span className="block font-medium">{address.name}</span>
+                        <span className="block text-ink/60">
+                          {address.line1}, {address.city}, {address.country}
+                        </span>
+                      </span>
                     </button>
-                  </div>
-                )}
-              </section>
-            )}
-
-            {/* Step 3: payment */}
-            {step >= 3 && (
-              <section className="mt-10">
-                <h2 className="font-display text-2xl">Payment</h2>
-                <p className="mt-1 text-xs text-ink/55 flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-gold-deep" /> All transactions are encrypted.</p>
-                <div className="mt-4 space-y-2">
-                  {[
-                    { key: "card", label: "Credit / debit card" },
-                    { key: "upi", label: "UPI" },
-                    { key: "cod", label: "Cash on delivery" },
-                  ].map((o) => (
-                    <label key={o.key} className={`flex items-center gap-3 border p-4 cursor-pointer transition ${pay === o.key ? "border-ink" : "border-ink/15 hover:border-ink/40"}`}>
-                      <input type="radio" name="pay" value={o.key} checked={pay === o.key} onChange={() => setPay(o.key as typeof pay)} className="accent-ink" />
-                      <span className="text-sm">{o.label}</span>
-                    </label>
                   ))}
                 </div>
-                {pay === "card" && (
-                  <div className="mt-4 grid gap-3 border border-ink/10 p-4 bg-cream">
-                    <Input label="Card number" value="" onChange={() => {}} placeholder="1234 1234 1234 1234" />
-                    <div className="grid grid-cols-2 gap-3">
-                      <Input label="Expiry" value="" onChange={() => {}} placeholder="MM/YY" />
-                      <Input label="CVC" value="" onChange={() => {}} placeholder="123" />
-                    </div>
-                    <Input label="Name on card" value="" onChange={() => {}} />
-                    <p className="text-[11px] text-ink/50">Demo checkout — no real charge. Payment will be wired up separately.</p>
-                  </div>
-                )}
+              </div>
+            ) : null}
 
-                <div className="mt-6 flex gap-3">
-                  <button onClick={() => setStep(2)} disabled={processing} className="px-6 py-4 text-xs uppercase tracking-[0.22em] border border-ink/20">Back</button>
-                  <button
-                    onClick={placeOrder}
-                    disabled={processing}
-                    className="flex-1 inline-flex items-center justify-center gap-2 bg-ink text-ivory px-6 py-4 text-xs font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition disabled:opacity-60"
+            <div className="grid gap-3">
+              <Input
+                label="Email"
+                value={email}
+                onChange={setEmail}
+                type="email"
+                required
+                autoComplete="email"
+              />
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <Input
+                  label="First name"
+                  value={first}
+                  onChange={setFirst}
+                  autoComplete="given-name"
+                  required
+                />
+                <Input
+                  label="Last name"
+                  value={last}
+                  onChange={setLast}
+                  autoComplete="family-name"
+                  required
+                />
+              </div>
+              <Input
+                label="Address"
+                value={addr1}
+                onChange={setAddr1}
+                autoComplete="address-line1"
+                required
+              />
+              <Input
+                label="Apartment, suite (optional)"
+                value={addr2}
+                onChange={setAddr2}
+                autoComplete="address-line2"
+              />
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <Input
+                  label="City"
+                  value={city}
+                  onChange={setCity}
+                  autoComplete="address-level2"
+                  required
+                />
+                <Input
+                  label="State / province / region"
+                  value={state}
+                  onChange={setState}
+                  autoComplete="address-level1"
+                />
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <Input
+                  label="Postal code"
+                  value={postal}
+                  onChange={setPostal}
+                  autoComplete="postal-code"
+                  required
+                />
+                <label className="text-[11px] uppercase tracking-[0.18em] text-ink/60">
+                  Country<span className="text-red-600"> *</span>
+                  <select
+                    value={country}
+                    onChange={(event) => setCountry(event.target.value)}
+                    className="mt-1 w-full border border-ink/15 bg-ivory px-3 py-2.5 font-sans-ui text-sm text-ink outline-none transition focus:border-ink"
                   >
-                    {processing ? "Placing order…" : <><Lock className="h-4 w-4" /> Place order · {format(total)}</>}
-                  </button>
-                </div>
-              </section>
-            )}
-          </div>
+                    {COUNTRIES.map((option) => (
+                      <option key={option}>{option}</option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <Input
+                label="WhatsApp / phone"
+                value={phone}
+                onChange={setPhone}
+                type="tel"
+                autoComplete="tel"
+                required
+              />
+            </div>
 
-          {/* Summary */}
-          <aside className="lg:sticky lg:top-24 h-fit bg-cream p-6">
+            <div className="mt-6 border border-ink/10 bg-cream p-4">
+              <div className="flex items-start gap-3">
+                {indiaCheckout ? (
+                  <ShieldCheck className="mt-0.5 h-5 w-5 text-gold-deep" />
+                ) : (
+                  <MessageCircle className="mt-0.5 h-5 w-5 text-gold-deep" />
+                )}
+                <div>
+                  <h2 className="font-display text-xl">
+                    {indiaCheckout ? "India checkout" : "International checkout"}
+                  </h2>
+                  <p className="mt-1 text-sm leading-6 text-ink/65">
+                    {indiaCheckout
+                      ? "Shipping is included. Place order opens Razorpay for UPI, cards, wallets, and netbanking."
+                      : "Place order opens WhatsApp with your order details. We will confirm shipping and payment manually."}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={placeOrder}
+              disabled={processing}
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 bg-ink px-6 py-4 text-xs font-semibold uppercase tracking-[0.22em] text-ivory transition hover:bg-gold-deep disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {processing ? (
+                "Processing..."
+              ) : indiaCheckout ? (
+                <>
+                  <Lock className="h-4 w-4" /> Pay with Razorpay - {format(total)}
+                </>
+              ) : (
+                <>
+                  <ExternalLink className="h-4 w-4" /> Open WhatsApp order
+                </>
+              )}
+            </button>
+          </section>
+
+          <aside className="h-fit bg-cream p-6 lg:sticky lg:top-24">
             <h2 className="font-display text-xl">Order summary</h2>
-            <ul className="mt-4 space-y-3 max-h-72 overflow-y-auto pr-1">
-              {items.map((i) => (
-                <li key={i.id} className="flex gap-3 text-sm">
+            <ul className="mt-4 max-h-72 space-y-3 overflow-y-auto pr-1">
+              {items.map((item) => (
+                <li key={item.id} className="flex gap-3 text-sm">
                   <div className="relative shrink-0">
-                    <img src={i.img} alt="" className="h-14 w-12 object-cover bg-ivory" />
-                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full bg-ink text-ivory text-[10px] flex items-center justify-center px-1">{i.qty}</span>
+                    <img src={item.img} alt="" className="h-14 w-12 bg-ivory object-cover" />
+                    <span className="absolute -right-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-ink px-1 text-[10px] text-ivory">
+                      {item.qty}
+                    </span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="truncate">{i.name}</p>
-                    {i.variant && <p className="text-[11px] text-ink/55 uppercase tracking-widest">{i.variant}</p>}
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate">{item.name}</p>
+                    {item.variant ? (
+                      <p className="text-[11px] uppercase tracking-widest text-ink/55">
+                        {item.variant}
+                      </p>
+                    ) : null}
                   </div>
-                  <p className="shrink-0">{format(i.price * i.qty)}</p>
+                  <p className="shrink-0">{format(item.price * item.qty)}</p>
                 </li>
               ))}
             </ul>
-            <dl className="mt-5 space-y-2 text-sm border-t border-ink/15 pt-4">
-              <div className="flex justify-between"><dt className="text-ink/70">Subtotal</dt><dd>{format(subtotal)}</dd></div>
-              <div className="flex justify-between"><dt className="text-ink/70">Shipping</dt><dd>{shipCost === 0 ? "Free" : format(shipCost)}</dd></div>
-              <div className="flex justify-between"><dt className="text-ink/70">Tax (5%)</dt><dd>{format(tax)}</dd></div>
+            <dl className="mt-5 space-y-2 border-t border-ink/15 pt-4 text-sm">
+              <div className="flex justify-between">
+                <dt className="text-ink/70">Product subtotal</dt>
+                <dd>{format(subtotal)}</dd>
+              </div>
+              <div className="flex justify-between">
+                <dt className="text-ink/70">Shipping</dt>
+                <dd>{shippingLabel}</dd>
+              </div>
             </dl>
-            <div className="mt-4 border-t border-ink/15 pt-4 flex items-baseline justify-between">
-              <span className="text-sm uppercase tracking-[0.18em] text-ink/70">Total</span>
+            <div className="mt-4 flex items-baseline justify-between border-t border-ink/15 pt-4">
+              <span className="text-sm uppercase tracking-[0.18em] text-ink/70">
+                {indiaCheckout ? "Total" : "Subtotal"}
+              </span>
               <span className="font-display text-2xl">{format(total)}</span>
             </div>
           </aside>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
 
 function Input({
-  label, value, onChange, type = "text", placeholder, required, autoComplete,
+  label,
+  value,
+  onChange,
+  type = "text",
+  required,
+  autoComplete,
 }: {
-  label: string; value: string; onChange: (v: string) => void; type?: string;
-  placeholder?: string; required?: boolean; autoComplete?: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  type?: string;
+  required?: boolean;
+  autoComplete?: string;
 }) {
   return (
     <label className="block text-[11px] uppercase tracking-[0.18em] text-ink/60">
-      {label}{required && <span className="text-red-600"> *</span>}
+      {label}
+      {required ? <span className="text-red-600"> *</span> : null}
       <input
         type={type}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
+        onChange={(event) => onChange(event.target.value)}
         autoComplete={autoComplete}
-        className="mt-1 w-full border border-ink/15 focus:border-ink outline-none px-3 py-2.5 bg-ivory text-sm text-ink font-sans-ui transition"
+        className="mt-1 w-full border border-ink/15 bg-ivory px-3 py-2.5 font-sans-ui text-sm text-ink outline-none transition focus:border-ink"
       />
     </label>
   );
