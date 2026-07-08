@@ -15,7 +15,7 @@ import { CartProvider } from "@/lib/cart";
 import { WishlistProvider } from "@/lib/wishlist";
 import { AccountProvider } from "@/lib/account";
 import { CurrencyProvider } from "@/lib/currency";
-import { AnnouncementBar } from "@/components/brand/AnnouncementBar";
+
 import { CartDrawer } from "@/components/brand/CartDrawer";
 import { SideAccountRail } from "@/components/brand/SideAccountRail";
 import { Toaster } from "sonner";
@@ -138,7 +138,7 @@ function RootComponent() {
         <AccountProvider>
           <WishlistProvider>
             <CartProvider>
-              <AnnouncementBar />
+              {/* Announcement bar removed for minimal look */}
               {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
               <Outlet />
               <CartDrawer />
