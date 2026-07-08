@@ -62,8 +62,7 @@ const EURO_COUNTRIES = new Set([
 function runtimeEnvCandidates(env: unknown, request?: Request): RuntimeEnv[] {
   const direct = (env ?? {}) as RuntimeEnv;
   const requestRuntime = (request as unknown as RuntimeEnv | undefined)?.runtime as
-    | RuntimeEnv
-    | undefined;
+    RuntimeEnv | undefined;
   const requestCloudflare = requestRuntime?.cloudflare as RuntimeEnv | undefined;
   const globalRecord = globalThis as unknown as RuntimeEnv;
   return [
@@ -168,7 +167,12 @@ async function liveCatalogProducts(env: unknown, request: Request) {
   }
 }
 
-async function liveCatalogProduct(env: unknown, request: Request, id: string | null, slug: string | null) {
+async function liveCatalogProduct(
+  env: unknown,
+  request: Request,
+  id: string | null,
+  slug: string | null,
+) {
   try {
     const client = convexClient(env, request);
     if (!client) return null;
@@ -205,7 +209,9 @@ async function handleCatalogRequest(request: Request, env: unknown): Promise<Res
   }
 
   if (url.pathname === "/api/catalog/products") {
-    const products = mergeLocalCatalogProducts((await liveCatalogProducts(env, request)) as unknown[]);
+    const products = mergeLocalCatalogProducts(
+      (await liveCatalogProducts(env, request)) as unknown[],
+    );
     return jsonResponse(products, 200, CATALOG_CACHE_HEADERS);
   }
 
@@ -224,16 +230,20 @@ async function handleMediaRequest(request: Request, env: unknown): Promise<Respo
 
   if (url.pathname === "/api/media/upload") {
     const corsHeaders = trustedCorsHeaders(request, env);
-    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
-    if (request.method !== "POST") return jsonResponse({ error: "Method not allowed." }, 405, corsHeaders);
+    if (request.method === "OPTIONS")
+      return new Response(null, { status: 204, headers: corsHeaders });
+    if (request.method !== "POST")
+      return jsonResponse({ error: "Method not allowed." }, 405, corsHeaders);
 
     const expectedToken = envString(env, "ADMIN_UPLOAD_TOKEN", request);
     const receivedToken = request.headers.get("x-admin-upload-token")?.trim() ?? "";
     if (!expectedToken || receivedToken !== expectedToken) {
       return jsonResponse({ error: "Upload is not configured or authorized." }, 403, corsHeaders);
     }
-    if (!bucket) return jsonResponse({ error: "R2 media bucket is not configured." }, 500, corsHeaders);
-    if (!request.body) return jsonResponse({ error: "No upload body was received." }, 400, corsHeaders);
+    if (!bucket)
+      return jsonResponse({ error: "R2 media bucket is not configured." }, 500, corsHeaders);
+    if (!request.body)
+      return jsonResponse({ error: "No upload body was received." }, 400, corsHeaders);
 
     const contentType = request.headers.get("content-type") || "application/octet-stream";
     const fileName = safeFileName(request.headers.get("x-file-name"));
@@ -330,13 +340,12 @@ async function handleCurrencyRequest(request: Request, env: unknown): Promise<Re
   };
   const apiKey =
     envString(env, "EXCHANGE_RATE_API_KEY", request) || envString(env, "CURRENCY_API_KEY", request);
-  if (!apiKey) return jsonResponse(fallback, 200, CURRENCY_CACHE_HEADERS);
+  const ratesUrl = apiKey
+    ? `https://v6.exchangerate-api.com/v6/${encodeURIComponent(apiKey)}/latest/INR`
+    : "https://open.er-api.com/v6/latest/INR";
 
   try {
-    const response = await fetch(
-      `https://v6.exchangerate-api.com/v6/${encodeURIComponent(apiKey)}/latest/INR`,
-      { headers: { accept: "application/json" } },
-    );
+    const response = await fetch(ratesUrl, { headers: { accept: "application/json" } });
     if (!response.ok) throw new Error(`Currency API returned ${response.status}`);
     const payload = await response.json();
     const rates = payload?.conversion_rates ?? payload?.rates;
@@ -374,16 +383,17 @@ function handleGeoRequest(request: Request): Response | null {
       request.headers.get("cf-ipcountry") ??
       "IN",
   ).toUpperCase();
-  return jsonResponse(
-    { country, currency: detectedCurrencyForRequest(request) },
-    200,
-    { "cache-control": "public, max-age=86400" },
-  );
+  return jsonResponse({ country, currency: detectedCurrencyForRequest(request) }, 200, {
+    "cache-control": "public, max-age=86400",
+  });
 }
 
 function cleanApiError(error: unknown) {
   const message = error instanceof Error ? error.message : "Payment request failed.";
-  return message.replace(/^Uncaught Error:\s*/i, "").replace(/\s*\n[\s\S]*$/, "").trim();
+  return message
+    .replace(/^Uncaught Error:\s*/i, "")
+    .replace(/\s*\n[\s\S]*$/, "")
+    .trim();
 }
 
 function paymentErrorStatus(message: string, fallback = 500) {
@@ -411,9 +421,14 @@ function basicAuth(keyId: string, keySecret: string) {
   return `Basic ${btoa(`${keyId}:${keySecret}`)}`;
 }
 
-async function createDirectRazorpayOrder(body: Record<string, unknown>, env: unknown, request: Request) {
+async function createDirectRazorpayOrder(
+  body: Record<string, unknown>,
+  env: unknown,
+  request: Request,
+) {
   const amount = Math.round(Number(body.amount));
-  const currency = typeof body.currency === "string" && body.currency.trim() ? body.currency.trim() : "INR";
+  const currency =
+    typeof body.currency === "string" && body.currency.trim() ? body.currency.trim() : "INR";
   const receipt =
     typeof body.receipt === "string" && body.receipt.trim()
       ? body.receipt.trim().slice(0, 40)
@@ -463,7 +478,8 @@ async function handleRazorpayApiRequest(request: Request, env: unknown): Promise
     return null;
   }
   const corsHeaders = trustedCorsHeaders(request, env);
-  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
+  if (request.method === "OPTIONS")
+    return new Response(null, { status: 204, headers: corsHeaders });
   if (request.method !== "POST") {
     return jsonResponse({ error: "Method not allowed." }, 405, corsHeaders);
   }
@@ -476,11 +492,16 @@ async function handleRazorpayApiRequest(request: Request, env: unknown): Promise
   try {
     if (url.pathname === "/api/create-order") {
       if ("amount" in body && !("cart" in body)) {
-        const order = await createDirectRazorpayOrder(body as Record<string, unknown>, env, request);
+        const order = await createDirectRazorpayOrder(
+          body as Record<string, unknown>,
+          env,
+          request,
+        );
         return jsonResponse(order, 200, { "cache-control": "no-store", ...corsHeaders });
       }
       const client = convexClient(env, request);
-      if (!client) return jsonResponse({ error: "Convex backend is not configured." }, 500, corsHeaders);
+      if (!client)
+        return jsonResponse({ error: "Convex backend is not configured." }, 500, corsHeaders);
       const total = Number((body as { total?: unknown }).total);
       const amountPaise = Math.round(total * 100);
       if (!Number.isFinite(amountPaise) || amountPaise < 100) {
@@ -528,7 +549,8 @@ async function handleRazorpayApiRequest(request: Request, env: unknown): Promise
       return jsonResponse({ success: true }, 200, { "cache-control": "no-store", ...corsHeaders });
     }
     const client = convexClient(env, request);
-    if (!client) return jsonResponse({ error: "Convex backend is not configured." }, 500, corsHeaders);
+    if (!client)
+      return jsonResponse({ error: "Convex backend is not configured." }, 500, corsHeaders);
     const order = await client.action(api.orders.verifyRazorpayPayment, {
       ...(verifyBody.payload as Record<string, unknown>),
       razorpay_payment_id: verifyBody.razorpay_payment_id,
@@ -542,10 +564,14 @@ async function handleRazorpayApiRequest(request: Request, env: unknown): Promise
   } catch (error) {
     console.error("Razorpay API error", error);
     const message = cleanApiError(error);
-    return jsonResponse({ error: message || "Payment request failed." }, paymentErrorStatus(message), {
-      "cache-control": "no-store",
-      ...corsHeaders,
-    });
+    return jsonResponse(
+      { error: message || "Payment request failed." },
+      paymentErrorStatus(message),
+      {
+        "cache-control": "no-store",
+        ...corsHeaders,
+      },
+    );
   }
 }
 
@@ -578,11 +604,20 @@ Disallow: /search
 Sitemap: ${publicSiteUrl(env, request)}/sitemap.xml
 `;
   return new Response(request.method === "HEAD" ? null : body, {
-    headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=300" },
+    headers: {
+      "content-type": "text/plain; charset=utf-8",
+      "cache-control": "public, max-age=300",
+    },
   });
 }
 
-function sitemapUrlNode(baseUrl: string, path: string, priority: string, image?: string, imageTitle?: string) {
+function sitemapUrlNode(
+  baseUrl: string,
+  path: string,
+  priority: string,
+  image?: string,
+  imageTitle?: string,
+) {
   const loc = `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
   const parts = [
     "  <url>",
@@ -609,7 +644,22 @@ function handleSitemapRequest(request: Request, env: unknown): Response | null {
     return null;
   }
   const baseUrl = publicSiteUrl(env, request);
-  const staticPaths = ["/", "/men", "/women", "/shemaghs", "/niqabs", "/kufis", "/gloves", "/honey", "/about", "/contact", "/shipping", "/returns", "/privacy", "/terms"];
+  const staticPaths = [
+    "/",
+    "/men",
+    "/women",
+    "/shemaghs",
+    "/niqabs",
+    "/kufis",
+    "/gloves",
+    "/honey",
+    "/about",
+    "/contact",
+    "/shipping",
+    "/returns",
+    "/privacy",
+    "/terms",
+  ];
   const nodes = [
     ...staticPaths.map((path) => sitemapUrlNode(baseUrl, path, path === "/" ? "1.0" : "0.7")),
     ...localBackendProducts.map((product) =>
@@ -630,7 +680,10 @@ function handleSitemapRequest(request: Request, env: unknown): Response | null {
     "",
   ].join("\n");
   return new Response(request.method === "HEAD" ? null : body, {
-    headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=300" },
+    headers: {
+      "content-type": "application/xml; charset=utf-8",
+      "cache-control": "public, max-age=300",
+    },
   });
 }
 
@@ -650,7 +703,8 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   const contentType = response.headers.get("content-type") ?? "";
   if (!contentType.includes("application/json")) return response;
   const body = await response.clone().text();
-  if (!body.includes('"unhandled":true') || !body.includes('"message":"HTTPError"')) return response;
+  if (!body.includes('"unhandled":true') || !body.includes('"message":"HTTPError"'))
+    return response;
   console.error(consumeLastCapturedError() ?? new Error(`h3 swallowed SSR error: ${body}`));
   return new Response(renderErrorPage(), {
     status: 500,

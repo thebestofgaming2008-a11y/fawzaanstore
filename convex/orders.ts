@@ -586,7 +586,19 @@ function razorpayKeys() {
 }
 
 function basicAuth(keyId: string, keySecret: string) {
-  return `Basic ${btoa(`${keyId}:${keySecret}`)}`;
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  const bytes = Array.from(new TextEncoder().encode(`${keyId}:${keySecret}`));
+  let encoded = "";
+  for (let index = 0; index < bytes.length; index += 3) {
+    const first = bytes[index];
+    const second = bytes[index + 1];
+    const third = bytes[index + 2];
+    encoded += alphabet[first >> 2];
+    encoded += alphabet[((first & 3) << 4) | ((second ?? 0) >> 4)];
+    encoded += second === undefined ? "=" : alphabet[((second & 15) << 2) | ((third ?? 0) >> 6)];
+    encoded += third === undefined ? "=" : alphabet[third & 63];
+  }
+  return `Basic ${encoded}`;
 }
 
 async function razorpayRequest(path: string, init: RequestInit = {}) {
@@ -659,7 +671,7 @@ export const createRazorpayCheckoutOrder = action({
     validateCheckoutCustomer(args.customer);
     const quote = await ctx.runQuery(api.orders.quoteCheckout, { cart: args.cart });
     const { keyId } = razorpayKeys();
-    const receipt = `HE-${Date.now().toString().slice(-8)}`;
+    const receipt = `FZ-${Date.now().toString().slice(-8)}`;
     const order = await razorpayRequest("/orders", {
       method: "POST",
       body: JSON.stringify({
@@ -939,9 +951,7 @@ export const listUnresolvedCheckoutIntents = internalQuery({
         .query("checkout_intents")
         .withIndex("by_status", (q) => q.eq("status", status))
         .collect();
-      rows.push(
-        ...matches.filter((intent) => !intent.payment_id && intent.expires_at >= cutoff),
-      );
+      rows.push(...matches.filter((intent) => !intent.payment_id && intent.expires_at >= cutoff));
     }
     return rows.sort((a, b) => b._creationTime - a._creationTime).slice(0, limit);
   },
@@ -1093,14 +1103,18 @@ export const listMine = query({
       .query("orders")
       .withIndex("by_user_id", (q) => q.eq("user_id", auth.userId))
       .collect();
-    const email = String((auth.user as any).email ?? "").trim().toLowerCase();
+    const email = String((auth.user as any).email ?? "")
+      .trim()
+      .toLowerCase();
     const byEmail = email
       ? await ctx.db
           .query("orders")
           .withIndex("by_customer_email", (q) => q.eq("customer_email", email))
           .collect()
       : [];
-    const rows = Array.from(new Map([...byUser, ...byEmail].map((row) => [String(row._id), row])).values());
+    const rows = Array.from(
+      new Map([...byUser, ...byEmail].map((row) => [String(row._id), row])).values(),
+    );
     const enriched = await Promise.all(rows.map((row) => orderWithItems(ctx, row)));
     return enriched.sort((a, b) =>
       String(b.created_at ?? "").localeCompare(String(a.created_at ?? "")),
