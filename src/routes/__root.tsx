@@ -138,7 +138,7 @@ function RootComponent() {
         <AccountProvider>
           <WishlistProvider>
             <CartProvider>
-              <AnnouncementBar />
+              {/* Announcement bar removed for minimal look */}
               {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
               <Outlet />
               <CartDrawer />
