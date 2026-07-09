@@ -2,16 +2,17 @@ import { Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useCurrency } from "@/lib/currency";
-import { catalog, type Product } from "@/lib/products";
+import type { Product } from "@/lib/products";
+import { useCatalogProducts } from "@/services/productService";
 import { toast } from "sonner";
 
 // Legacy export kept so the home page's `products` import continues to work.
-export const products = catalog.slice(0, 6);
+export const products: Product[] = [];
 export type { Product };
 
 export function ProductRail({
   heading,
-  items = catalog,
+  items,
   to,
 }: {
   heading?: string;
@@ -20,6 +21,8 @@ export function ProductRail({
 }) {
   const { add } = useCart();
   const { format } = useCurrency();
+  const { products: liveProducts } = useCatalogProducts();
+  const displayItems = items ?? liveProducts;
 
   return (
     <section className="bg-ivory">
@@ -40,7 +43,7 @@ export function ProductRail({
       </div>
       <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory">
         <ul className="flex gap-3 md:gap-5 px-5 md:px-8 pb-12 md:pb-16 max-w-7xl mx-auto">
-          {items.map((p) => (
+          {displayItems.map((p) => (
             <li key={p.slug} className="snap-start shrink-0 w-[62vw] sm:w-64 md:w-72">
               <div className="group block">
                 <Link to="/product/$slug" params={{ slug: p.slug }} className="block">

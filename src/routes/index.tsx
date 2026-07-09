@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Truck, ShieldCheck, RotateCcw, Lock } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductCard } from "@/components/brand/ProductCard";
@@ -36,59 +36,85 @@ function Home() {
     <div className="min-h-screen bg-ivory text-ink">
       <SiteHeader />
 
-      {/* HERO — minimal, clean call to action */}
+      {/* HERO — full-bleed, editorial (mannequin close-up, exactly as reference) */}
       <section className="relative w-full overflow-hidden bg-cream -mt-px">
-        <div className="relative h-[86svh] min-h-[560px] md:h-[92svh] md:min-h-[680px]">
+        <div className="relative h-[88svh] min-h-[600px] md:h-[96svh] md:min-h-[720px]">
           <img
             src={shemagh}
             alt="Heritage Yemeni shemagh, hand-loomed"
             className="absolute inset-0 h-full w-full object-cover object-[center_top] animate-ken-burns"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-ink/10 via-ink/25 to-ink/60" />
-          <div className="relative z-10 h-full flex flex-col items-center justify-end pb-20 md:pb-28 px-5">
+          {/* Warm ink vignette for title readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/10 via-ink/25 to-ink/55" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.35)_100%)]" />
+          <div className="relative z-10 h-full flex flex-col items-center justify-end pb-16 md:pb-24 px-5">
             <div className="text-center text-ivory max-w-2xl animate-fade-up">
               <p className="text-[11px] md:text-[12px] uppercase tracking-[0.4em] shimmer-gold font-semibold">
                 New Collection
               </p>
-              <h1 className="font-display text-6xl sm:text-7xl md:text-8xl mt-4 leading-[0.95] tracking-tight text-ivory drop-shadow-[0_4px_18px_rgba(0,0,0,0.55)]">
+              <div className="mt-3 flex justify-center" aria-hidden>
+                <svg viewBox="0 0 120 12" className="h-3 w-28 text-gold" fill="currentColor">
+                  <path
+                    d="M0 6 Q15 0 30 6 T60 6 T90 6 T120 6"
+                    stroke="currentColor"
+                    strokeWidth="0.8"
+                    fill="none"
+                  />
+                  <circle cx="60" cy="6" r="1.6" />
+                </svg>
+              </div>
+              <h1 className="font-display text-6xl sm:text-7xl md:text-8xl mt-3 leading-[0.95] tracking-tight text-ivory drop-shadow-[0_4px_18px_rgba(0,0,0,0.55)]">
                 Heritage
               </h1>
-              <p className="mt-5 text-[13px] md:text-[14px] text-ivory/85 max-w-md mx-auto">
-                Hand-loomed essentials, made to be worn.
-              </p>
-              <Link
-                to="/shemaghs"
-                className="mt-8 inline-flex items-center gap-2 bg-ivory text-ink px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.28em] hover:bg-gold hover:text-ink transition-all duration-500 shadow-elegant"
-              >
-                Shop the collection <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
+
+              {/* Refined Women / Men selector — segmented pill with gold ring */}
+              <div className="mt-8 inline-flex items-stretch p-1 rounded-full bg-ivory/95 backdrop-blur-sm border border-gold/40 shadow-elegant relative">
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-inset ring-gold/20"
+                />
+                <Link
+                  to="/women"
+                  className="relative px-7 md:px-10 py-3 rounded-full text-[11px] font-semibold uppercase tracking-[0.28em] text-ink hover:bg-gold hover:text-ink transition-all group"
+                >
+                  <span className="relative">Women</span>
+                </Link>
+                <span aria-hidden className="w-px my-2 bg-gold/40" />
+                <Link
+                  to="/men"
+                  className="relative px-7 md:px-10 py-3 rounded-full text-[11px] font-semibold uppercase tracking-[0.28em] text-ink hover:bg-ink hover:text-gold transition-all"
+                >
+                  <span className="relative">Men</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Best sellers — with Women / Men selector (creative but minimal) */}
+      {/* Best sellers */}
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-16 md:py-24">
         <div className="text-center">
           <p className="text-[11px] uppercase tracking-[0.3em] text-ink/60">Our Best Sellers</p>
 
-          {/* Creative underline-tab selector — gold sliding indicator, hairline rule */}
-          <div className="relative mt-6 inline-flex items-center gap-10 md:gap-14 pb-2">
+          {/* Segmented selector — sliding gold indicator */}
+          <div className="mt-6 inline-flex relative rounded-full border border-ink/10 bg-cream p-1">
+            <span
+              aria-hidden
+              className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-full bg-ink shadow-soft transition-transform duration-500 ease-[cubic-bezier(0.2,0.7,0.2,1)]"
+              style={{ transform: tab === "women" ? "translateX(0)" : "translateX(100%)" }}
+            />
             {(["women", "men"] as const).map((k) => (
               <button
                 key={k}
                 onClick={() => setTab(k)}
-                className={`relative font-display text-2xl md:text-3xl transition-colors duration-500 ${
-                  tab === k ? "text-ink" : "text-ink/35 hover:text-ink/70"
+                className={`relative z-10 px-8 md:px-12 py-2.5 rounded-full text-[11px] font-semibold uppercase tracking-[0.28em] transition-colors duration-500 ${
+                  tab === k ? "text-gold" : "text-ink/60 hover:text-ink"
                 }`}
               >
-                {k === "women" ? "Women" : "Men"}
-                {tab === k && (
-                  <span className="absolute left-1/2 -bottom-1 h-[2px] w-8 -translate-x-1/2 bg-gradient-to-r from-transparent via-gold to-transparent" />
-                )}
+                {k}
               </button>
             ))}
-            <span aria-hidden className="absolute -bottom-0 left-0 right-0 h-px bg-ink/10" />
           </div>
         </div>
 
@@ -108,6 +134,39 @@ function Home() {
           >
             All {tab === "women" ? "Women" : "Men"}
           </Link>
+        </div>
+      </section>
+
+      {/* Premium brand strip — gold foil */}
+      <section aria-label="House philosophy" className="relative overflow-hidden bg-ink text-ivory">
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-60"
+          style={{
+            background:
+              "radial-gradient(ellipse at 20% 50%, rgba(244,180,0,0.22), transparent 55%), radial-gradient(ellipse at 80% 50%, rgba(255,222,128,0.18), transparent 60%)",
+          }}
+        />
+        <span
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent"
+        />
+        <span
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent"
+        />
+        <div className="relative mx-auto max-w-5xl px-6 py-16 md:py-24 text-center">
+          <p className="font-arabic text-3xl md:text-4xl shimmer-gold">فوزان</p>
+          <p className="eyebrow mt-4 text-gold-soft">Est. Heritage · Yemen · Kashmir</p>
+          <h2 className="font-display text-3xl md:text-5xl mt-5 leading-tight text-balance">
+            Quietly bold heritage —<br className="hidden md:block" /> made to be worn, not
+            displayed.
+          </h2>
+          <div className="mt-6 flex items-center justify-center">
+            <span className="h-px w-16 bg-gold/60" />
+            <span className="mx-3 text-gold text-sm">✦</span>
+            <span className="h-px w-16 bg-gold/60" />
+          </div>
         </div>
       </section>
 
@@ -164,49 +223,83 @@ function Home() {
         </div>
       </section>
 
-      {/* Collections — minimal, consistent cream backgrounds */}
+      {/* Collections grid */}
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-20 md:py-28">
-        <div className="text-center mb-14">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-ink/60">Collections</p>
+        <div className="text-center mb-12">
+          <p className="text-[11px] uppercase tracking-[0.3em] text-ink/60">Shop by Collection</p>
           <h2 className="font-display text-4xl md:text-5xl mt-3">Explore the House</h2>
+          <p className="mt-4 text-[14px] text-ink/60 max-w-md mx-auto">
+            Five quietly considered collections — choose your entry point.
+          </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-2 md:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-3 md:gap-4">
           <CollectionTile
             to="/shemaghs"
             name="Shemaghs"
             img={shemagh}
+            eyebrow="Signature"
             className="col-span-2 md:col-span-3 aspect-[4/5] md:aspect-auto md:h-[420px]"
+            size="lg"
           />
           <CollectionTile
             to="/niqabs"
             name="Niqabs"
             img={niqabTile}
+            eyebrow="For Her"
             className="col-span-2 md:col-span-3 aspect-[4/5] md:aspect-auto md:h-[420px]"
+            size="lg"
           />
           <CollectionTile
             to="/honey"
             name="Honey"
             img={honeyTile}
-            className="col-span-2 md:col-span-2 aspect-square md:aspect-auto md:h-[320px]"
+            className="col-span-2 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]"
+            size="sm"
           />
           <CollectionTile
             to="/gloves"
             name="Gloves"
             img={gloves}
-            className="col-span-1 md:col-span-2 aspect-square md:aspect-auto md:h-[320px]"
+            className="col-span-1 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]"
+            size="sm"
           />
           <CollectionTile
             to="/kufis"
             name="Kufis"
             img={kufi}
-            className="col-span-1 md:col-span-2 aspect-square md:aspect-auto md:h-[320px]"
+            className="col-span-1 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]"
+            size="sm"
           />
         </div>
       </section>
 
-      {/* FAQ — premium, animated */}
-      <FaqSection />
+      {/* Guarantee */}
+      <section className="border-y border-ink/10 bg-cream">
+        <div className="mx-auto max-w-7xl px-4 md:px-8 py-10 md:py-12">
+          <ul className="grid grid-cols-2 md:grid-cols-4 divide-x divide-ink/10">
+            {[
+              { icon: Truck, label: "Free shipping", sub: "On orders over $75" },
+              { icon: RotateCcw, label: "30-day returns", sub: "Easy & no questions" },
+              { icon: ShieldCheck, label: "Authentic", sub: "Sourced at origin" },
+              { icon: Lock, label: "Secure checkout", sub: "Encrypted payments" },
+            ].map((v) => (
+              <li
+                key={v.label}
+                className="flex items-center justify-center gap-3 px-3 py-4 md:py-2 text-center md:text-left"
+              >
+                <v.icon className="h-5 w-5 text-gold-deep shrink-0" />
+                <div>
+                  <p className="text-[12px] uppercase tracking-[0.18em] text-ink leading-tight">
+                    {v.label}
+                  </p>
+                  <p className="text-[11px] text-ink/55 mt-0.5">{v.sub}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       <SiteFooter />
     </div>
@@ -217,185 +310,42 @@ function CollectionTile({
   to,
   name,
   img,
+  eyebrow,
   className,
+  size,
 }: {
   to: string;
   name: string;
   img: string;
+  eyebrow?: string;
   className: string;
+  size: "lg" | "sm";
 }) {
   return (
     <Link to={to} className={`group relative overflow-hidden bg-cream ${className}`}>
-      <div className="absolute inset-0 bg-cream" />
       <img
         src={img}
         alt={name}
         loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110"
       />
-      {/* Uniform soft ivory→ink wash — same across all tiles for consistency */}
-      <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-ink/5 to-transparent transition-opacity duration-500 group-hover:from-ink/70" />
-      <div className="absolute bottom-5 left-5 right-5 text-ivory">
-        <h3 className="font-display text-2xl md:text-3xl">{name}</h3>
-        <span className="mt-1.5 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-ivory/80 transition-all duration-500 group-hover:text-gold-soft">
+      <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" />
+      <div
+        className={`absolute ${size === "lg" ? "bottom-5 left-5 right-5" : "bottom-4 left-4 right-4"} text-ivory transition-transform duration-500 group-hover:-translate-y-1`}
+      >
+        {eyebrow && (
+          <p className="text-[10px] uppercase tracking-[0.3em] text-ivory/80">{eyebrow}</p>
+        )}
+        <h3
+          className={`font-display ${size === "lg" ? "text-3xl md:text-4xl" : "text-2xl md:text-3xl"} mt-1`}
+        >
+          {name}
+        </h3>
+        <span className="mt-2 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] border-b border-ivory pb-0.5">
           Shop{" "}
-          <ArrowRight className="h-3 w-3 transition-transform duration-500 group-hover:translate-x-1" />
+          <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
         </span>
       </div>
     </Link>
-  );
-}
-
-const faqs = [
-  {
-    q: "How long does shipping take?",
-    a: "Standard 5–8 business days worldwide. Express 2–3 days. Free shipping on orders over $75.",
-  },
-  {
-    q: "What's your return policy?",
-    a: "30 days from delivery. Items must be unworn with tags intact. Easy, no-questions returns.",
-  },
-  {
-    q: "Are the shemaghs authentic?",
-    a: "Yes — each piece is hand-loomed at origin in Yemen and traceable to its atelier.",
-  },
-  {
-    q: "Is the honey really raw?",
-    a: "Unfiltered and unheated. Sourced from a single Kashmir highland origin. Nothing added, ever.",
-  },
-  {
-    q: "Do you ship internationally?",
-    a: "We ship worldwide with tracked parcels. Duties may apply at customs depending on your country.",
-  },
-];
-
-function FaqSection() {
-  const [open, setOpen] = useState<number | null>(0);
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
-      threshold: 0.15,
-    });
-    io.observe(el);
-
-    const onScroll = () => {
-      const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight || 1;
-      const total = rect.height + vh;
-      const passed = Math.min(Math.max(vh - rect.top, 0), total);
-      setProgress(passed / total);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      io.disconnect();
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
-
-  // Cream → ivory background transition driven by scroll
-  const bgStyle = {
-    background: `linear-gradient(180deg, rgba(250,248,242,${1 - progress * 0.6}) 0%, rgba(255,255,255,1) 100%)`,
-  };
-
-  return (
-    <section ref={sectionRef} style={bgStyle} className="relative overflow-hidden">
-      {/* Subtle gold radial glow that fades in */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none transition-opacity duration-1000"
-        style={{
-          opacity: visible ? 0.35 : 0,
-          background: "radial-gradient(ellipse at 50% 20%, rgba(244,180,0,0.14), transparent 60%)",
-        }}
-      />
-      {/* Top hairline */}
-      <span
-        aria-hidden
-        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent"
-      />
-
-      <div className="relative mx-auto max-w-3xl px-5 md:px-8 py-24 md:py-32">
-        <div
-          className={`text-center transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-        >
-          <p className="eyebrow text-gold-deep">Frequently asked</p>
-          <h2 className="mt-3 font-display text-4xl md:text-5xl leading-tight">
-            Everything you
-            <br className="md:hidden" /> need to know.
-          </h2>
-          <div className="mt-5 flex items-center justify-center">
-            <span className="h-px w-10 bg-gold/50" />
-            <span className="mx-3 text-gold text-sm">✦</span>
-            <span className="h-px w-10 bg-gold/50" />
-          </div>
-        </div>
-
-        <ul className="mt-14 space-y-2">
-          {faqs.map((f, i) => {
-            const isOpen = open === i;
-            return (
-              <li
-                key={f.q}
-                style={{ transitionDelay: `${i * 80}ms` }}
-                className={`group border-b border-ink/10 transition-all duration-700 ${
-                  visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                }`}
-              >
-                <button
-                  onClick={() => setOpen(isOpen ? null : i)}
-                  className="w-full flex items-center justify-between text-left py-5 md:py-6"
-                >
-                  <span
-                    className={`font-display text-lg md:text-2xl transition-colors duration-500 ${
-                      isOpen ? "text-gold-deep" : "text-ink group-hover:text-gold-deep"
-                    }`}
-                  >
-                    {f.q}
-                  </span>
-                  <span
-                    className={`ml-4 grid place-items-center h-8 w-8 rounded-full border transition-all duration-500 ${
-                      isOpen
-                        ? "bg-ink border-ink text-gold rotate-180"
-                        : "border-ink/20 text-ink group-hover:border-gold-deep group-hover:text-gold-deep"
-                    }`}
-                  >
-                    <ChevronDown className="h-4 w-4" />
-                  </span>
-                </button>
-                <div
-                  className="grid transition-[grid-template-rows] duration-500 ease-out"
-                  style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
-                >
-                  <div className="overflow-hidden">
-                    <p
-                      className={`pb-6 pr-12 text-[15px] leading-relaxed text-ink/70 transition-all duration-500 ${isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}`}
-                    >
-                      {f.a}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-
-        <div
-          className={`mt-14 text-center transition-all duration-700 delay-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-        >
-          <Link
-            to="/faq"
-            className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-ink border-b border-ink pb-1 hover:text-gold-deep hover:border-gold-deep transition-colors"
-          >
-            View all questions <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
-      </div>
-    </section>
   );
 }
