@@ -2,11 +2,9 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 
 export type CartItem = {
   id: string;
-  productId?: string;
-  slug?: string;
   name: string;
   variant?: string;
-  price: number; // INR base
+  price: number; // in dollars
   img: string;
   qty: number;
 };
@@ -26,8 +24,6 @@ type CartCtx = {
 
 const Ctx = createContext<CartCtx | null>(null);
 const FREE_SHIP = 2000; // INR
-const CART_STORAGE_KEY = "fawzaan-cart-v2";
-const LEGACY_CART_STORAGE_KEY = "fawzaan-cart";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -35,43 +31,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      localStorage.removeItem(LEGACY_CART_STORAGE_KEY);
-      const raw = localStorage.getItem(CART_STORAGE_KEY);
+      const raw = localStorage.getItem("fawzaan-cart");
       if (raw) setItems(JSON.parse(raw));
-    } catch {
-      // Ignore malformed persisted carts.
-    }
+    } catch {}
   }, []);
   useEffect(() => {
-    try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-    } catch {
-      // Storage can be unavailable in private browsing modes.
-    }
+    try { localStorage.setItem("fawzaan-cart", JSON.stringify(items)); } catch {}
   }, [items]);
 
   const value = useMemo<CartCtx>(() => {
     const count = items.reduce((s, i) => s + i.qty, 0);
     const subtotal = items.reduce((s, i) => s + i.qty * i.price, 0);
     return {
-      items,
-      isOpen,
-      count,
-      subtotal,
+      items, isOpen, count, subtotal,
       open: () => setIsOpen(true),
       close: () => setIsOpen(false),
       add: (item) => {
         setItems((prev) => {
           const existing = prev.find((p) => p.id === item.id);
-          if (existing)
-            return prev.map((p) => (p.id === item.id ? { ...p, qty: p.qty + (item.qty ?? 1) } : p));
+          if (existing) return prev.map((p) => p.id === item.id ? { ...p, qty: p.qty + (item.qty ?? 1) } : p);
           return [...prev, { ...item, qty: item.qty ?? 1 }];
         });
         setIsOpen(true);
       },
       remove: (id) => setItems((prev) => prev.filter((p) => p.id !== id)),
-      setQty: (id, qty) =>
-        setItems((prev) => prev.map((p) => (p.id === id ? { ...p, qty: Math.max(1, qty) } : p))),
+      setQty: (id, qty) => setItems((prev) => prev.map((p) => p.id === id ? { ...p, qty: Math.max(1, qty) } : p)),
       clear: () => setItems([]),
     };
   }, [items, isOpen]);

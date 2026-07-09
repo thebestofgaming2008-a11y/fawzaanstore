@@ -23,55 +23,26 @@ const CurrencyCtx = createContext<Ctx | null>(null);
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
   const [currency, setCurrency] = useState<CurrencyCode>("INR");
-  const [rates, setRates] = useState<Record<string, number>>(() =>
-    Object.fromEntries(Object.entries(CURRENCIES).map(([code, value]) => [code, value.rate])),
-  );
 
   useEffect(() => {
-    let saved = false;
     try {
       const raw = localStorage.getItem("fawzaan-currency") as CurrencyCode | null;
-      if (raw && CURRENCIES[raw]) {
-        saved = true;
-        setCurrency(raw);
-      }
-    } catch {
-      // Browser storage can be unavailable in private or restricted contexts.
-    }
-    fetch("/api/geo")
-      .then((response) => response.json())
-      .then((geo) => {
-        const detected = String(geo?.currency ?? "") as CurrencyCode;
-        if (!saved && CURRENCIES[detected]) setCurrency(detected);
-      })
-      .catch(() => undefined);
-    fetch("/api/rates?base=INR")
-      .then((response) => response.json())
-      .then((payload) => {
-        if (payload?.rates && typeof payload.rates === "object") {
-          setRates((current) => ({ ...current, ...(payload.rates as Record<string, number>) }));
-        }
-      })
-      .catch(() => undefined);
+      if (raw && CURRENCIES[raw]) setCurrency(raw);
+    } catch {}
   }, []);
   useEffect(() => {
-    try {
-      localStorage.setItem("fawzaan-currency", currency);
-    } catch {
-      // Browser storage can be unavailable in private or restricted contexts.
-    }
+    try { localStorage.setItem("fawzaan-currency", currency); } catch {}
   }, [currency]);
 
   const value = useMemo<Ctx>(() => {
-    const { symbol } = CURRENCIES[currency];
-    const rate = rates[currency] ?? CURRENCIES[currency].rate;
+    const { symbol, rate } = CURRENCIES[currency];
     const format = (inr: number) => {
       const v = inr * rate;
       const digits = currency === "INR" ? 0 : 2;
       return `${symbol}${v.toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
     };
     return { currency, setCurrency, format, symbol };
-  }, [currency, rates]);
+  }, [currency]);
 
   return <CurrencyCtx.Provider value={value}>{children}</CurrencyCtx.Provider>;
 }

@@ -26,7 +26,6 @@ export type Gender = "men" | "women" | "unisex";
 export type Variant = { name: string; swatch?: string };
 
 export type Product = {
-  id?: string;
   slug: string;
   name: string;
   collection: Collection;
@@ -79,13 +78,7 @@ export const catalog: Product[] = [
     price: 2400,
     rating: 4.8,
     reviews: 312,
-    images: [
-      shemaghIvoryFront,
-      shemaghIvorySide,
-      shemaghIvoryWrap,
-      shemaghIvoryBack,
-      shemaghIvoryFlat,
-    ],
+    images: [shemaghIvoryFront, shemaghIvorySide, shemaghIvoryWrap, shemaghIvoryBack, shemaghIvoryFlat],
     sizes: ["Standard · 130 × 130 cm"],
     short: "Ivory shemagh with rose-red embroidered borders.",
     description:
@@ -140,8 +133,7 @@ export const catalog: Product[] = [
     ],
     sizes: ["One Size", "Long"],
     short: "A quiet colour statement in premium chiffon.",
-    description:
-      "Same premium chiffon build as our Khadija, in a rich rouge dye. Layered, breathable, and drapes softly.",
+    description: "Same premium chiffon build as our Khadija, in a rich rouge dye. Layered, breathable, and drapes softly.",
     features: ["Two-layer chiffon", "Adjustable ties", "Colour-fast"],
     materials: "Premium chiffon.",
     care: "Hand wash cold, hang dry.",
@@ -174,10 +166,7 @@ export const catalog: Product[] = [
     rating: 4.8,
     reviews: 96,
     images: [heroGloves],
-    colors: [
-      { name: "Cognac", swatch: "#7a4a24" },
-      { name: "Black", swatch: "#000000" },
-    ],
+    colors: [{ name: "Cognac", swatch: "#7a4a24" }, { name: "Black", swatch: "#000000" }],
     sizes: ["S", "M", "L", "XL"],
     short: "Full-grain leather, silk-lined.",
     description: "Full-grain leather gloves with a silk lining. Cut to move, warm without bulk.",

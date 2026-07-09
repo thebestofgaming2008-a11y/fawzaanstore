@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, ShoppingBag, Search, Heart, User } from "lucide-react";
-import logoUrl from "@/assets/fawzaan-logo-mark.png";
+import logo from "@/assets/fawzaan-logo.png.asset.json";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import { useAccount } from "@/lib/account";
 import { useCurrency, CURRENCIES, type CurrencyCode } from "@/lib/currency";
-import { useCatalogProducts } from "@/services/productService";
+import { catalog } from "@/lib/products";
 
 const nav = [
   { to: "/women", label: "Women" },
@@ -26,13 +26,10 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
   const { count: wishCount } = useWishlist();
   const { account } = useAccount();
   const { currency, setCurrency, format } = useCurrency();
-  const { products } = useCatalogProducts();
 
   useEffect(() => {
     document.body.style.overflow = open || searchOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [open, searchOpen]);
 
   useEffect(() => {
@@ -42,14 +39,10 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const results =
-    q.trim().length > 1
-      ? products
-          .filter((p) =>
-            (p.name + " " + p.short + " " + p.collection).toLowerCase().includes(q.toLowerCase()),
-          )
-          .slice(0, 6)
-      : [];
+
+  const results = q.trim().length > 1
+    ? catalog.filter((p) => (p.name + " " + p.short + " " + p.collection).toLowerCase().includes(q.toLowerCase())).slice(0, 6)
+    : [];
 
   return (
     <>
@@ -73,24 +66,14 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
             }`}
           />
         )}
-        <div
-          className={`mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8 transition-all duration-500 ${scrolled ? "py-2 md:py-2.5" : "py-3 md:py-4"}`}
-        >
-          <button
-            aria-label="Menu"
-            className="md:hidden p-2 -ml-2 hover:text-gold-deep transition"
-            onClick={() => setOpen(true)}
-          >
+        <div className={`mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8 transition-all duration-500 ${scrolled ? "py-2 md:py-2.5" : "py-3 md:py-4"}`}>
+          <button aria-label="Menu" className="md:hidden p-2 -ml-2 hover:text-gold-deep transition" onClick={() => setOpen(true)}>
             <Menu className="h-6 w-6" />
           </button>
 
-          <Link
-            to="/"
-            aria-label="Fawzaan Store — home"
-            className="flex items-center group md:flex-1"
-          >
+          <Link to="/" aria-label="Fawzaan Store — home" className="flex items-center group md:flex-1">
             <img
-              src={logoUrl}
+              src={logo.url}
               alt="Fawzaan Store"
               width={220}
               height={94}
@@ -112,11 +95,7 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
           </nav>
 
           <div className="flex items-center gap-0.5 md:flex-1 md:justify-end">
-            <button
-              aria-label="Search"
-              onClick={() => setSearchOpen(true)}
-              className="p-2 hover:text-gold-deep transition"
-            >
+            <button aria-label="Search" onClick={() => setSearchOpen(true)} className="p-2 hover:text-gold-deep transition">
               <Search className="h-5 w-5" />
             </button>
 
@@ -154,11 +133,7 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
         >
           <div className="flex items-center justify-between px-5 py-4 border-b border-border">
             <span className="font-display text-xl">Menu</span>
-            <button
-              aria-label="Close"
-              onClick={() => setOpen(false)}
-              className="p-2 -mr-2 hover:bg-cream rounded-full"
-            >
+            <button aria-label="Close" onClick={() => setOpen(false)} className="p-2 -mr-2 hover:bg-cream rounded-full">
               <X className="h-5 w-5" />
             </button>
           </div>
@@ -175,49 +150,24 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
                 <span className="text-gold-deep">›</span>
               </Link>
             ))}
-            <Link
-              to="/gloves"
-              onClick={() => setOpen(false)}
-              className="py-4 text-lg font-display border-b border-border/40 flex items-center justify-between"
-            >
+            <Link to="/gloves" onClick={() => setOpen(false)} className="py-4 text-lg font-display border-b border-border/40 flex items-center justify-between">
               Gloves <span className="text-gold-deep">›</span>
             </Link>
-            <Link
-              to="/kufis"
-              onClick={() => setOpen(false)}
-              className="py-4 text-lg font-display border-b border-border/40 flex items-center justify-between"
-            >
+            <Link to="/kufis" onClick={() => setOpen(false)} className="py-4 text-lg font-display border-b border-border/40 flex items-center justify-between">
               Kufis <span className="text-gold-deep">›</span>
             </Link>
 
             <div className="pt-4 mt-4 border-t border-border/60 space-y-1">
-              <Link
-                to="/account"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 py-3 text-sm hover:text-gold-deep transition"
-              >
-                <User className="h-4 w-4" />{" "}
-                {account ? `Hi, ${account.firstName || "friend"}` : "Sign in"}
+              <Link to="/account" onClick={() => setOpen(false)} className="flex items-center gap-3 py-3 text-sm hover:text-gold-deep transition">
+                <User className="h-4 w-4" /> {account ? `Hi, ${account.firstName || "friend"}` : "Sign in"}
               </Link>
-              <Link
-                to="/wishlist"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 py-3 text-sm hover:text-gold-deep transition"
-              >
+              <Link to="/wishlist" onClick={() => setOpen(false)} className="flex items-center gap-3 py-3 text-sm hover:text-gold-deep transition">
                 <Heart className="h-4 w-4" /> Wishlist ({wishCount})
               </Link>
-              <Link
-                to="/faq"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 py-3 text-sm hover:text-gold-deep transition"
-              >
+              <Link to="/faq" onClick={() => setOpen(false)} className="flex items-center gap-3 py-3 text-sm hover:text-gold-deep transition">
                 FAQ
               </Link>
-              <Link
-                to="/contact"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 py-3 text-sm hover:text-gold-deep transition"
-              >
+              <Link to="/contact" onClick={() => setOpen(false)} className="flex items-center gap-3 py-3 text-sm hover:text-gold-deep transition">
                 Contact
               </Link>
             </div>
@@ -243,16 +193,8 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
 
       {/* Search overlay */}
       {searchOpen && (
-        <div
-          className="fixed inset-0 z-[70] bg-ink/50 backdrop-blur-sm animate-fade-in"
-          role="dialog"
-          aria-label="Search"
-        >
-          <button
-            className="absolute inset-0"
-            aria-label="Close"
-            onClick={() => setSearchOpen(false)}
-          />
+        <div className="fixed inset-0 z-[70] bg-ink/50 backdrop-blur-sm animate-fade-in" role="dialog" aria-label="Search">
+          <button className="absolute inset-0" aria-label="Close" onClick={() => setSearchOpen(false)} />
           <div className="relative bg-ivory shadow-elegant animate-fade-up">
             <div className="mx-auto max-w-3xl px-4 md:px-8 py-5">
               <div className="flex items-center gap-3 border-b border-ink/15 pb-3">
@@ -264,9 +206,7 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
                   placeholder="Search shemaghs, niqabs, honey…"
                   className="flex-1 bg-transparent outline-none text-base placeholder:text-ink/40"
                 />
-                <button onClick={() => setSearchOpen(false)} aria-label="Close" className="p-1">
-                  <X className="h-5 w-5" />
-                </button>
+                <button onClick={() => setSearchOpen(false)} aria-label="Close" className="p-1"><X className="h-5 w-5" /></button>
               </div>
               {q.trim().length > 1 ? (
                 results.length === 0 ? (
@@ -281,11 +221,7 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
                           onClick={() => setSearchOpen(false)}
                           className="flex items-center gap-4 py-3 hover:bg-cream px-1 rounded-sm transition"
                         >
-                          <img
-                            src={p.images[0]}
-                            alt=""
-                            className="h-14 w-12 object-cover bg-cream"
-                          />
+                          <img src={p.images[0]} alt="" className="h-14 w-12 object-cover bg-cream" />
                           <div className="flex-1 min-w-0">
                             <p className="text-sm">{p.name}</p>
                             <p className="text-xs text-ink/55 truncate">{p.short}</p>
@@ -298,9 +234,7 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
                 )
               ) : (
                 <div className="py-6">
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-ink/50 mb-3">
-                    Popular
-                  </p>
+                  <p className="text-[11px] uppercase tracking-[0.22em] text-ink/50 mb-3">Popular</p>
                   <div className="flex flex-wrap gap-2">
                     {["Shemaghs", "Niqabs", "Kashmir Honey", "Kufis", "Gloves"].map((t) => (
                       <button

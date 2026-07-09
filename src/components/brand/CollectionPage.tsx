@@ -4,8 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductCard } from "@/components/brand/ProductCard";
-import type { Product } from "@/lib/products";
-import { useCatalogProducts } from "@/services/productService";
+import { catalog, type Product } from "@/lib/products";
 
 export type Filter = {
   title: string;
@@ -16,8 +15,7 @@ export type Filter = {
 };
 
 export function CollectionPage({ title, breadcrumb, eyebrow, where, hero }: Filter) {
-  const { products } = useCatalogProducts();
-  const items = useMemo(() => products.filter(where), [products, where]);
+  const items = useMemo(() => catalog.filter(where), [where]);
   const [sort, setSort] = useState<"featured" | "price-asc" | "price-desc" | "rating">("featured");
 
   const sorted = useMemo(() => {
@@ -35,22 +33,11 @@ export function CollectionPage({ title, breadcrumb, eyebrow, where, hero }: Filt
       {/* Hero */}
       <section className="relative bg-cream">
         <div className="relative h-[38vh] min-h-[280px] md:h-[46vh]">
-          {hero && (
-            <img
-              src={hero}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover opacity-70"
-            />
-          )}
+          {hero && <img src={hero} alt="" className="absolute inset-0 h-full w-full object-cover opacity-70" />}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-ivory/60" />
           <div className="relative z-10 h-full max-w-7xl mx-auto px-4 md:px-8 flex flex-col justify-end pb-8">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-[11px] uppercase tracking-[0.22em] text-ink/70"
-            >
-              <Link to="/" className="hover:text-ink">
-                Home
-              </Link>
+            <nav aria-label="Breadcrumb" className="text-[11px] uppercase tracking-[0.22em] text-ink/70">
+              <Link to="/" className="hover:text-ink">Home</Link>
               <span className="mx-2">/</span>
               <span className="text-ink">{breadcrumb}</span>
             </nav>
@@ -64,9 +51,7 @@ export function CollectionPage({ title, breadcrumb, eyebrow, where, hero }: Filt
       {/* Toolbar */}
       <div className="sticky top-[57px] md:top-[73px] z-30 bg-ivory/95 backdrop-blur border-b border-ink/10">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
-          <p className="text-[12px] uppercase tracking-[0.18em] text-ink/60">
-            {items.length} results
-          </p>
+          <p className="text-[12px] uppercase tracking-[0.18em] text-ink/60">{items.length} results</p>
           <label className="relative text-[12px] uppercase tracking-[0.18em] text-ink/70">
             <span className="mr-2">Sort</span>
             <select
@@ -90,18 +75,13 @@ export function CollectionPage({ title, breadcrumb, eyebrow, where, hero }: Filt
           <div className="text-center py-24">
             <p className="font-display text-3xl">Coming soon.</p>
             <p className="mt-2 text-ink/60">This collection is being restocked.</p>
-            <Link
-              to="/"
-              className="mt-6 inline-flex items-center bg-ink text-ivory px-6 py-3 text-xs uppercase tracking-[0.22em]"
-            >
+            <Link to="/" className="mt-6 inline-flex items-center bg-ink text-ivory px-6 py-3 text-xs uppercase tracking-[0.22em]">
               Browse other collections
             </Link>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-14">
-            {sorted.map((p, i) => (
-              <ProductCard key={p.slug} p={p} priority={i < 4} />
-            ))}
+            {sorted.map((p, i) => <ProductCard key={p.slug} p={p} priority={i < 4} />)}
           </div>
         )}
       </section>

@@ -4,7 +4,7 @@ import { ArrowRight, Truck, ShieldCheck, RotateCcw, Lock } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductCard } from "@/components/brand/ProductCard";
-import { useCatalogProducts } from "@/services/productService";
+import { catalog, byGender } from "@/lib/products";
 import shemagh from "@/assets/shemagh-red-head.jpg";
 import niqabTile from "@/assets/niqab-khadija-2.jpg";
 import gloves from "@/assets/hero-gloves.jpg";
@@ -16,11 +16,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Fawzaan — Heritage Shemaghs, Niqabs & Sidr Honey" },
-      {
-        name: "description",
-        content:
-          "Hand-loomed shemaghs, niqabs, leather gloves and raw Sidr honey. Quietly bold heritage essentials.",
-      },
+      { name: "description", content: "Hand-loomed shemaghs, niqabs, leather gloves and raw Sidr honey. Quietly bold heritage essentials." },
     ],
   }),
   component: Home,
@@ -28,9 +24,8 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const [tab, setTab] = useState<"women" | "men">("women");
-  const { products } = useCatalogProducts();
-  const items = products.filter((p) => p.gender === tab || p.gender === "unisex").slice(0, 4);
-  const honeyItems = products.filter((p) => p.collection === "honey");
+  const items = byGender(tab).slice(0, 4);
+  const honeyItems = catalog.filter((p) => p.collection === "honey");
 
   return (
     <div className="min-h-screen bg-ivory text-ink">
@@ -49,18 +44,11 @@ function Home() {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.35)_100%)]" />
           <div className="relative z-10 h-full flex flex-col items-center justify-end pb-16 md:pb-24 px-5">
             <div className="text-center text-ivory max-w-2xl animate-fade-up">
-              <p className="text-[11px] md:text-[12px] uppercase tracking-[0.4em] shimmer-gold font-semibold">
-                New Collection
-              </p>
+              <p className="text-[11px] md:text-[12px] uppercase tracking-[0.4em] shimmer-gold font-semibold">New Collection</p>
               <div className="mt-3 flex justify-center" aria-hidden>
                 <svg viewBox="0 0 120 12" className="h-3 w-28 text-gold" fill="currentColor">
-                  <path
-                    d="M0 6 Q15 0 30 6 T60 6 T90 6 T120 6"
-                    stroke="currentColor"
-                    strokeWidth="0.8"
-                    fill="none"
-                  />
-                  <circle cx="60" cy="6" r="1.6" />
+                  <path d="M0 6 Q15 0 30 6 T60 6 T90 6 T120 6" stroke="currentColor" strokeWidth="0.8" fill="none"/>
+                  <circle cx="60" cy="6" r="1.6"/>
                 </svg>
               </div>
               <h1 className="font-display text-6xl sm:text-7xl md:text-8xl mt-3 leading-[0.95] tracking-tight text-ivory drop-shadow-[0_4px_18px_rgba(0,0,0,0.55)]">
@@ -69,10 +57,7 @@ function Home() {
 
               {/* Refined Women / Men selector — segmented pill with gold ring */}
               <div className="mt-8 inline-flex items-stretch p-1 rounded-full bg-ivory/95 backdrop-blur-sm border border-gold/40 shadow-elegant relative">
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-inset ring-gold/20"
-                />
+                <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-inset ring-gold/20" />
                 <Link
                   to="/women"
                   className="relative px-7 md:px-10 py-3 rounded-full text-[11px] font-semibold uppercase tracking-[0.28em] text-ink hover:bg-gold hover:text-ink transition-all group"
@@ -91,6 +76,8 @@ function Home() {
           </div>
         </div>
       </section>
+
+
 
       {/* Best sellers */}
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-16 md:py-24">
@@ -118,20 +105,12 @@ function Home() {
           </div>
         </div>
 
-        <div
-          key={tab}
-          className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 animate-fade-up"
-        >
-          {items.map((p, i) => (
-            <ProductCard key={p.slug} p={p} priority={i < 2} />
-          ))}
+        <div key={tab} className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 animate-fade-up">
+          {items.map((p, i) => <ProductCard key={p.slug} p={p} priority={i < 2} />)}
         </div>
 
         <div className="mt-12 text-center">
-          <Link
-            to={tab === "women" ? "/women" : "/men"}
-            className="inline-flex items-center bg-ink text-ivory px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition"
-          >
+          <Link to={tab === "women" ? "/women" : "/men"} className="inline-flex items-center bg-ink text-ivory px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] hover:bg-gold-deep transition">
             All {tab === "women" ? "Women" : "Men"}
           </Link>
         </div>
@@ -147,20 +126,13 @@ function Home() {
               "radial-gradient(ellipse at 20% 50%, rgba(244,180,0,0.22), transparent 55%), radial-gradient(ellipse at 80% 50%, rgba(255,222,128,0.18), transparent 60%)",
           }}
         />
-        <span
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent"
-        />
-        <span
-          aria-hidden
-          className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent"
-        />
+        <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent" />
+        <span aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent" />
         <div className="relative mx-auto max-w-5xl px-6 py-16 md:py-24 text-center">
           <p className="font-arabic text-3xl md:text-4xl shimmer-gold">فوزان</p>
           <p className="eyebrow mt-4 text-gold-soft">Est. Heritage · Yemen · Kashmir</p>
           <h2 className="font-display text-3xl md:text-5xl mt-5 leading-tight text-balance">
-            Quietly bold heritage —<br className="hidden md:block" /> made to be worn, not
-            displayed.
+            Quietly bold heritage —<br className="hidden md:block" /> made to be worn, not displayed.
           </h2>
           <div className="mt-6 flex items-center justify-center">
             <span className="h-px w-16 bg-gold/60" />
@@ -170,30 +142,18 @@ function Home() {
         </div>
       </section>
 
+
       {/* Honey banner */}
       <section className="relative w-full overflow-hidden">
         <div className="relative h-[64vh] min-h-[440px]">
-          <img
-            src={honey}
-            alt="Raw Sidr honey"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
+          <img src={honey} alt="Raw Sidr honey" className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-ink/55 to-transparent" />
           <div className="relative z-10 h-full mx-auto max-w-7xl px-5 md:px-8 flex items-center">
             <div className="text-ivory max-w-md animate-fade-up">
               <p className="text-[11px] uppercase tracking-[0.3em] text-ivory/80">The Harvest</p>
-              <h2 className="font-display text-4xl md:text-5xl mt-4 leading-tight">
-                Raw Sidr honey,
-                <br />
-                straight from the hive.
-              </h2>
-              <p className="mt-4 text-[14px] text-ivory/80 max-w-sm">
-                Unfiltered, unheated and traceable to a single highland origin.
-              </p>
-              <Link
-                to="/honey"
-                className="mt-7 inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.22em] border-b border-ivory pb-1 hover:text-gold hover:border-gold transition"
-              >
+              <h2 className="font-display text-4xl md:text-5xl mt-4 leading-tight">Raw Sidr honey,<br/>straight from the hive.</h2>
+              <p className="mt-4 text-[14px] text-ivory/80 max-w-sm">Unfiltered, unheated and traceable to a single highland origin.</p>
+              <Link to="/honey" className="mt-7 inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.22em] border-b border-ivory pb-1 hover:text-gold hover:border-gold transition">
                 Shop honey <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -205,12 +165,7 @@ function Home() {
       <section className="bg-ivory">
         <div className="mx-auto max-w-7xl px-4 md:px-8 pt-12 md:pt-16 flex items-end justify-between">
           <h3 className="font-display text-2xl md:text-3xl text-ink">Shop honey</h3>
-          <Link
-            to="/honey"
-            className="text-[11px] uppercase tracking-[0.22em] text-ink/60 hover:text-ink"
-          >
-            View all →
-          </Link>
+          <Link to="/honey" className="text-[11px] uppercase tracking-[0.22em] text-ink/60 hover:text-ink">View all →</Link>
         </div>
         <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory">
           <ul className="flex gap-3 md:gap-4 px-4 md:px-8 py-8 max-w-7xl mx-auto">
@@ -228,49 +183,15 @@ function Home() {
         <div className="text-center mb-12">
           <p className="text-[11px] uppercase tracking-[0.3em] text-ink/60">Shop by Collection</p>
           <h2 className="font-display text-4xl md:text-5xl mt-3">Explore the House</h2>
-          <p className="mt-4 text-[14px] text-ink/60 max-w-md mx-auto">
-            Five quietly considered collections — choose your entry point.
-          </p>
+          <p className="mt-4 text-[14px] text-ink/60 max-w-md mx-auto">Five quietly considered collections — choose your entry point.</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3 md:gap-4">
-          <CollectionTile
-            to="/shemaghs"
-            name="Shemaghs"
-            img={shemagh}
-            eyebrow="Signature"
-            className="col-span-2 md:col-span-3 aspect-[4/5] md:aspect-auto md:h-[420px]"
-            size="lg"
-          />
-          <CollectionTile
-            to="/niqabs"
-            name="Niqabs"
-            img={niqabTile}
-            eyebrow="For Her"
-            className="col-span-2 md:col-span-3 aspect-[4/5] md:aspect-auto md:h-[420px]"
-            size="lg"
-          />
-          <CollectionTile
-            to="/honey"
-            name="Honey"
-            img={honeyTile}
-            className="col-span-2 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]"
-            size="sm"
-          />
-          <CollectionTile
-            to="/gloves"
-            name="Gloves"
-            img={gloves}
-            className="col-span-1 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]"
-            size="sm"
-          />
-          <CollectionTile
-            to="/kufis"
-            name="Kufis"
-            img={kufi}
-            className="col-span-1 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]"
-            size="sm"
-          />
+          <CollectionTile to="/shemaghs" name="Shemaghs" img={shemagh} eyebrow="Signature" className="col-span-2 md:col-span-3 aspect-[4/5] md:aspect-auto md:h-[420px]" size="lg" />
+          <CollectionTile to="/niqabs" name="Niqabs" img={niqabTile} eyebrow="For Her" className="col-span-2 md:col-span-3 aspect-[4/5] md:aspect-auto md:h-[420px]" size="lg" />
+          <CollectionTile to="/honey" name="Honey" img={honeyTile} className="col-span-2 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]" size="sm" />
+          <CollectionTile to="/gloves" name="Gloves" img={gloves} className="col-span-1 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]" size="sm" />
+          <CollectionTile to="/kufis" name="Kufis" img={kufi} className="col-span-1 md:col-span-2 aspect-square md:aspect-auto md:h-[340px]" size="sm" />
         </div>
       </section>
 
@@ -284,15 +205,10 @@ function Home() {
               { icon: ShieldCheck, label: "Authentic", sub: "Sourced at origin" },
               { icon: Lock, label: "Secure checkout", sub: "Encrypted payments" },
             ].map((v) => (
-              <li
-                key={v.label}
-                className="flex items-center justify-center gap-3 px-3 py-4 md:py-2 text-center md:text-left"
-              >
+              <li key={v.label} className="flex items-center justify-center gap-3 px-3 py-4 md:py-2 text-center md:text-left">
                 <v.icon className="h-5 w-5 text-gold-deep shrink-0" />
                 <div>
-                  <p className="text-[12px] uppercase tracking-[0.18em] text-ink leading-tight">
-                    {v.label}
-                  </p>
+                  <p className="text-[12px] uppercase tracking-[0.18em] text-ink leading-tight">{v.label}</p>
                   <p className="text-[11px] text-ink/55 mt-0.5">{v.sub}</p>
                 </div>
               </li>
@@ -306,44 +222,18 @@ function Home() {
   );
 }
 
-function CollectionTile({
-  to,
-  name,
-  img,
-  eyebrow,
-  className,
-  size,
-}: {
-  to: string;
-  name: string;
-  img: string;
-  eyebrow?: string;
-  className: string;
-  size: "lg" | "sm";
+function CollectionTile({ to, name, img, eyebrow, className, size }: {
+  to: string; name: string; img: string; eyebrow?: string; className: string; size: "lg" | "sm";
 }) {
   return (
     <Link to={to} className={`group relative overflow-hidden bg-cream ${className}`}>
-      <img
-        src={img}
-        alt={name}
-        loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110"
-      />
+      <img src={img} alt={name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110" />
       <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" />
-      <div
-        className={`absolute ${size === "lg" ? "bottom-5 left-5 right-5" : "bottom-4 left-4 right-4"} text-ivory transition-transform duration-500 group-hover:-translate-y-1`}
-      >
-        {eyebrow && (
-          <p className="text-[10px] uppercase tracking-[0.3em] text-ivory/80">{eyebrow}</p>
-        )}
-        <h3
-          className={`font-display ${size === "lg" ? "text-3xl md:text-4xl" : "text-2xl md:text-3xl"} mt-1`}
-        >
-          {name}
-        </h3>
+      <div className={`absolute ${size === "lg" ? "bottom-5 left-5 right-5" : "bottom-4 left-4 right-4"} text-ivory transition-transform duration-500 group-hover:-translate-y-1`}>
+        {eyebrow && <p className="text-[10px] uppercase tracking-[0.3em] text-ivory/80">{eyebrow}</p>}
+        <h3 className={`font-display ${size === "lg" ? "text-3xl md:text-4xl" : "text-2xl md:text-3xl"} mt-1`}>{name}</h3>
         <span className="mt-2 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] border-b border-ivory pb-0.5">
-          Shop{" "}
-          <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
+          Shop <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
         </span>
       </div>
     </Link>

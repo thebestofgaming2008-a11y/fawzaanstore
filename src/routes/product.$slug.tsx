@@ -2,24 +2,13 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import type { Product } from "@/lib/products";
 import {
-  ShoppingBag,
-  Truck,
-  ShieldCheck,
-  RotateCcw,
-  Star,
-  Minus,
-  Plus,
-  Heart,
-  ChevronDown,
-  Check,
-  ChevronLeft,
-  ChevronRight,
+  ShoppingBag, Truck, ShieldCheck, RotateCcw, Star, Minus, Plus, Heart,
+  ChevronDown, Check, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductCard } from "@/components/brand/ProductCard";
 import { getProduct, related } from "@/lib/products";
-import { getProductBySlug, useCatalogProducts } from "@/services/productService";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import { useCurrency } from "@/lib/currency";
@@ -41,8 +30,8 @@ export const Route = createFileRoute("/product/$slug")({
       ],
     };
   },
-  loader: async ({ params }) => {
-    const p = await getProductBySlug(params.slug);
+  loader: ({ params }) => {
+    const p = getProduct(params.slug);
     if (!p) throw notFound();
     return { product: p };
   },
@@ -51,9 +40,7 @@ export const Route = createFileRoute("/product/$slug")({
       <div className="text-center">
         <p className="eyebrow text-ink/50">404</p>
         <h1 className="font-display text-4xl mt-2">Product not found</h1>
-        <Link to="/" className="mt-6 inline-block text-sm underline underline-offset-4">
-          Back home
-        </Link>
+        <Link to="/" className="mt-6 inline-block text-sm underline underline-offset-4">Back home</Link>
       </div>
     </div>
   ),
@@ -66,13 +53,7 @@ function ProductPage() {
   const { has, toggle } = useWishlist();
   const { format } = useCurrency();
   const wished = has(product.slug);
-  const { products } = useCatalogProducts();
-  const relatedItems = useMemo(() => {
-    const live = products
-      .filter((item) => item.slug !== product.slug && item.collection === product.collection)
-      .slice(0, 4);
-    return live.length ? live : related(product.slug, 4);
-  }, [product.collection, product.slug, products]);
+  const relatedItems = useMemo(() => related(product.slug, 4), [product.slug]);
 
   const [imgIdx, setImgIdx] = useState(0);
   const [color, setColor] = useState(product.colors?.[0]?.name ?? "");
@@ -94,8 +75,6 @@ function ProductPage() {
   const handleAdd = () => {
     add({
       id: `${product.slug}__${color}__${size}`,
-      productId: product.id,
-      slug: product.slug,
       name: product.name,
       variant,
       price,
@@ -117,31 +96,18 @@ function ProductPage() {
       {/* ============ Sticky Buy Bar — pinned directly under header, always visible ============ */}
       <div className="sticky top-[57px] md:top-[73px] z-30 bg-ivory/95 backdrop-blur-md border-b border-ink/10 shadow-soft animate-fade-in">
         <div className="mx-auto max-w-7xl px-4 md:px-8 py-2.5 md:py-3 flex items-center gap-3">
-          <img
-            src={product.images[imgIdx]}
-            alt=""
-            className="h-11 w-10 md:h-12 md:w-11 object-cover bg-cream shrink-0"
-          />
+          <img src={product.images[imgIdx]} alt="" className="h-11 w-10 md:h-12 md:w-11 object-cover bg-cream shrink-0" />
           <div className="min-w-0 flex-1">
-            <p className="text-[13px] md:text-sm font-medium truncate leading-tight">
-              {product.name}
-            </p>
+            <p className="text-[13px] md:text-sm font-medium truncate leading-tight">{product.name}</p>
             <p className="text-[11px] text-ink/55 truncate leading-tight tabular-nums">
               <span className="text-ink font-semibold">{format(price * qty)}</span>
-              {product.compareAt && (
-                <span className="ml-1.5 line-through text-ink/35">
-                  {format(product.compareAt * qty)}
-                </span>
-              )}
+              {product.compareAt && <span className="ml-1.5 line-through text-ink/35">{format(product.compareAt * qty)}</span>}
               {variant && <span className="ml-1.5">· {variant}</span>}
             </p>
           </div>
           <button
             aria-label={wished ? "Remove from wishlist" : "Save to wishlist"}
-            onClick={() => {
-              toggle(product.slug);
-              toast(wished ? "Removed from wishlist" : "Saved to wishlist");
-            }}
+            onClick={() => { toggle(product.slug); toast(wished ? "Removed from wishlist" : "Saved to wishlist"); }}
             className="shrink-0 h-10 w-10 rounded-full border border-ink/15 flex items-center justify-center hover:border-ink transition"
           >
             <Heart className={`h-4 w-4 ${wished ? "fill-red-600 text-red-600" : ""}`} />
@@ -150,11 +116,7 @@ function ProductPage() {
             onClick={handleAdd}
             className="shrink-0 inline-flex items-center justify-center gap-2 bg-ink text-ivory px-5 md:px-7 py-2.5 md:py-3 text-[11px] font-semibold uppercase tracking-[0.22em] rounded-full active:scale-95 hover:bg-gold-deep transition"
           >
-            {added ? (
-              <Check className="h-4 w-4 animate-scale-in" />
-            ) : (
-              <ShoppingBag className="h-4 w-4" />
-            )}
+            {added ? <Check className="h-4 w-4 animate-scale-in" /> : <ShoppingBag className="h-4 w-4" />}
             <span className="hidden sm:inline">{added ? "Added" : "Add to cart"}</span>
             <span className="sm:hidden">{added ? "Added" : "Add"}</span>
           </button>
@@ -163,20 +125,10 @@ function ProductPage() {
 
       {/* Breadcrumb */}
       <div className="mx-auto max-w-7xl px-4 md:px-8 pt-5 md:pt-8">
-        <nav
-          aria-label="Breadcrumb"
-          className="text-[10px] uppercase tracking-[0.24em] text-ink/45"
-        >
-          <Link to="/" className="hover:text-ink transition">
-            Home
-          </Link>
+        <nav aria-label="Breadcrumb" className="text-[10px] uppercase tracking-[0.24em] text-ink/45">
+          <Link to="/" className="hover:text-ink transition">Home</Link>
           <span className="mx-2 text-ink/25">/</span>
-          <Link
-            to={`/${product.collection}` as string}
-            className="hover:text-ink capitalize transition"
-          >
-            {product.collection}
-          </Link>
+          <Link to={`/${product.collection}` as string} className="hover:text-ink capitalize transition">{product.collection}</Link>
           <span className="mx-2 text-ink/25">/</span>
           <span className="text-ink/70">{product.name}</span>
         </nav>
@@ -259,9 +211,7 @@ function ProductPage() {
 
         {/* ============ Details — minimal, size + info only ============ */}
         <div className="md:pt-1">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-deep">
-            {product.collection}
-          </p>
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-deep">{product.collection}</p>
           <h1 className="mt-3 font-display text-[2rem] md:text-5xl leading-[1.05] text-balance">
             {product.name}
           </h1>
@@ -269,27 +219,18 @@ function ProductPage() {
           <div className="mt-3 flex items-center gap-2 text-sm text-ink/65">
             <div className="flex text-gold-deep">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  className={`h-3.5 w-3.5 ${i < Math.round(product.rating) ? "fill-current" : ""}`}
-                />
+                <Star key={i} className={`h-3.5 w-3.5 ${i < Math.round(product.rating) ? "fill-current" : ""}`} />
               ))}
             </div>
-            <span className="text-[12px]">
-              {product.rating} · {product.reviews.toLocaleString()} reviews
-            </span>
+            <span className="text-[12px]">{product.rating} · {product.reviews.toLocaleString()} reviews</span>
           </div>
 
           {/* Price */}
           <div className="mt-6 flex items-baseline gap-3">
-            <span className="font-display text-3xl md:text-[2.25rem] leading-none">
-              {format(price * qty)}
-            </span>
+            <span className="font-display text-3xl md:text-[2.25rem] leading-none">{format(price * qty)}</span>
             {product.compareAt && (
               <>
-                <span className="text-ink/40 line-through text-lg">
-                  {format(product.compareAt * qty)}
-                </span>
+                <span className="text-ink/40 line-through text-lg">{format(product.compareAt * qty)}</span>
                 <span className="text-[10px] uppercase tracking-[0.22em] bg-gold-soft/70 text-gold-deep px-2 py-1">
                   Save {format((product.compareAt - product.price) * qty)}
                 </span>
@@ -323,13 +264,9 @@ function ProductPage() {
                     style={{ backgroundColor: c.swatch ?? "#eee" }}
                   >
                     {color === c.name && (
-                      <Check
-                        className={`absolute inset-0 m-auto h-4 w-4 ${
-                          c.swatch === "#faf6ea" || c.swatch === "#f5f2ea"
-                            ? "text-ink"
-                            : "text-ivory"
-                        }`}
-                      />
+                      <Check className={`absolute inset-0 m-auto h-4 w-4 ${
+                        c.swatch === "#faf6ea" || c.swatch === "#f5f2ea" ? "text-ink" : "text-ivory"
+                      }`} />
                     )}
                   </button>
                 ))}
@@ -345,10 +282,7 @@ function ProductPage() {
                   Size · <span className="text-ink">{size}</span>
                 </p>
                 {product.sizes.length > 1 && (
-                  <Link
-                    to="/faq"
-                    className="text-[11px] uppercase tracking-[0.22em] text-ink/55 underline underline-offset-2 hover:text-ink transition"
-                  >
+                  <Link to="/faq" className="text-[11px] uppercase tracking-[0.22em] text-ink/55 underline underline-offset-2 hover:text-ink transition">
                     Size guide
                   </Link>
                 )}
@@ -422,8 +356,7 @@ function ProductPage() {
                     <li className="text-ink">{product.description}</li>
                     {product.features.map((f) => (
                       <li key={f} className="flex gap-2">
-                        <Check className="h-4 w-4 text-gold-deep mt-0.5 shrink-0" />
-                        {f}
+                        <Check className="h-4 w-4 text-gold-deep mt-0.5 shrink-0" />{f}
                       </li>
                     ))}
                   </ul>
@@ -434,14 +367,8 @@ function ProductPage() {
                 label: "Materials & care",
                 body: (
                   <div className="text-[14px] text-ink/75 space-y-2.5 leading-relaxed">
-                    <p>
-                      <span className="text-ink font-medium">Materials · </span>
-                      {product.materials}
-                    </p>
-                    <p>
-                      <span className="text-ink font-medium">Care · </span>
-                      {product.care}
-                    </p>
+                    <p><span className="text-ink font-medium">Materials · </span>{product.materials}</p>
+                    <p><span className="text-ink font-medium">Care · </span>{product.care}</p>
                   </div>
                 ),
               },
@@ -451,13 +378,7 @@ function ProductPage() {
                 body: (
                   <div className="text-[14px] text-ink/75 space-y-2.5 leading-relaxed">
                     <p>Dispatched within 24 hours. Free shipping on orders over ₹2,000.</p>
-                    <p>
-                      30-day returns on unworn items —{" "}
-                      <Link to="/returns" className="underline underline-offset-2">
-                        read the policy
-                      </Link>
-                      .
-                    </p>
+                    <p>30-day returns on unworn items — <Link to="/returns" className="underline underline-offset-2">read the policy</Link>.</p>
                   </div>
                 ),
               },
@@ -469,13 +390,9 @@ function ProductPage() {
                   aria-expanded={openAcc === a.key}
                 >
                   {a.label}
-                  <ChevronDown
-                    className={`h-4 w-4 transition-transform duration-300 ${openAcc === a.key ? "rotate-180" : ""}`}
-                  />
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${openAcc === a.key ? "rotate-180" : ""}`} />
                 </button>
-                <div
-                  className={`grid transition-all duration-300 ${openAcc === a.key ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
-                >
+                <div className={`grid transition-all duration-300 ${openAcc === a.key ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                   <div className="overflow-hidden">
                     <div className="pb-5">{a.body}</div>
                   </div>
@@ -491,9 +408,7 @@ function ProductPage() {
         <section className="border-t border-ink/10 mx-auto max-w-7xl px-4 md:px-8 py-14 md:py-20">
           <div className="flex items-end justify-between mb-8">
             <div>
-              <p className="text-[11px] uppercase tracking-[0.28em] text-gold-deep">
-                You may also like
-              </p>
+              <p className="text-[11px] uppercase tracking-[0.28em] text-gold-deep">You may also like</p>
               <h2 className="mt-2 font-display text-3xl md:text-4xl">More from the collection</h2>
             </div>
             <Link
@@ -504,9 +419,7 @@ function ProductPage() {
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
-            {relatedItems.map((p) => (
-              <ProductCard key={p.slug} p={p} />
-            ))}
+            {relatedItems.map((p) => <ProductCard key={p.slug} p={p} />)}
           </div>
         </section>
       )}
