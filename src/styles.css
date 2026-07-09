@@ -201,6 +201,15 @@
 }
 .animate-ken-burns { animation: kenBurns 18s ease-in-out infinite alternate; }
 
+@keyframes hueShift {
+  0%   { background: radial-gradient(ellipse at 20% 30%, #F4B400 0%, transparent 55%), radial-gradient(ellipse at 80% 70%, #C99700 0%, transparent 60%), #000; }
+  25%  { background: radial-gradient(ellipse at 70% 20%, #FFDE80 0%, transparent 55%), radial-gradient(ellipse at 20% 80%, #F4B400 0%, transparent 60%), #0a0a0a; }
+  50%  { background: radial-gradient(ellipse at 80% 60%, #C99700 0%, transparent 55%), radial-gradient(ellipse at 30% 30%, #FFDE80 0%, transparent 60%), #050505; }
+  75%  { background: radial-gradient(ellipse at 30% 80%, #F4B400 0%, transparent 55%), radial-gradient(ellipse at 70% 40%, #C99700 0%, transparent 60%), #0a0a0a; }
+  100% { background: radial-gradient(ellipse at 20% 30%, #F4B400 0%, transparent 55%), radial-gradient(ellipse at 80% 70%, #C99700 0%, transparent 60%), #000; }
+}
+.animate-hue-shift { animation: hueShift 18s ease-in-out infinite; }
+
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
