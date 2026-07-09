@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, ShoppingBag, Search, Heart, User } from "lucide-react";
-import logo from "@/assets/fawzaan-logo.png.asset.json";
+import logoUrl from "@/assets/fawzaan-logo-mark.png";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import { useAccount } from "@/lib/account";
@@ -90,7 +90,7 @@ export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }
             className="flex items-center group md:flex-1"
           >
             <img
-              src={logo.url}
+              src={logoUrl}
               alt="Fawzaan Store"
               width={220}
               height={94}
