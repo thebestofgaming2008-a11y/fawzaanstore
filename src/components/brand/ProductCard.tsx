@@ -14,12 +14,7 @@ export function ProductCard({ p, priority = false }: { p: Product; priority?: bo
 
   return (
     <article className="group relative">
-      <Link
-        to="/product/$slug"
-        params={{ slug: p.slug }}
-        className="block"
-        aria-label={p.name}
-      >
+      <Link to="/product/$slug" params={{ slug: p.slug }} className="block" aria-label={p.name}>
         <div className="relative aspect-[4/5] overflow-hidden bg-cream">
           <img
             src={p.images[0]}
@@ -63,17 +58,30 @@ export function ProductCard({ p, priority = false }: { p: Product; priority?: bo
       </Link>
       <div className="mt-3 md:mt-4 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <Link to="/product/$slug" params={{ slug: p.slug }} className="text-[13px] uppercase tracking-[0.14em] text-ink block truncate hover:text-gold-deep transition">
+          <Link
+            to="/product/$slug"
+            params={{ slug: p.slug }}
+            className="text-[13px] uppercase tracking-[0.14em] text-ink block truncate hover:text-gold-deep transition"
+          >
             {p.name}
           </Link>
           <div className="mt-1 flex items-center gap-2">
             <p className="text-[13px] text-ink/80">{format(p.price)}</p>
-            {p.compareAt && <p className="text-[12px] text-ink/40 line-through">{format(p.compareAt)}</p>}
+            {p.compareAt && (
+              <p className="text-[12px] text-ink/40 line-through">{format(p.compareAt)}</p>
+            )}
           </div>
         </div>
         <button
           onClick={() => {
-            add({ id: p.slug, name: p.name, price: p.price, img: p.images[0] });
+            add({
+              id: p.slug,
+              productId: p.id,
+              slug: p.slug,
+              name: p.name,
+              price: p.price,
+              img: p.images[0],
+            });
             toast.success(`${p.name} added to cart`);
           }}
           aria-label={`Quick add ${p.name}`}

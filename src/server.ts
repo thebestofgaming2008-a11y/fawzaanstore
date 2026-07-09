@@ -187,18 +187,7 @@ async function liveCatalogProduct(
 
 function mergeLocalCatalogProducts(liveProducts: unknown[] | null | undefined) {
   if (!Array.isArray(liveProducts) || liveProducts.length === 0) return localBackendProducts;
-  const liveKeys = new Set(
-    liveProducts.flatMap((product) => {
-      const row = product as { id?: unknown; slug?: unknown };
-      return [row.id, row.slug].map((value) => String(value ?? "").trim()).filter(Boolean);
-    }),
-  );
-  const missingLocal = localBackendProducts.filter((product) => {
-    const id = String(product.id ?? "").trim();
-    const slug = String(product.slug ?? "").trim();
-    return (!id || !liveKeys.has(id)) && (!slug || !liveKeys.has(slug));
-  });
-  return [...liveProducts, ...missingLocal];
+  return liveProducts;
 }
 
 async function handleCatalogRequest(request: Request, env: unknown): Promise<Response | null> {
@@ -218,10 +207,11 @@ async function handleCatalogRequest(request: Request, env: unknown): Promise<Res
   const id = url.searchParams.get("id")?.trim() || null;
   const slug = url.searchParams.get("slug")?.trim() || null;
   if (!id && !slug) return jsonResponse({ error: "Product id or slug is required." }, 400);
-  const product =
-    (await liveCatalogProduct(env, request, id, slug)) ??
-    localBackendProducts.find((item) => (id ? item.id === id : item.slug === slug));
-  return jsonResponse(product, product ? 200 : 404, CATALOG_CACHE_HEADERS);
+  const product = await liveCatalogProduct(env, request, id, slug);
+  if (!product && convexClient(env, request)) return jsonResponse(null, 404, CATALOG_CACHE_HEADERS);
+  const fallback =
+    product ?? localBackendProducts.find((item) => (id ? item.id === id : item.slug === slug));
+  return jsonResponse(fallback, fallback ? 200 : 404, CATALOG_CACHE_HEADERS);
 }
 
 async function handleMediaRequest(request: Request, env: unknown): Promise<Response | null> {

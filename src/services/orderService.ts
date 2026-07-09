@@ -1,4 +1,5 @@
 import type { CartItem } from "@/lib/cart";
+import type { Product } from "@/lib/products";
 import { listActiveProducts } from "@/services/productService";
 
 type CheckoutCustomer = {
@@ -50,6 +51,49 @@ function productSlugFromCartItem(item: CartItem) {
   return item.slug || item.id.split("__")[0] || item.id;
 }
 
+function normalizeMatchText(value: unknown) {
+  return String(value ?? "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(
+      /\b(red|white|ivory|embroidered|woven|multi|flora|wild|black|acacia|500g|standard|one|size|long)\b/g,
+      " ",
+    )
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isBackendProduct(product: Product | undefined) {
+  return Boolean(product?.id && product.id !== product.slug);
+}
+
+function resolveCheckoutProduct(item: CartItem, products: Product[]) {
+  const slug = productSlugFromCartItem(item);
+  const liveProducts = products.filter(isBackendProduct);
+  const byId = liveProducts.find(
+    (product) => product.id === item.productId || product.id === item.id,
+  );
+  if (byId) return byId;
+
+  const bySlug = liveProducts.find(
+    (product) => product.slug === slug || product.slug === item.slug,
+  );
+  if (bySlug) return bySlug;
+
+  const itemText = normalizeMatchText(`${item.name} ${slug}`);
+  const itemTokens = new Set(itemText.split(" ").filter((token) => token.length > 2));
+  return liveProducts.find((product) => {
+    const productText = normalizeMatchText(`${product.name} ${product.slug} ${product.collection}`);
+    const productTokens = productText.split(" ").filter((token) => token.length > 2);
+    if (!productTokens.length) return false;
+    const shared = productTokens.filter((token) => itemTokens.has(token)).length;
+    return shared >= Math.min(2, productTokens.length);
+  });
+}
+
 async function buildBackendCheckoutPayload(args: {
   cart: CartItem[];
   customer: CheckoutCustomer;
@@ -58,13 +102,14 @@ async function buildBackendCheckoutPayload(args: {
   total: number;
 }): Promise<BackendCheckoutPayload> {
   const products = await listActiveProducts();
-  const productBySlug = new Map(products.map((product) => [product.slug, product]));
   const cart = args.cart.map((item) => {
     const slug = productSlugFromCartItem(item);
-    const product = productBySlug.get(slug);
-    const productId = item.productId || product?.id;
-    if (!productId || productId === slug) {
-      throw new Error("Catalog is not connected to Convex products yet.");
+    const product = resolveCheckoutProduct(item, products);
+    const productId = product?.id;
+    if (!productId || productId === product.slug) {
+      throw new Error(
+        `${item.name} is not connected to the live catalog yet. Please remove it and add it again from the shop.`,
+      );
     }
     const selectedColor = optionValue(item.variant, 0) ?? product?.colors?.[0]?.name ?? null;
     const selectedSize = optionValue(item.variant, 1) ?? product?.sizes?.[0] ?? null;

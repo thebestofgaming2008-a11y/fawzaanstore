@@ -48,12 +48,15 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
         headers: { accept: "application/json" },
         cache: "no-store",
       });
-      if (!response.ok) return catalog.find((product) => product.slug === slug) ?? null;
+      if (response.status === 404) return null;
+      if (!response.ok) throw new Error(`Product request failed with ${response.status}`);
       return backendProductToProduct((await response.json()) as BackendProduct);
     }
 
     if (convex) {
-      const row = (await convex.query(api.products.getProductBySlug, { slug })) as BackendProduct | null;
+      const row = (await convex.query(api.products.getProductBySlug, {
+        slug,
+      })) as BackendProduct | null;
       return row ? backendProductToProduct(row) : null;
     }
   } catch (error) {
@@ -64,7 +67,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 }
 
 export function useCatalogProducts() {
-  const [products, setProducts] = useState<Product[]>(cachedProducts ?? catalog);
+  const [products, setProducts] = useState<Product[]>(cachedProducts ?? []);
   const [loading, setLoading] = useState(!cachedProducts);
 
   useEffect(() => {

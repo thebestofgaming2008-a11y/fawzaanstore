@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductCard } from "@/components/brand/ProductCard";
-import { catalog } from "@/lib/products";
+import { useCatalogProducts } from "@/services/productService";
 
 export const Route = createFileRoute("/search")({
   head: () => ({ meta: [{ title: "Search — Fawzaan.store" }] }),
@@ -13,11 +13,16 @@ export const Route = createFileRoute("/search")({
 
 function SearchPage() {
   const [q, setQ] = useState("");
+  const { products } = useCatalogProducts();
   const results = useMemo(() => {
     const term = q.trim().toLowerCase();
-    if (!term) return catalog;
-    return catalog.filter((p) => (p.name + " " + p.short + " " + p.collection + " " + p.description).toLowerCase().includes(term));
-  }, [q]);
+    if (!term) return products;
+    return products.filter((p) =>
+      (p.name + " " + p.short + " " + p.collection + " " + p.description)
+        .toLowerCase()
+        .includes(term),
+    );
+  }, [products, q]);
 
   return (
     <div className="min-h-screen bg-ivory text-ink">
@@ -37,16 +42,22 @@ function SearchPage() {
           />
         </div>
 
-        <p className="mt-4 text-xs text-ink/55">{results.length} result{results.length === 1 ? "" : "s"}</p>
+        <p className="mt-4 text-xs text-ink/55">
+          {results.length} result{results.length === 1 ? "" : "s"}
+        </p>
 
         {results.length === 0 ? (
           <div className="mt-10 text-center py-16">
             <p className="font-display text-2xl">No results for “{q}”.</p>
-            <Link to="/" className="mt-4 inline-block text-sm underline">Back home</Link>
+            <Link to="/" className="mt-4 inline-block text-sm underline">
+              Back home
+            </Link>
           </div>
         ) : (
           <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
-            {results.map((p) => <ProductCard key={p.slug} p={p} />)}
+            {results.map((p) => (
+              <ProductCard key={p.slug} p={p} />
+            ))}
           </div>
         )}
       </div>
