@@ -19,7 +19,7 @@ import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductCard } from "@/components/brand/ProductCard";
 import { getProduct, related } from "@/lib/products";
-import { getProductBySlug } from "@/services/productService";
+import { getProductBySlug, useCatalogProducts } from "@/services/productService";
 import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 import { useCurrency } from "@/lib/currency";
@@ -66,7 +66,13 @@ function ProductPage() {
   const { has, toggle } = useWishlist();
   const { format } = useCurrency();
   const wished = has(product.slug);
-  const relatedItems = useMemo(() => related(product.slug, 4), [product.slug]);
+  const { products } = useCatalogProducts();
+  const relatedItems = useMemo(() => {
+    const live = products
+      .filter((item) => item.slug !== product.slug && item.collection === product.collection)
+      .slice(0, 4);
+    return live.length ? live : related(product.slug, 4);
+  }, [product.collection, product.slug, products]);
 
   const [imgIdx, setImgIdx] = useState(0);
   const [color, setColor] = useState(product.colors?.[0]?.name ?? "");
