@@ -43,10 +43,11 @@
   --color-gold-deep: var(--gold-deep);
   --color-gold-soft: var(--gold-soft);
 
-  --font-display: "Cormorant Garamond", "Cormorant", Georgia, serif;
-  --font-body: "Cormorant Garamond", Georgia, serif;
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-arabic: "Amiri", "Cormorant Garamond", serif;
+  --font-display: "Fraunces", "Cormorant Garamond", Georgia, serif;
+  --font-body: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-arabic: "Amiri", "Fraunces", serif;
+
 
   --shadow-soft: 0 4px 20px -8px rgb(0 0 0 / 0.18);
   --shadow-elegant: 0 20px 60px -20px rgb(0 0 0 / 0.30);
