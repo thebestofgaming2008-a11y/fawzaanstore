@@ -15,10 +15,10 @@ import { CartProvider } from "@/lib/cart";
 import { WishlistProvider } from "@/lib/wishlist";
 import { AccountProvider } from "@/lib/account";
 import { CurrencyProvider } from "@/lib/currency";
+import { AnnouncementBar } from "@/components/brand/AnnouncementBar";
 import { CartDrawer } from "@/components/brand/CartDrawer";
 import { SideAccountRail } from "@/components/brand/SideAccountRail";
 import { Toaster } from "sonner";
-
 
 
 function NotFoundComponent() {
@@ -105,9 +105,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..700,0..100,0..1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap",
       },
-
     ],
   }),
   shellComponent: RootShell,
@@ -139,9 +138,9 @@ function RootComponent() {
         <AccountProvider>
           <WishlistProvider>
             <CartProvider>
-              {/* Nested routes render here. */}
+              <AnnouncementBar />
+              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
               <Outlet />
-
               <CartDrawer />
               <SideAccountRail />
               <Toaster position="bottom-center" theme="light" richColors closeButton />

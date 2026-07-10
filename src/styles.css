@@ -43,11 +43,10 @@
   --color-gold-deep: var(--gold-deep);
   --color-gold-soft: var(--gold-soft);
 
-  --font-display: "Fraunces", "Cormorant Garamond", Georgia, serif;
-  --font-body: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
-  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
-  --font-arabic: "Amiri", "Fraunces", serif;
-
+  --font-display: "Cormorant Garamond", "Cormorant", Georgia, serif;
+  --font-body: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-arabic: "Amiri", "Cormorant Garamond", serif;
 
   --shadow-soft: 0 4px 20px -8px rgb(0 0 0 / 0.18);
   --shadow-elegant: 0 20px 60px -20px rgb(0 0 0 / 0.30);
@@ -63,12 +62,11 @@
 
   /* Official client palette */
   --ivory: #FFFFFF;
-  --cream: #FFF7DC;
-  --ink: #1a1611;
+  --cream: #FAF8F2;
+  --ink: #000000;
   --gold: #F4B400;
   --gold-deep: #C99700;
-  --gold-soft: #FFE99A;
-
+  --gold-soft: #FFDE80;
 
   --background: var(--ivory);
   --foreground: var(--ink);
@@ -120,17 +118,14 @@
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "ss01", "cv01", "liga";
   }
-  h1, h2, h3, h4, .font-display { font-family: var(--font-display); letter-spacing: -0.02em; font-weight: 500; font-optical-sizing: auto; font-variation-settings: "SOFT" 100, "WONK" 1; }
+  h1, h2, h3, h4, .font-display { font-family: var(--font-display); letter-spacing: -0.015em; font-weight: 500; }
   .font-arabic { font-family: var(--font-arabic); }
   .font-sans-ui { font-family: var(--font-sans); }
+  /* Shopify-like small UI text uses Inter for legibility */
   button, input, select, textarea, .eyebrow, nav a, .ui-text { font-family: var(--font-sans); }
 }
 
 @layer utilities {
-  .bg-fade-gold-down { background-image: linear-gradient(180deg, #FFFFFF 0%, #FFF7DC 60%, #FFE99A 100%); }
-  .bg-fade-gold-up { background-image: linear-gradient(180deg, #FFE99A 0%, #FFF7DC 40%, #FFFFFF 100%); }
-  .bg-fade-cream { background-image: linear-gradient(180deg, #FFFFFF 0%, #FFF7DC 100%); }
-
   .text-balance { text-wrap: balance; }
   .bg-gradient-gold { background-image: var(--gradient-gold); }
   .bg-gradient-ink { background-image: var(--gradient-ink); }

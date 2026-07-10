@@ -11,9 +11,10 @@ import { catalog } from "@/lib/products";
 const nav = [
   { to: "/women", label: "Women" },
   { to: "/men", label: "Men" },
+  { to: "/shemaghs", label: "Shemaghs" },
+  { to: "/niqabs", label: "Niqabs" },
   { to: "/honey", label: "Honey" },
 ] as const;
-
 
 export function SiteHeader({ variant = "light" }: { variant?: "light" | "dark" }) {
   const [open, setOpen] = useState(false);
