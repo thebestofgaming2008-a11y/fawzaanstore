@@ -63,11 +63,12 @@
 
   /* Official client palette */
   --ivory: #FFFFFF;
-  --cream: #FAF8F2;
-  --ink: #000000;
+  --cream: #FFF7DC;
+  --ink: #1a1611;
   --gold: #F4B400;
   --gold-deep: #C99700;
-  --gold-soft: #FFDE80;
+  --gold-soft: #FFE99A;
+
 
   --background: var(--ivory);
   --foreground: var(--ink);
