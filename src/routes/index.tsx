@@ -1,14 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
 import { ArrowRight, Truck, ShieldCheck, RotateCcw, Lock } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductCard } from "@/components/brand/ProductCard";
-import { catalog, byCollection, type Collection } from "@/lib/products";
+import { byCollection, type Collection } from "@/lib/products";
 import shemagh from "@/assets/shemagh-red-head.jpg";
 import niqabTile from "@/assets/niqab-khadija-2.jpg";
 import gloves from "@/assets/hero-gloves.jpg";
-import honey from "@/assets/hero-honey.jpg";
+import honey from "@/assets/honey-kashmir-multiflora.jpg";
 import kufi from "@/assets/hero-kufi.jpg";
 
 export const Route = createFileRoute("/")({
@@ -79,44 +78,52 @@ const sections: CollectionSection[] = [
   },
 ];
 
-function Home() {
-  const newArrivals = catalog.filter((p) => p.tag === "New" || p.tag === "Bestseller").slice(0, 4);
+const categories: { key: Collection; title: string; image: string; href: string }[] = [
+  { key: "shemaghs", title: "Shemaghs", image: shemagh, href: "/shemaghs" },
+  { key: "niqabs", title: "Niqabs", image: niqabTile, href: "/niqabs" },
+  { key: "honey", title: "Kashmir Honey", image: honey, href: "/honey" },
+  { key: "kufis", title: "Kufis", image: kufi, href: "/kufis" },
+  { key: "gloves", title: "Leather Gloves", image: gloves, href: "/gloves" },
+];
 
+function Home() {
   return (
     <div className="min-h-screen bg-ivory text-ink">
       <SiteHeader />
 
       {/* HERO — banner with men / women selector */}
-      <section className="relative w-full overflow-hidden bg-cream -mt-px">
+      <section className="relative w-full overflow-hidden -mt-px">
         <div className="relative h-[88svh] min-h-[600px] md:h-[96svh] md:min-h-[720px]">
           <img
             src={shemagh}
             alt="Heritage Yemeni shemagh, hand-loomed"
-            className="absolute inset-0 h-full w-full object-cover object-[center_top] animate-ken-burns"
+            className="absolute inset-0 h-full w-full object-cover object-[center_top]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-ink/10 via-ink/25 to-ink/55" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.35)_100%)]" />
-          <div className="relative z-10 h-full flex flex-col items-center justify-end pb-16 md:pb-24 px-5">
-            <div className="text-center text-ivory max-w-2xl animate-fade-up">
-              <p className="text-[11px] md:text-[12px] uppercase tracking-[0.4em] shimmer-gold font-semibold">Est. Heritage</p>
-              <h1 className="font-display text-6xl sm:text-7xl md:text-8xl mt-3 leading-[0.95] tracking-tight text-ivory drop-shadow-[0_4px_18px_rgba(0,0,0,0.55)]">
-                Choose your house
-              </h1>
-              <p className="mt-4 text-[13px] md:text-[14px] text-ivory/80 max-w-md mx-auto">
-                Two edits, one heritage. Enter the collection made for you.
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/25" />
+          <div className="relative z-10 h-full flex flex-col items-center justify-center px-5">
+            <div className="text-center max-w-2xl animate-fade-up">
+              <p className="text-[11px] md:text-[12px] uppercase tracking-[0.4em] text-ink/70 font-medium">
+                New Collection
               </p>
+              <div className="mt-3 flex items-center justify-center gap-3 text-gold-deep">
+                <span className="h-px w-16 bg-gold-deep/50" />
+                <span className="text-xs">•</span>
+                <span className="h-px w-16 bg-gold-deep/50" />
+              </div>
+              <h1 className="font-display italic text-6xl sm:text-7xl md:text-8xl mt-6 leading-[0.95] tracking-tight text-ivory drop-shadow-[0_4px_20px_rgba(0,0,0,0.45)]">
+                Heritage
+              </h1>
 
-              <div className="mt-8 inline-flex items-stretch rounded-full bg-ivory/95 backdrop-blur-sm border border-gold/40 shadow-elegant overflow-hidden">
+              <div className="mt-12 inline-flex shadow-elegant">
                 <Link
                   to="/women"
-                  className="px-8 md:px-12 py-3.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-ink hover:bg-gold transition-colors"
+                  className="px-10 md:px-14 py-4 text-[11px] font-semibold uppercase tracking-[0.32em] bg-ivory text-ink hover:bg-gold transition-colors"
                 >
                   Women
                 </Link>
-                <span aria-hidden className="w-px my-2 bg-gold/40" />
                 <Link
                   to="/men"
-                  className="px-8 md:px-12 py-3.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-ink hover:bg-ink hover:text-gold transition-colors"
+                  className="px-10 md:px-14 py-4 text-[11px] font-semibold uppercase tracking-[0.32em] bg-ink text-ivory hover:bg-gold hover:text-ink transition-colors"
                 >
                   Men
                 </Link>
@@ -126,19 +133,43 @@ function Home() {
         </div>
       </section>
 
-      {/* Second section — New Arrivals editorial grid (Shopify-style, minimal) */}
+      {/* Second section — Shop by Category (Shopify-style grid) */}
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-16 md:py-24">
         <div className="text-center">
-          <p className="eyebrow text-gold-deep">Just Landed</p>
-          <h2 className="font-display text-4xl md:text-5xl mt-3">New Arrivals</h2>
-          <div className="mt-4 flex justify-center">
-            <span className="divider-gold text-xs">✦</span>
-          </div>
+          <p className="eyebrow text-gold-deep">Explore</p>
+          <h2 className="font-display text-4xl md:text-5xl mt-3">Shop by Category</h2>
+          <p className="mt-4 text-sm text-ink/60 max-w-md mx-auto">
+            Curated collections, hand-picked from origin.
+          </p>
         </div>
-        <div className="mt-10 md:mt-14 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
-          {newArrivals.map((p, i) => <ProductCard key={p.slug} p={p} priority={i < 2} />)}
+        <div className="mt-10 md:mt-14 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
+          {categories.map((c, i) => (
+            <Link
+              key={c.key}
+              to={c.href}
+              className={`group relative overflow-hidden bg-cream aspect-[4/5] ${
+                i === 2 ? "md:col-span-1" : ""
+              }`}
+            >
+              <img
+                src={c.image}
+                alt={c.title}
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 flex items-end justify-between">
+                <h3 className="font-display text-2xl md:text-3xl text-ivory drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+                  {c.title}
+                </h3>
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-ivory border-b border-ivory/70 pb-0.5 group-hover:text-gold group-hover:border-gold transition">
+                  Shop <ArrowRight className="h-3 w-3" />
+                </span>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
+
 
       {/* Per-collection sections — banner + rail (repeated) */}
       {sections.map((s) => (
