@@ -1,14 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
 import { ArrowRight, Truck, ShieldCheck, RotateCcw, Lock } from "lucide-react";
 import { SiteHeader } from "@/components/brand/SiteHeader";
 import { SiteFooter } from "@/components/brand/SiteFooter";
 import { ProductCard } from "@/components/brand/ProductCard";
-import { catalog, byCollection, type Collection } from "@/lib/products";
+import { byCollection, type Collection } from "@/lib/products";
 import shemagh from "@/assets/shemagh-red-head.jpg";
 import niqabTile from "@/assets/niqab-khadija-2.jpg";
 import gloves from "@/assets/hero-gloves.jpg";
-import honey from "@/assets/hero-honey.jpg";
+import honey from "@/assets/honey-kashmir-multiflora.jpg";
 import kufi from "@/assets/hero-kufi.jpg";
 
 export const Route = createFileRoute("/")({
