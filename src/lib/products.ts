@@ -15,12 +15,12 @@ import niqabKhadija1 from "@/assets/niqab-khadija-1.jpg";
 import niqabKhadija2 from "@/assets/niqab-khadija-2.jpg";
 import niqabKhadija3 from "@/assets/niqab-khadija-3.jpg";
 import niqabKhadija4 from "@/assets/niqab-khadija-4.jpg";
-import heroGloves from "@/assets/hero-gloves.jpg";
+
 import honeyMulti from "@/assets/honey-kashmir-multiflora.jpg";
 import honeyAcacia from "@/assets/honey-kashmir-acacia.jpg";
 import honeyBlack from "@/assets/honey-kashmir-black.jpg";
 
-export type Collection = "shemaghs" | "niqabs" | "kufis" | "gloves" | "honey";
+export type Collection = "shemaghs" | "niqabs" | "kufis" | "honey";
 export type Gender = "men" | "women" | "unisex";
 
 export type Variant = { name: string; swatch?: string };
